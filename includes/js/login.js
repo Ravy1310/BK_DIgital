@@ -1,4 +1,4 @@
-
+document.addEventListener('DOMContentLoaded', () => {
 const loginForm = document.getElementById('loginForm');
 const statusMessage = document.getElementById('statusMessage');
 
@@ -37,17 +37,19 @@ loginForm.addEventListener("submit", async function(e) {
 
   try {
    
-    const response = await fetch("../login_controller.php", {
+    const response = await fetch("includes/login_controller.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
     });
 
     const responseText = await response.text();
+    console.log("Response from server:", responseText); // Debugging
    
     let result;
     try {
       result = JSON.parse(responseText);
+      console.log("Parsed JSON:", result); // Debugging
    
     } catch (err) {
      
@@ -70,7 +72,7 @@ loginForm.addEventListener("submit", async function(e) {
 
       // Redirect sesuai role
       if (result.role === "superadmin") {
-        window.location.href = "../../pages/Developer/manajemen_account.php";
+        window.location.href = "pages/Developer/manajemen_account.php";
        
       } else if (result.role === "admin") {
         window.location.href = "dashboard_admin.php";
@@ -113,4 +115,4 @@ togglePassword.addEventListener('click', function() {
   this.querySelector('i').classList.toggle('fa-eye');
   this.querySelector('i').classList.toggle('fa-eye-slash');
 });
-
+});
