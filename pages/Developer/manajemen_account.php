@@ -12,7 +12,7 @@
 <style>
 body {
  background-image: url('../../assets/image/background.jpg');
-  background-size: cover;
+  background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
   font-family: 'Poppins', sans-serif;
@@ -48,14 +48,14 @@ h5 {
 
   <div class="container my-5">
     <div class=" mb-4">
-      <h3 class="fw-bold">Manajemen Akun</h3>
+      <h4 class="fw-bolder">Manajemen Akun</h4>
       <p class="text-muted fs-5">Buat akun admin</p>
     </div>
 
     <!-- Form Buat Akun -->
     <div class="card shadow-sm p-4 mb-5">
       <form id="formAkun">
-        <h5 class="fw-bold mb-3">Nama Lengkap</h5>
+        <h6 class="fw-bold mb-6">Nama Lengkap</h6>
         <div class="mb-3">
           <input type="text" class="form-control" id="nama" placeholder="Nama Lengkap" required>
         </div>
@@ -66,7 +66,7 @@ h5 {
           <input type="text" class="form-control" id="username" placeholder="Username" required>
         </div>
 
-        <h5 class="fw-bold mt-4 mb-3">Password</h5>
+        <h6 class="fw-bold mt-6 mb-6">Password</h6>
         <div class="mb-3">
           <input type="password" class="form-control" id="password" placeholder="Password" required>
         </div>

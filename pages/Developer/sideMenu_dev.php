@@ -6,6 +6,10 @@
 <title>Dashboard Admin - BK Digital</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+
 <style>
 :root {
     --primary-color: #0059D4;
@@ -46,7 +50,7 @@ body {
     top: 56px;
     left: -20px;
     width: var(--sidebar-width);
-    height: calc(100vh - 56px);
+    height: 100%;
     background: linear-gradient(to top right, #002E6E, #0050BC);
     border-top-right-radius: 90px;
     padding-top: 80px;
@@ -70,7 +74,8 @@ body {
     text-decoration: none;
     padding: 20px;
     border-radius: 25px 0 0 25px;
-    transition: background-color 0.3s, color 0.3s;
+    transition: all 0.3s ease;
+    font-size: 14px;
 }
 
 /* Icon & Text */
@@ -82,11 +87,16 @@ body {
     font-size: 18px;
 }
 
+.sidebar a span {
+    margin-left: 10px;
+    transition: opacity 0.3s, width 0.3s;
+}
+
 /* Active Menu */
 .sidebar a.active {
     background-color: #fff;
     color: var(--primary-color);
-    font-weight: 700;
+    font-weight: 600;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
@@ -101,24 +111,36 @@ body {
     color: #fff;
 }
 
-/* Sidebar minimized - hide text */
-.sidebar.minimized a span {
-    opacity: 0;
-    width: 0;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    pointer-events: none;
-}
-
-/* Sidebar minimized - center icon for all */
+/* ==========================
+   Sidebar Minimized Adjustments
+========================== */
 .sidebar.minimized a {
     justify-content: center;
-    padding: 20px 0;
-    border-radius: 25px 0 0 25px;
+    padding: 10px 0; /* lebih ramping */
+    border-radius: 20px 0 0 20px;
+    font-size: 13px;
 }
 
-/* Minimized menu hover non-active */
+/* Hide text on minimized */
+.sidebar.minimized a span {
+    display: none;
+}
+
+/* Icon ukuran lebih kecil di minimize */
+.sidebar.minimized a i,
+.sidebar.minimized a svg {
+    width: 22px;
+    min-width: 22px;
+    font-size: 16px;
+}
+
+/* Active menu ketika minimize */
+.sidebar.minimized a.active {
+    padding: 10px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+/* Hover effect non-active ketika minimize */
 .sidebar.minimized a:not(.active):hover {
     background-color: rgba(255,255,255,0.15);
 }
@@ -184,7 +206,7 @@ body {
     </button>
     <ul class="sidebar-menu">
         <li>
-            <a href="#" class="active" data-file="manajemen_account.php">
+            <a href="#" class="active fw-bolder my-2" data-file="manajemen_account.php">
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-kanban" viewBox="0 0 16 16">
                     <path d="M13.5 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm-11-1a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
                     <path d="M6.5 3a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm-4 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm8 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1z"/>
@@ -193,7 +215,7 @@ body {
             </a>
         </li>
         <li>
-            <a href="#" data-file="log_aktivitas.php">
+            <a href="#" class="fw-bolder my-2" data-file="manajemen_account.php">
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-substack" viewBox="0 0 16 16">
                     <path d="M15 3.604H1v1.891h14v-1.89ZM1 7.208V16l7-3.926L15 16V7.208zM15 0H1v1.89h14z"/>
                 </svg>

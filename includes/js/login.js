@@ -72,7 +72,7 @@ loginForm.addEventListener("submit", async function(e) {
 
       // Redirect sesuai role
       if (result.role === "superadmin") {
-        window.location.href = "pages/Developer/manajemen_account.php";
+        window.location.href = "pages/Developer/sideMenu_dev.php";
        
       } else if (result.role === "admin") {
         window.location.href = "dashboard_admin.php";
