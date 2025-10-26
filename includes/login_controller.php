@@ -1,5 +1,5 @@
 <?php
-// Perhatikan: Pastikan file db_connection.php mengembalikan objek $conn
+
 include 'db_connection.php';
 
 // Jangan echo apapun sebelum JSON

@@ -44,12 +44,12 @@ loginForm.addEventListener("submit", async function(e) {
     });
 
     const responseText = await response.text();
-    console.log("Response from server:", responseText); // Debugging
+  
    
     let result;
     try {
       result = JSON.parse(responseText);
-      console.log("Parsed JSON:", result); // Debugging
+     
    
     } catch (err) {
      
@@ -75,7 +75,7 @@ loginForm.addEventListener("submit", async function(e) {
         window.location.href = "pages/Developer/sideMenu_dev.php";
        
       } else if (result.role === "admin") {
-        window.location.href = "dashboard_admin.php";
+        window.location.href = "pages/admin/sideMenu_admin.php";
       } else {
         window.location.href = "dashboard_user.php";
       }

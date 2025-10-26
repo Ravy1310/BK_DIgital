@@ -1,0 +1,189 @@
+
+:root {
+    --primary-color: #0059D4;
+    --sidebar-width: 270px;
+    --sidebar-min-width: 90px;
+}
+
+/* ==========================
+   Global & Body
+========================== */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #e8eef3;
+    overflow-x: hidden;
+}
+
+/* ==========================
+   Navbar
+========================== */
+.navbar-custom {
+    position: fixed !important;
+    top: 0; left: 0; right: 0;
+    z-index: 1049;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 30px !important;
+    color: var(--primary-color);
+}
+
+/* ==========================
+   Sidebar
+========================== */
+.sidebar {
+    position: fixed;
+    top: 56px;
+    left: -20px;
+    width: var(--sidebar-width);
+    height: 100%;
+    background: linear-gradient(to top right, #002E6E, #0050BC);
+    border-top-right-radius: 90px;
+    padding-top: 80px;
+    transition: width 0.3s ease;
+    overflow-y: auto;
+}
+
+.sidebar.minimized {
+    width: var(--sidebar-min-width);
+}
+
+/* Sidebar Menu Items */
+.sidebar-menu li {
+    list-style: none;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    padding: 20px;
+    border-radius: 25px 0 0 25px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+/* Icon & Text */
+.sidebar a i,
+.sidebar a svg {
+    width: 30px;
+    min-width: 30px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.sidebar a span {
+    margin-left: 10px;
+    transition: opacity 0.3s, width 0.3s;
+}
+
+/* Active Menu */
+.sidebar a.active {
+    background-color: #fff;
+    color: var(--primary-color);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.sidebar a.active:hover {
+    background-color: #fff;
+    color: var(--primary-color);
+}
+
+/* Hover effect non-active */
+.sidebar a:not(.active):hover {
+    background-color: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+/* ==========================
+   Sidebar Minimized Adjustments
+========================== */
+.sidebar.minimized a {
+    justify-content: center;
+    padding: 10px 0; /* lebih ramping */
+    border-radius: 20px 0 0 20px;
+    font-size: 13px;
+}
+
+/* Hide text on minimized */
+.sidebar.minimized a span {
+    display: none;
+}
+
+/* Icon ukuran lebih kecil di minimize */
+.sidebar.minimized a i,
+.sidebar.minimized a svg {
+    width: 22px;
+    min-width: 22px;
+    font-size: 16px;
+}
+
+/* Active menu ketika minimize */
+.sidebar.minimized a.active {
+    padding: 10px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+/* Hover effect non-active ketika minimize */
+.sidebar.minimized a:not(.active):hover {
+    background-color: rgba(255,255,255,0.15);
+}
+
+/* ==========================
+   Sidebar Minimize Button
+========================== */
+.sidebar-minimize {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    width: 70px;
+    height: 50px;
+    border-radius: 15px 25px 0 15px;
+    background-color: rgba(0,30,80,0.8);
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    transition: transform 0.3s ease;
+}
+
+.sidebar.minimized .sidebar-minimize i {
+    transform: rotate(180deg);
+}
+
+/* ==========================
+   Main Content
+========================== */
+#mainContent {
+    margin-left: var(--sidebar-width);
+    padding: 20px 30px 30px 30px;
+    transition: margin-left 0.3s ease;
+}
+
+#mainContent.minimized {
+    margin-left: var(--sidebar-min-width);
+}
+
+/* Notifikasi untuk #formMessage */
+#formMessage {
+  /* Mulai transparan dan sedikit bergeser ke bawah */
+  opacity: 0;
+  transform: translateY(10px);
+  
+  /* Atur transisi agar mulus */
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+#formMessage.show {
+  /* Kelas 'show' membuatnya terlihat dan kembali ke posisi semula */
+  opacity: 1;
+  transform: translateY(0);
+}
+
