@@ -91,7 +91,7 @@
             </a>
         </li>
         <li>
-            <a href="#" class="fw-bolder my-2" data-file="log aktivitas.php">
+            <a href="#" class="fw-bolder my-2" data-file="log_aktivitas.php">
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-substack" viewBox="0 0 16 16">
                     <path d="M15 3.604H1v1.891h14v-1.89ZM1 7.208V16l7-3.926L15 16V7.208zM15 0H1v1.89h14z"/>
                 </svg>
@@ -156,22 +156,32 @@ logoutBtn.addEventListener('click', () => {
 // Load content (FUNGSI INI DIMODIFIKASI)
 async function loadContent(file) {
     try {
+        // CLEANUP: Hentikan sistem sebelumnya jika ada
+        if (window.logSystem && typeof window.logSystem.destroy === 'function') {
+            window.logSystem.destroy();
+        }
+        
         const res = await fetch(file);
         const html = await res.text();
         contentArea.innerHTML = html;
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // == TAMBAHAN PENTING ==
-        // Setelah HTML dimuat, jalankan JS yang sesuai
+        // Init sistem yang sesuai
         if (file.includes('manajemen_account.php')) {
-            initManajemenAccount();
+            if (typeof initManajemenAccount === 'function') {
+                initManajemenAccount();
+            }
         }
-        // Tambahkan if lain di sini jika ada halaman lain
-        // else if (file.includes('log_aktivitas.php')) {
-        //    initLogAktivitas(); 
-        // }
+        else if (file.includes('log_aktivitas.php')) {
+            // Gunakan singleton instance
+            setTimeout(() => {
+                window.logSystem = getLogAktivitasInstance();
+                window.logSystem.init();
+            }, 200);
+        }
 
-    } catch {
+    } catch (error) {
+        console.error('Error loading content:', error);
         contentArea.innerHTML = `<div class="alert alert-danger">Gagal memuat konten: ${file}</div>`;
     }
 }
@@ -195,7 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Hapus fungsi loadPage() yang tidak terpakai
 </script>
 
-<script src="../../includes/js/manajemen_account.js"></script>
+<script src="../../includes/js/developer/log_aktivitas.js"></script>
+<script src="../../includes/js/developer/manajemen_account.js"></script>
+
 
 </body>
 </html>
