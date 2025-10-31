@@ -65,7 +65,7 @@
     <div class="row g-4 mb-5">
       <div class="col-md-4">
         <div class="card-stat">
-        <img src="gambar/jumlahsiswa.svg" class="icon-img">
+        <?xml version="1.0"?><svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><rect fill="none" height="256" width="256"/><line fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" x1="32" x2="32" y1="64" y2="144"/><path d="M54.2,216a88.1,88.1,0,0,1,147.6,0" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polygon fill="none" points="224 64 128 96 32 64 128 32 224 64" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M169.3,82.2a56,56,0,1,1-82.6,0" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
           <h6 class="mt-2">Jumlah Siswa</h6>
           <h4>4000</h4>
         </div>
