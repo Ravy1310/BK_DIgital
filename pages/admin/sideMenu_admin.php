@@ -34,7 +34,7 @@
                     <path d="M13.5 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm-11-1a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
                     <path d="M6.5 3a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm-4 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm8 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1z"/>
                 </svg>
-                <span class="ps-2">Manajemen Akun</span>
+                <span class="ps-2">Dashboard</span>
             </a>
         </li>
         <li>
@@ -42,7 +42,23 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-substack" viewBox="0 0 16 16">
                     <path d="M15 3.604H1v1.891h14v-1.89ZM1 7.208V16l7-3.926L15 16V7.208zM15 0H1v1.89h14z"/>
                 </svg>
-                <span class="ps-2">Log Aktivitas</span>
+                <span class="ps-2">Kelola Data Siswa</span>
+            </a>
+        </li>
+         <li>
+            <a href="#" class="fw-bolder my-2" data-file="manajemen_account.php">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-substack" viewBox="0 0 16 16">
+                    <path d="M15 3.604H1v1.891h14v-1.89ZM1 7.208V16l7-3.926L15 16V7.208zM15 0H1v1.89h14z"/>
+                </svg>
+                <span class="ps-2">Kelola Data Guru</span>
+            </a>
+        </li>
+         <li>
+            <a href="#" class="fw-bolder my-2" data-file="manajemen_account.php">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-substack" viewBox="0 0 16 16">
+                    <path d="M15 3.604H1v1.891h14v-1.89ZM1 7.208V16l7-3.926L15 16V7.208zM15 0H1v1.89h14z"/>
+                </svg>
+                <span class="ps-2">Kelola Tes</span>
             </a>
         </li>
     </ul>

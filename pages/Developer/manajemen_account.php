@@ -1,3 +1,4 @@
+
 <div class="container my-5 fade-container">
   <div class="mb-4">
     <h4 class="fw-bolder">Manajemen Akun</h4>
@@ -46,11 +47,60 @@
     </button>
   </div>
 
-  <h5 class="fw-bold mb-3">Daftar akun admin</h5>
-  <div class="input-group mb-3">
-    </div>
 
-  <table class="table table-bordered table-hover">
+
+    <!-- Modal untuk Edit Admin -->
+<div class="modal fade" id="editAdminModal" tabindex="-1" aria-labelledby="editAdminModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editAdminModalLabel">Edit Admin</h5>
+        <button type="button" class="btn-close" id="ButtonBatal" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editAccountForm">
+          <input type="hidden" id="edit_id_admin" name="id_admin">
+          
+          <div class="mb-3">
+            <label for="edit_nama" class="form-label">Nama Lengkap</label>
+            <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Lengkap" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="edit_no_telp" class="form-label">No. Telepon</label>
+            <input type="tel" class="form-control" id="edit_no_telp" name="no_telp" placeholder="No. Telepon" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="edit_email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="edit_email" name="email" placeholder="Email" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="edit_username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="edit_username" name="username" placeholder="Username" required>
+          </div>
+
+          <h6 class="fw-bold mt-4 mb-2">Password</h6>
+          <div class="mb-3">
+            <input type="password" class="form-control" id="edit_password" name="password" placeholder="(Kosongkan jika tidak diubah)">
+          </div>
+          <div class="mb-3">
+            <input type="password" class="form-control" id="edit_konfirmasi" placeholder="Konfirmasi Password">
+          </div>
+
+          <p id="editFormMessage" class="mt-2"></p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="BatalUpdate">Batal</button>
+        <button type="button" class="btn btn-warning" id="updateAdminBtn">Update Akun</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <table class="table table-bordered table-hover  table-striped border">
     <thead class="custom-table-header text-center">
       <tr>
         <th>No</th>
@@ -59,7 +109,7 @@
         <th>Email</th>
         <th>Username</th>
         <th>Aksi</th>
-      </tr>
+     
     </thead>
     <tbody id="dataBody">
       <tr><td colspan="6" class="text-muted text-center">Belum ada data</td></tr>
@@ -70,14 +120,29 @@
 <style>
   body {
     background-image: url('../../assets/image/background.jpg');
+    /* background-color : #f5f5f5; */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   }
+table.table-bordered {
+  border-collapse: separate;  /* Ubah dari 'collapse' ke 'separate' */
+  border-spacing: 0;        /* Hilangkan jarak antar sel */
+  border-radius: 5px;      /* Terapkan radius ke tabel */
+  overflow: hidden;         /* Klip sudutnya */
+}
+  .table-bordered,
+.table-bordered th,
+.table-bordered td {
+  border-color: #373738ff !important;
+  
+}
   .table thead.custom-table-header th {
     background-color: #6D7AE0 !important;
     color: #ffffff;
+   
   }
+
   @keyframes fadeUpSmooth {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }

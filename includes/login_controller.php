@@ -1,77 +1,66 @@
 <?php
-
-include 'db_connection.php';
+// File: login_controller.php
 
 // Jangan echo apapun sebelum JSON
 header('Content-Type: application/json');
 
-// Cek koneksi dari db_connection.php
-if (!$conn) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Gagal koneksi ke database."
-    ]);
-    exit;
-}
+// Include koneksi PDO
+require_once 'db_connection.php';
 
-// Ambil data dari POST dan bersihkan
-// Menggunakan isset() untuk memastikan variabel ada
-if (!isset($_POST['username']) || !isset($_POST['password'])) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Data input tidak lengkap."
-    ]);
-    exit;
-}
-
-$username = $_POST['username'];
-$password = $_POST['password'];
-
-// Cek di database menggunakan PREPARED STATEMENTS (Solusi untuk SQL Injection)
-$sql = "SELECT username, password, role FROM users WHERE username = ?";
-$stmt = $conn->prepare($sql);
-
-if ($stmt === false) {
-    // Kesalahan jika prepared statement gagal
-    echo json_encode([
-        "status" => "error",
-        "message" => "Query persiapan gagal: " . $conn->error
-    ]);
-    exit;
-}
-
-// 's' menandakan bahwa variabel adalah string
-$stmt->bind_param("s", $username); 
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    
-    // Verifikasi password yang sudah di-hash
-    if (password_verify($password, $row['password'])) {
-        echo json_encode([
-            "status" => "success",
-            "message" => "Login berhasil.",
-            "user" => $row['username'],
-            "role" => $row['role']
-        ]);
-    } else {
-        // Pesan error yang sama untuk user tidak ditemukan dan password salah
-        // agar tidak memberikan petunjuk ke penyerang (keamanan)
-        echo json_encode([
-            "status" => "error",
-            "message" => "Username atau Password salah."
-        ]);
+try {
+    // Cek koneksi PDO
+    if (!$pdo) {
+        throw new Exception('Database connection not available');
     }
-} else {
-    // User tidak ditemukan, memberikan pesan error yang sama
+
+    // Ambil data dari POST dan bersihkan
+    if (!isset($_POST['username']) || !isset($_POST['password'])) {
+        throw new Exception('Data input tidak lengkap.');
+    }
+
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Cek di database menggunakan PREPARED STATEMENTS PDO
+    $sql = "SELECT username, password, role FROM users WHERE username = :username";
+    $stmt = $pdo->prepare($sql);
+
+    if ($stmt === false) {
+        throw new Exception('Query persiapan gagal.');
+    }
+
+    // Bind parameter dan execute
+    $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+    $stmt->execute();
+    
+    // Cek hasil
+    if ($stmt->rowCount() > 0) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Verifikasi password yang sudah di-hash
+        if (password_verify($password, $row['password'])) {
+            echo json_encode([
+                "status" => "success",
+                "message" => "Login berhasil.",
+                "user" => $row['username'],
+                "role" => $row['role']
+            ]);
+        } else {
+            // Pesan error yang sama untuk user tidak ditemukan dan password salah
+            throw new Exception('Username atau Password salah.');
+        }
+    } else {
+        // User tidak ditemukan
+        throw new Exception('Username atau Password salah.');
+    }
+
+} catch (Exception $e) {
     echo json_encode([
         "status" => "error",
-        "message" => "Username atau Password salah."
+        "message" => $e->getMessage()
     ]);
 }
 
-$stmt->close();
-$conn->close();
+// PDO tidak perlu manual close connection
+exit;
 ?>

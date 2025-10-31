@@ -1,11 +1,24 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "bk_digital";
+// File: includes/db_connection.php
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die(json_encode(["status" => "error", "message" => "Koneksi gagal: " . $conn->connect_error]));
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$dbname = 'bk_digital';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    
+    // Test koneksi
+    $pdo->query("SELECT 1");
+    
+} catch (PDOException $e) {
+    // Jika koneksi gagal, set $pdo ke null (akan menggunakan session storage)
+    error_log("Database connection failed: " . $e->getMessage());
+    $pdo = null;
 }
+
+// $pdo akan tersedia untuk file lain yang require file ini
 ?>
