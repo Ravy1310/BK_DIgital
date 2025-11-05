@@ -81,50 +81,82 @@ $dataGuru = [];
   <div class="content-wrapper container-fluid">
 
     <!-- Statistik -->
-    <div class="row g-4 mb-4">
-      <div class="col-lg-4 col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-body d-flex align-items-center">
-            <div class="bg-primary text-white rounded p-3 me-3">
-              <img src="gambar/jumlahguru2.svg" alt="Cari">
-            </div>
-            <div>
-              <h6 class="mb-0">Jumlah Guru</h6>
-              <small class="text-muted">Aktif</small>
-              <h4 class="fw-bold mt-2" id="jumlahGuru"><?= $jumlahGuru ?></h4>
-            </div>
-          </div>
+    <!-- Statistik -->
+<div class="row g-4 mb-4">
+  <!-- Kartu Jumlah Guru -->
+  <div class="col-lg-4 col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body d-flex align-items-center">
+        <!-- Kotak ikon -->
+        <div class="bg-primary text-white rounded  me-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px;">
+          <!-- SVG Ikon Guru (warna putih) -->
+          <svg id="Icons_Teacher" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" width="45" height="45">
+            <path fill="white" d="M87.8 19L23.8 19C21.6 19 19.8 20.8 19.8 23L19.8 37.5C20.9 37.2 22.2 37 23.4 37C24.2 37 25 37.1 25.8 37.2L25.8 25L85.8 25L85.8 63L51.9 63L46.2 69L87.8 69C90 69 91.8 67.2 91.8 65L91.8 23C91.8 20.8 90 19 87.8 19Z"/>
+            <path fill="white" d="M23.5 58C28.2 58 32 54.2 32 49.5C32 44.8 28.2 41 23.5 41C18.8 41 15 44.8 15 49.5C14.9 54.2 18.8 58 23.5 58Z"/>
+            <path fill="white" d="M56.2 48.1C54.9 46.1 52.3 45.6 50.3 46.8C49.9 47 49.7 47.4 49.5 47.6L34.9 62.8C33.5 62.1 32 61.5 30.5 61C28.2 60.6 25.8 60.1 23.5 60.1C21.2 60.1 18.8 60.5 16.5 61.2C13.1 62.1 10.1 63.8 7.6 65.9C7 66.5 6.5 67.4 6.3 68.2L4.2 77L34.1 77L34.1 76.9L42.6 67L55.7 53.2C56.9 52 57.3 49.7 56.2 48.1Z"/>
+          </svg>
         </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-body d-flex align-items-center">
-            <div class="bg-success text-white rounded p-3 me-3">
-              <img src="gambar/aktif.svg" alt="Cari">
-            </div>
-            <div>
-              <h6 class="mb-0">Jumlah Akun</h6>
-              <small class="text-muted">Aktif</small>
-              <h4 class="fw-bold mt-2" id="akunAktif"><?= $akunAktif ?></h4>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-body d-flex align-items-center">
-            <div class="bg-danger text-white rounded p-3 me-3">
-              <img src="gambar/nonaktif.svg" alt="Cari">
-            </div>
-            <div>
-              <h6 class="mb-0">Jumlah Akun</h6>
-              <small class="text-muted">Nonaktif</small>
-              <h4 class="fw-bold mt-2" id="akunNonaktif"><?= $akunNonaktif ?></h4>
-            </div>
-          </div>
+
+        <!-- Teks Statistik -->
+        <div>
+          <h6 class="mb-0">Jumlah Guru</h6>
+          <small class="text-muted">Aktif</small>
+          <h4 class="fw-bold mt-2" id="jumlahGuru"><?= $jumlahGuru ?></h4>
         </div>
       </div>
     </div>
+  </div>
+<div class="col-lg-4 col-md-6">
+  <div class="card shadow-sm">
+    <div class="card-body d-flex align-items-center">
+      <div class="bg-success text-white rounded p-3 me-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px;">
+        <!-- SVG Ikon Akun Aktif (Centang Baru) -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="45" height="45">
+          <style>.st0{fill:#41AD49;}</style>
+          <g>
+            <polygon class="st0" points="434.8,49 174.2,309.7 76.8,212.3 0,289.2 174.1,463.3 196.6,440.9 511.7,125.8 434.8,49"/>
+          </g>
+        </svg>
+      </div>
+      <div>
+        <h6 class="mb-0">Jumlah Akun</h6>
+        <small class="text-muted">Aktif</small>
+        <h4 class="fw-bold mt-2" id="akunAktif"><?= $akunAktif ?></h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <div class="col-lg-4 col-md-6">
+  <div class="card shadow-sm">
+    <div class="card-body d-flex align-items-center">
+      <div class="bg-danger text-white rounded p-3 me-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px;">
+        <!-- SVG Ikon Akun Nonaktif (Baru) -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 114 114" width="45" height="45">
+          <defs>
+            <linearGradient id="def0" x1="0.5" x2="0.5" y1="0" y2="1">
+              <stop offset="0" stop-color="#F27E5E"/>
+              <stop offset="0.5" stop-color="#EB1C24"/>
+              <stop offset="1" stop-color="#CE2229"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M0,87.5347L30.964,56.564 0,25.6013 25.7973,0 56.7627,30.7707 87.7267,0 113.527,25.6013 82.5627,56.5693 113.527,87.5347 87.7267,113.329 56.7667,82.364 25.7973,113.333 0,87.5347z" fill="#990000"/>
+            <path d="M111.641,87.5341L80.6768,56.5701 111.641,25.6021 87.7261,1.69014 56.7635,32.6555 25.7968,1.69014 1.8848,25.6021 32.8501,56.5648 1.8848,87.5341 25.7968,111.447 56.7675,80.4781 87.7261,111.443 111.641,87.5341z" fill="url(#def0)"/>
+            <path d="M53.5507,42.1597C69.9773,36.9184,86.2987,35.0784,101.036,36.2077L111.64,25.6024 87.7267,1.6904 56.7627,32.6557 25.7973,1.6904 1.88534,25.6024 29.0347,52.7491C36.5187,48.5651,44.7387,44.9717,53.5507,42.1597z" fill="#FFFFFF" style="fill-opacity:0.1"/>
+          </g>
+        </svg>
+      </div>
+      <div>
+        <h6 class="mb-0">Jumlah Akun</h6>
+        <small class="text-muted">Nonaktif</small>
+        <h4 class="fw-bold mt-2" id="akunNonaktif"><?= $akunNonaktif ?></h4>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 
     <!-- Kelola Data Guru -->
     <div class="card shadow-sm flex-grow-1">
