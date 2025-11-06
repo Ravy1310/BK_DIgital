@@ -10,7 +10,7 @@
   <link href="../../assets/css/all.min.css" rel="stylesheet"/>
 
   <style>
-   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
   body {
@@ -296,12 +296,14 @@
             <p>Tempat aman dan rahasia untuk menyampaikan masalah atau kekhawatiran di lingkungan sekolah.</p>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="feature-card">
-            <i class="fas fa-file-alt"></i>
-            <h5>Tes dan Evaluasi</h5>
-            <p>Beragam tes minat, bakat, dan kepribadian untuk membantu menentukan arah jurusan dan karier masa depan.</p>
+          <div class="col-md-4">
+            <a href="tesbk.php" class="text-decoration-none text-dark">
+            <div class="feature-card">
+              <i class="fas fa-file-alt"></i>
+              <h5>Tes dan Evaluasi</h5>
+                <p>Beragam tes minat, bakat, dan kepribadian untuk membantu menentukan arah jurusan dan karier masa depan.</p>
           </div>
+         </a>
         </div>
       </div>
     </div>
@@ -347,4 +349,3 @@
   </script>
 </body>
 </html>
-z
