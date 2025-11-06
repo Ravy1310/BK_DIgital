@@ -15,7 +15,7 @@ $dataGuru = [];
 
   <style>
     body {
-      background-image: url('background.jpeg');
+      background: url('../../assets/image/background.jpg');
       background-repeat: no-repeat;
       background-position: center center;
       background-attachment: fixed;
