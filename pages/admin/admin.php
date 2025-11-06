@@ -16,7 +16,7 @@
 
   <style>
     body {
-      background-image: url('background.jpg');
+      background: url('../../assets/image/background.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
