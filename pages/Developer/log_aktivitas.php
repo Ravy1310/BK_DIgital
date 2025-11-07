@@ -68,9 +68,16 @@ require_once $base_dir . 'includes/logAktivitas.php';
         font-weight: 700;
         margin-bottom: 0;
     }
+     @keyframes fadeUpSmooth {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-container {
+    animation: fadeUpSmooth 0.8s ease-out;
+  }
 </style>
 
-<div class="d-flex pt-4">
+<div class="d-flex pt-4 fade-container">
     <div class="content flex-grow-1 p-4">
         <h4 class="fw-bold">Selamat Datang <span class="text-primary"><?php echo $_SESSION['admin_name'] ?? 'SuperAdmin'; ?></span></h4>
 

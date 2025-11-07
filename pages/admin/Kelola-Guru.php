@@ -1,34 +1,64 @@
 <?php
-// Simulasi data dari database
-$jumlahGuru = 5;
-$akunAktif = 3;
-$akunNonaktif = 2;
-$dataGuru = [
-    ['id' => 1, 'nama' => 'Ahmad Fauzi', 'telepon' => '081234567890', 'alamat' => 'Jl. Merdeka No. 123', 'status' => 'Aktif'],
-    ['id' => 2, 'nama' => 'Siti Rahayu', 'telepon' => '081234567891', 'alamat' => 'Jl. Sudirman No. 45', 'status' => 'Aktif'],
-    ['id' => 3, 'nama' => 'Budi Santoso', 'telepon' => '081234567892', 'alamat' => 'Jl. Gatot Subroto No. 67', 'status' => 'Aktif'],
-    ['id' => 4, 'nama' => 'Dewi Lestari', 'telepon' => '081234567893', 'alamat' => 'Jl. Thamrin No. 89', 'status' => 'Nonaktif'],
-    ['id' => 5, 'nama' => 'Rudi Hermawan', 'telepon' => '081234567894', 'alamat' => 'Jl. Diponegoro No. 101', 'status' => 'Nonaktif']
-];
+$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/PBL BK/';
+require_once $base_dir . 'includes/db_connection.php';
 
-// Filter data berdasarkan pencarian
-$keyword = isset($_GET['cari']) ? $_GET['cari'] : '';
-if (!empty($keyword)) {
-    $dataGuru = array_filter($dataGuru, function($guru) use ($keyword) {
-        return stripos($guru['nama'], $keyword) !== false || 
-               stripos($guru['telepon'], $keyword) !== false;
-    });
+// Inisialisasi variabel
+$jumlahGuru = 0;
+$akunAktif = 0;
+$akunNonaktif = 0;
+$dataGuru = [];
+$keyword = $_GET['cari'] ?? '';
+
+if ($pdo) {
+    try {
+        // Query data guru
+        if (!empty($keyword)) {
+            $sql = "SELECT g.*, u.username, u.email 
+                    FROM guru g 
+                    LEFT JOIN users u ON g.id_guru = u.id_guru 
+                    WHERE (g.nama LIKE ? OR g.telepon LIKE ?)
+                    ORDER BY g.nama";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(["%$keyword%", "%$keyword%"]);
+        } else {
+            $sql = "SELECT g.*, u.username, u.email 
+                    FROM guru g 
+                    LEFT JOIN users u ON g.id_guru = u.id_guru 
+                    ORDER BY g.nama";
+            $stmt = $pdo->query($sql);
+        }
+        
+        $dataGuru = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Hitung statistik
+        $sqlJumlah = "SELECT COUNT(*) as total FROM guru";
+        $stmtJumlah = $pdo->query($sqlJumlah);
+        $jumlahGuru = $stmtJumlah->fetch()['total'];
+
+        $sqlAktif = "SELECT COUNT(*) as aktif FROM guru WHERE status = 'Aktif'";
+        $stmtAktif = $pdo->query($sqlAktif);
+        $akunAktif = $stmtAktif->fetch()['aktif'];
+
+        $sqlNonaktif = "SELECT COUNT(*) as nonaktif FROM guru WHERE status = 'Nonaktif'";
+        $stmtNonaktif = $pdo->query($sqlNonaktif);
+        $akunNonaktif = $stmtNonaktif->fetch()['nonaktif'];
+
+    } catch (PDOException $e) {
+        error_log("Error fetching data: " . $e->getMessage());
+    }
 }
 ?>
-
-
+<!DOCTYPE html>
+<html lang="id">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Data Guru - BK Digital</title>
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-  <!-- Poppins -->
+  
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -81,8 +111,6 @@ if (!empty($keyword)) {
       padding: 24px;
       margin-top: 20px;
     }
-
-   
 
     .btn-tambah {
       background-color: #0050BC;
@@ -278,14 +306,35 @@ if (!empty($keyword)) {
     .btn-status:hover {
       background-color: #e8f5e8;
     }
+
+    .password-match {
+      border-color: #38A169 !important;
+      box-shadow: 0 0 0 2px rgba(56, 161, 105, 0.1) !important;
+    }
+
+    .password-mismatch {
+      border-color: #dc3545 !important;
+      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1) !important;
+    }
+
+    .password-feedback {
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .password-valid {
+      color: #38A169;
+    }
+
+    .password-invalid {
+      color: #dc3545;
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <!-- Statistik -->
     <div class="row g-4 mb-4">
-      <!-- Jumlah Guru -->
       <div class="col-lg-4 col-md-6">
         <div class="card stat-card">
           <div class="d-flex align-items-center">
@@ -300,7 +349,6 @@ if (!empty($keyword)) {
         </div>
       </div>
 
-      <!-- Akun Aktif -->
       <div class="col-lg-4 col-md-6">
         <div class="card stat-card">
           <div class="d-flex align-items-center">
@@ -315,7 +363,6 @@ if (!empty($keyword)) {
         </div>
       </div>
 
-      <!-- Akun Nonaktif -->
       <div class="col-lg-4 col-md-6">
         <div class="card stat-card">
           <div class="d-flex align-items-center">
@@ -331,20 +378,18 @@ if (!empty($keyword)) {
       </div>
     </div>
 
-    <!-- Kelola Data -->
     <div class="table-container">
       <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-        <h6 class="fw-bold mb-2" style=" font-size: 1.1rem;">Kelola Data Guru</h6>
+        <h6 class="fw-bold mb-2" style="font-size: 1.1rem;">Kelola Data Guru</h6>
         <div class="d-flex flex-wrap align-items-center gap-2">
           <div class="search-container">
             <input type="text" id="searchBox" class="search-box" placeholder="Cari Nama/Telepon Guru" value="<?= htmlspecialchars($keyword) ?>">
             <button class="btn-cari" id="btnCari"><i class="bi bi-search"></i></button>
           </div>
 
-        
-          <button class="btn btn-tambah btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
-            <i class="bi bi-plus-lg"></i> Tambah Data
-          </button>
+         <button class="btn btn-tambah btn-sm" id="btnTambah" data-bs-toggle="modal" data-bs-target="#modalTambah">
+    <i class="bi bi-plus-lg"></i> Tambah Data
+</button>
         </div>
       </div>
 
@@ -385,13 +430,18 @@ if (!empty($keyword)) {
                   </td>
                   <td>
                     <div class="action-buttons">
-                      <button class="btn-action btn-edit edit-btn" data-id="<?= $guru['id'] ?>">
+                      <button class="btn-action btn-edit edit-btn" 
+                              data-id="<?= $guru['id_guru'] ?>"
+                              data-username="<?= $guru['username'] ?? '' ?>"
+                              data-email="<?= $guru['email'] ?? '' ?>">
                         <i class="bi bi-pencil-square"></i>
                       </button>
-                      <button class="btn-action btn-delete delete-btn" data-id="<?= $guru['id'] ?>">
+                      <button class="btn-action btn-delete delete-btn" data-id="<?= $guru['id_guru'] ?>">
                         <i class="bi bi-trash"></i>
                       </button>
-                      <button class="btn-action btn-status status-btn" data-id="<?= $guru['id'] ?>" data-status="<?= $guru['status'] ?>">
+                      <button class="btn-action btn-status status-btn" 
+                              data-id="<?= $guru['id_guru'] ?>" 
+                              data-status="<?= $guru['status'] ?>">
                         <i class="bi bi-<?= $guru['status'] == 'Aktif' ? 'x' : 'check' ?>-circle"></i>
                       </button>
                     </div>
@@ -405,134 +455,208 @@ if (!empty($keyword)) {
     </div>
   </div>
 
-  <!-- MODAL TAMBAH / EDIT DATA -->
   <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-
         <div class="modal-header-custom">
           <h5 class="modal-title-custom" id="modalTitle">Tambah Data Guru</h5>
           <button type="button" class="btn-close-custom" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></button>
         </div>
 
         <div class="modal-body">
-          <form id="formTambah" method="POST" action="simpan_guru.php">
-            <input type="hidden" id="editId" name="editId">
+          <form id="formTambah">
+            <input type="hidden" id="editId" name="id_guru">
+            
             <div class="mb-3">
-              <label class="form-label">Nama Lengkap</label>
-              <input type="text" class="form-control" id="namaGuru" name="nama" required>
+              <label for="namaGuru" class="form-label">Nama Guru *</label>
+              <input type="text" class="form-control" id="namaGuru" name="nama_guru" required>
             </div>
+            
             <div class="mb-3">
-              <label class="form-label">No. Telepon</label>
-              <input type="text" class="form-control" id="teleponGuru" name="telepon" required>
+              <label for="teleponGuru" class="form-label">Telepon *</label>
+              <input type="text" class="form-control" id="teleponGuru" name="telepon_guru" required>
             </div>
+            
             <div class="mb-3">
-              <label class="form-label">Alamat</label>
-              <textarea class="form-control" id="alamatGuru" name="alamat" rows="3" required></textarea>
+              <label for="alamatGuru" class="form-label">Alamat *</label>
+              <textarea class="form-control" id="alamatGuru" name="alamat_guru" rows="3" required></textarea>
             </div>
-            <div class="text-end">
-              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
-              <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan Data</button>
+            
+            <div class="mb-3">
+              <label for="username" class="form-label">Username *</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label">Email *</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="password" class="form-label">Password *</label>
+              <input type="password" class="form-control" id="password" name="password" >
+              <small class="form-text text-muted" id="passwordHelp">Minimal 6 karakter</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Konfirmasi Password *</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirm_password" >
+              <div class="password-feedback" id="passwordFeedback"></div>
+            </div>
+            
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary" id="submitBtn">Simpan Data</button>
             </div>
           </form>
         </div>
-
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Fungsi untuk validasi konfirmasi password
+    function validatePassword() {
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirmPassword');
+      const feedback = document.getElementById('passwordFeedback');
+      const submitBtn = document.getElementById('submitBtn');
+      const isEditMode = document.getElementById('editId').value !== '';
 
-  <script>
-    const formTambah = document.getElementById('formTambah');
-    const modalTambah = new bootstrap.Modal(document.getElementById('modalTambah'));
-    const modalTitle = document.getElementById('modalTitle');
+      console.log('Validating password - Edit Mode:', isEditMode, 'Password:', password.value);
 
-    // Data guru (dalam implementasi nyata, ini akan dari database)
-    const guruData = {
-      1: { nama: 'Ahmad Fauzi', telepon: '081234567890', alamat: 'Jl. Merdeka No. 123' },
-      2: { nama: 'Siti Rahayu', telepon: '081234567891', alamat: 'Jl. Sudirman No. 45' },
-      3: { nama: 'Budi Santoso', telepon: '081234567892', alamat: 'Jl. Gatot Subroto No. 67' },
-      4: { nama: 'Dewi Lestari', telepon: '081234567893', alamat: 'Jl. Thamrin No. 89' },
-      5: { nama: 'Rudi Hermawan', telepon: '081234567894', alamat: 'Jl. Diponegoro No. 101' }
-    };
+      // LOGIKA UTAMA: Jika mode edit dan password kosong, skip validasi
+      if (isEditMode && password.value === '') {
+        confirmPassword.required = false;
+        confirmPassword.classList.remove('password-match', 'password-mismatch');
+        feedback.textContent = 'Biarkan kosong jika tidak ingin mengubah password';
+        feedback.className = 'password-feedback text-muted';
+        submitBtn.disabled = false;
+        return true;
+      }
 
-    // === EDIT DATA ===
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const id = this.getAttribute('data-id');
-        if (guruData[id]) {
-          document.getElementById('editId').value = id;
-          document.getElementById('namaGuru').value = guruData[id].nama;
-          document.getElementById('teleponGuru').value = guruData[id].telepon;
-          document.getElementById('alamatGuru').value = guruData[id].alamat;
-          modalTitle.textContent = "Edit Data Guru";
-          modalTambah.show();
-        }
-      });
-    });
+      // Jika mode edit dan password diisi, atau mode tambah
+      confirmPassword.required = true;
 
-    // === HAPUS DATA ===
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const id = this.getAttribute('data-id');
-        if (confirm('Yakin ingin menghapus data ini?')) {
-          // Dalam implementasi nyata, ini akan mengirim permintaan ke server
-          alert('Data guru dengan ID ' + id + ' akan dihapus');
-        }
-      });
-    });
+      // Validasi panjang password
+      if (password.value !== '' && password.value.length < 6) {
+        password.classList.add('password-mismatch');
+        confirmPassword.classList.remove('password-match', 'password-mismatch');
+        feedback.textContent = 'Password harus minimal 6 karakter';
+        feedback.className = 'password-feedback password-invalid';
+        submitBtn.disabled = true;
+        return false;
+      } else {
+        password.classList.remove('password-mismatch');
+      }
 
-    // === UBAH STATUS ===
-    document.querySelectorAll('.status-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const id = this.getAttribute('data-id');
-        const statusSekarang = this.getAttribute('data-status');
-        const statusBaru = statusSekarang === 'Aktif' ? 'Nonaktif' : 'Aktif';
+      // Validasi konfirmasi password
+      if (confirmPassword.value === '') {
+        confirmPassword.classList.remove('password-match', 'password-mismatch');
+        feedback.textContent = isEditMode ? 'Harap konfirmasi password baru Anda' : 'Harap konfirmasi password Anda';
+        feedback.className = 'password-feedback password-invalid';
+        submitBtn.disabled = true;
+        return false;
+      }
+
+      // Validasi kecocokan password
+      if (password.value === confirmPassword.value) {
+        confirmPassword.classList.add('password-match');
+        confirmPassword.classList.remove('password-mismatch');
+        feedback.textContent = 'Password cocok';
+        feedback.className = 'password-feedback password-valid';
+        submitBtn.disabled = false;
+        return true;
+      } else {
+        confirmPassword.classList.add('password-mismatch');
+        confirmPassword.classList.remove('password-match');
+        feedback.textContent = 'Password tidak cocok';
+        feedback.className = 'password-feedback password-invalid';
+        submitBtn.disabled = true;
+        return false;
+      }
+    }
+
+    // Fungsi untuk setup mode edit - DIPANGGIL DARI JavaScript external
+    function setupEditMode() {
+      const editId = document.getElementById('editId');
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirmPassword');
+      const passwordHelp = document.getElementById('passwordHelp');
+      const feedback = document.getElementById('passwordFeedback');
+
+      console.log('Setting up edit mode, ID:', editId.value);
+
+      if (editId.value !== '') {
+        // Mode edit - Password opsional
+        password.required = false;
+        confirmPassword.required = false;
+        passwordHelp.textContent = 'Kosongkan jika tidak ingin mengubah password';
         
-        if (confirm(`Ubah status akun menjadi ${statusBaru}?`)) {
-          // Dalam implementasi nyata, ini akan mengirim permintaan ke server
-          alert(`Status guru dengan ID ${id} diubah menjadi ${statusBaru}`);
+        // Reset field konfirmasi password
+        confirmPassword.value = '';
+        
+        // Reset validasi UI
+        password.classList.remove('password-match', 'password-mismatch');
+        confirmPassword.classList.remove('password-match', 'password-mismatch');
+        feedback.textContent = 'Biarkan kosong jika tidak ingin mengubah password';
+        feedback.className = 'password-feedback text-muted';
+        
+        // Enable submit button
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+          submitBtn.disabled = false;
         }
-      });
-    });
-
-    // Reset form saat modal ditutup
-    document.getElementById('modalTambah').addEventListener('hidden.bs.modal', function() {
-      formTambah.reset();
-      document.getElementById('editId').value = '';
-      modalTitle.textContent = "Tambah Data Guru";
-    });
-
-    // === FITUR CARI ===
-    const btnCari = document.getElementById('btnCari');
-    const searchBox = document.getElementById('searchBox');
-
-    btnCari.addEventListener('click', () => {
-      const keyword = searchBox.value.trim().toLowerCase();
-      const rows = document.querySelectorAll('#tabelGuru tbody tr');
+      } else {
+        // Mode tambah - Password wajib
+        password.required = true;
+        confirmPassword.required = true;
+        passwordHelp.textContent = 'Minimal 6 karakter';
+        feedback.textContent = '';
+        feedback.className = 'password-feedback';
+      }
       
-      rows.forEach(row => {
-        if (row.cells.length > 1) {
-          const nama = row.cells[1].textContent.toLowerCase();
-          const telepon = row.cells[2].textContent.toLowerCase();
-          
-          if (nama.includes(keyword) || telepon.includes(keyword) || keyword === '') {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
-          }
-        }
-      });
-    });
+      // Jalankan validasi setelah perubahan mode
+      setTimeout(validatePassword, 100);
+    }
 
-    // Enter key juga menjalankan pencarian
-    searchBox.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        btnCari.click();
+    // Event listeners untuk validasi real-time
+    document.addEventListener('DOMContentLoaded', function() {
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirmPassword');
+
+      if (password && confirmPassword) {
+        password.addEventListener('input', validatePassword);
+        confirmPassword.addEventListener('input', validatePassword);
+      }
+
+      // Inisialisasi modal
+      const modalElement = document.getElementById('modalTambah');
+      if (modalElement) {
+        modalElement.addEventListener('show.bs.modal', function() {
+          // Reset validasi saat modal dibuka
+          setTimeout(validatePassword, 100);
+        });
+
+        modalElement.addEventListener('hidden.bs.modal', function() {
+          // Reset form saat modal ditutup
+          const form = document.getElementById('formTambah');
+          if (form) {
+            form.reset();
+            document.getElementById('editId').value = '';
+            document.getElementById('modalTitle').textContent = "Tambah Data Guru";
+            
+            // Reset ke mode tambah
+            setupEditMode();
+          }
+        });
       }
     });
+
+    // Export fungsi ke global scope untuk dipanggil dari JavaScript external
+    window.validatePassword = validatePassword;
+    window.setupEditMode = setupEditMode;
   </script>
-</body>
+  </body>
 </html>

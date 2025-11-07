@@ -51,7 +51,7 @@ function log_activity_session($adminId, $adminName, $action, $description, $meta
     return true;
 }
 
-// Fungsi helper
+// Fungsi helper - PERBAIKAN: Ambil data admin dari session
 function log_action($action, $description, $meta = null) {
     global $pdo;
     
@@ -59,8 +59,15 @@ function log_action($action, $description, $meta = null) {
         session_start();
     }
     
-    $adminId = $_SESSION['admin_id'] ?? 1;
-    $adminName = $_SESSION['admin_name'] ?? 'System';
+    // PERBAIKAN: Ambil data admin dari session dengan default values
+    $adminId = $_SESSION['admin_id'] ?? 0;
+    $adminName = $_SESSION['admin_name'] ?? 'Unknown Admin';
+    
+    // Jika tidak ada session admin, coba ambil dari data meta
+    if ($adminId === 0 && isset($meta['admin_id'])) {
+        $adminId = $meta['admin_id'];
+        $adminName = $meta['admin_name'] ?? 'Unknown Admin';
+    }
     
     return log_activity($pdo, $adminId, $adminName, $action, $description, $meta);
 }
