@@ -8,11 +8,11 @@
 /* ==========================
    Global & Body
 ========================== */
-body {
+    body {
     font-family: 'Poppins', sans-serif;
     background-color: #e8eef3;
     overflow-x: hidden;
-}
+    }
 
 /* ==========================
    Navbar
@@ -44,7 +44,7 @@ body {
     padding-top: 80px;
     transition: width 0.3s ease;
     overflow-y: auto;
-}
+    }
 
 .sidebar.minimized {
     width: var(--sidebar-min-width);
@@ -73,7 +73,7 @@ body {
     min-width: 30px;
     text-align: center;
     font-size: 18px;
-}
+    }
 
 .sidebar a span {
     margin-left: 10px;
@@ -84,9 +84,9 @@ body {
 .sidebar a.active {
     background-color: #fff;
     color: var(--primary-color);
-    font-weight: 600;
+      font-weight: 600;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
+    }
 
 .sidebar a.active:hover {
     background-color: #fff;
@@ -107,7 +107,7 @@ body {
     padding: 10px 0; /* lebih ramping */
     border-radius: 20px 0 0 20px;
     font-size: 13px;
-}
+    }
 
 /* Hide text on minimized */
 .sidebar.minimized a span {
@@ -120,7 +120,7 @@ body {
     width: 22px;
     min-width: 22px;
     font-size: 16px;
-}
+    }
 
 /* Active menu ketika minimize */
 .sidebar.minimized a.active {
@@ -131,7 +131,7 @@ body {
 /* Hover effect non-active ketika minimize */
 .sidebar.minimized a:not(.active):hover {
     background-color: rgba(255,255,255,0.15);
-}
+    }
 
 /* ==========================
    Sidebar Minimize Button

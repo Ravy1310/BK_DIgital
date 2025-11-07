@@ -1,0 +1,7 @@
+/* Minimal Font Awesome lokal */
+.fas{font-family:"Font Awesome 6 Free";font-weight:900;}
+.fa-brain::before{content:"🧠";}
+.fa-comments::before{content:"💬";}
+.fa-bullhorn::before{content:"📢";}
+.fa-file-alt::before{content:"📄";}
+.fa-envelope::before{content:"✉️";}

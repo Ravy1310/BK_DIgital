@@ -12,7 +12,7 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background-image: url('background.jpeg');
+      background: url('../../assets/image/background.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
