@@ -4,6 +4,9 @@
 // Jangan echo apapun sebelum JSON
 header('Content-Type: application/json');
 
+// TAMBAHKAN SESSION
+session_start();
+
 // Include koneksi PDO
 require_once 'db_connection.php';
 
@@ -21,8 +24,13 @@ try {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Cek di database menggunakan PREPARED STATEMENTS PDO
-    $sql = "SELECT username, password, role FROM users WHERE username = :username";
+    // QUERY YANG DIPERBAIKI - JOIN antara user dan admin
+    $sql = "SELECT u.id, u.username, u.password, u.email, u.role, 
+                   a.id_admin, a.nama, a.no_telp 
+            FROM users u 
+            LEFT JOIN admin a ON u.id = a.id_admin 
+            WHERE u.username = :username AND u.role IN ('superadmin', 'admin')";
+    
     $stmt = $pdo->prepare($sql);
 
     if ($stmt === false) {
@@ -39,11 +47,22 @@ try {
         
         // Verifikasi password yang sudah di-hash
         if (password_verify($password, $row['password'])) {
+            
+            // SET SESSION SETELAH LOGIN BERHASIL
+            $_SESSION['admin_id'] = $row['id'];
+            $_SESSION['admin_username'] = $row['username'];
+            $_SESSION['admin_name'] = $row['nama'] ?? $row['username']; // Gunakan nama dari admin atau username
+            $_SESSION['admin_email'] = $row['email'];
+            $_SESSION['admin_role'] = $row['role'];
+            $_SESSION['admin_logged_in'] = true;
+            $_SESSION['login_time'] = time();
+            
             echo json_encode([
                 "status" => "success",
                 "message" => "Login berhasil.",
                 "user" => $row['username'],
-                "role" => $row['role']
+                "role" => $row['role'],
+                "nama" => $row['nama'] ?? $row['username']
             ]);
         } else {
             // Pesan error yang sama untuk user tidak ditemukan dan password salah

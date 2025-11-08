@@ -2,9 +2,19 @@
 // PERBAIKAN: Mulai output buffering
 ob_start();
 
+// TAMBAHKAN SESSION CHECK DI AWAL
+session_start();
+
+// CEK APAKAH SUDAH LOGIN
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    http_response_code(401);
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
+    exit;
+}
+
 header('Content-Type: application/json');
 require_once __DIR__ . '/../db_connection.php';
-require_once __DIR__ . '/../logAktivitas.php'; // Tambahkan ini
+require_once __DIR__ . '/../logAktivitas.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -12,6 +22,10 @@ try {
     if (!$pdo) {
         throw new Exception('Koneksi database gagal');
     }
+
+    // PERBAIKAN: Ambil data admin dari session
+    $adminId = $_SESSION['admin_id'];
+    $adminName = $_SESSION['admin_name'];
 
     switch ($method) {
         case 'GET':
@@ -123,7 +137,7 @@ try {
 
                 $pdo->commit();
                 
-                // LOG AKTIVITAS: Update data guru
+                // LOG AKTIVITAS: Update data guru - PERBAIKAN: Tambah info admin
                 $meta = [
                     'id_guru' => $id_guru,
                     'data_lama' => $old_data,
@@ -134,10 +148,12 @@ try {
                         'username' => $username,
                         'email' => $email,
                         'password_changed' => !empty($password)
-                    ]
+                    ],
+                    'admin_id' => $adminId,
+                    'admin_name' => $adminName
                 ];
                 
-                log_action('UPDATE_GURU', "Memperbarui data guru: {$nama}", $meta);
+                log_action('UPDATE_GURU', "Admin {$adminName} memperbarui data guru: {$nama}", $meta);
                 
                 echo json_encode(['status' => 'success', 'message' => 'Data guru berhasil diperbarui']);
 
@@ -164,17 +180,19 @@ try {
 
                 $pdo->commit();
                 
-                // LOG AKTIVITAS: Tambah data guru baru
+                // LOG AKTIVITAS: Tambah data guru baru - PERBAIKAN: Tambah info admin
                 $meta = [
                     'id_guru' => $new_id_guru,
                     'nama' => $nama,
                     'telepon' => $telepon,
                     'alamat' => $alamat,
                     'username' => $username,
-                    'email' => $email
+                    'email' => $email,
+                    'admin_id' => $adminId,
+                    'admin_name' => $adminName
                 ];
                 
-                log_action('CREATE_GURU', "Menambah data guru baru: {$nama}", $meta);
+                log_action('CREATE_GURU', "Admin {$adminName} menambah data guru baru: {$nama}", $meta);
                 
                 echo json_encode(['status' => 'success', 'message' => 'Data guru berhasil ditambahkan']);
             }
@@ -200,15 +218,17 @@ try {
                 $update_stmt = $pdo->prepare($update_query);
                 $update_stmt->execute([$new_status, $id_guru]);
 
-                // LOG AKTIVITAS: Ubah status guru
+                // LOG AKTIVITAS: Ubah status guru - PERBAIKAN: Tambah info admin
                 $meta = [
                     'id_guru' => $id_guru,
                     'nama_guru' => $nama_guru,
                     'status_lama' => $current_status,
-                    'status_baru' => $new_status
+                    'status_baru' => $new_status,
+                    'admin_id' => $adminId,
+                    'admin_name' => $adminName
                 ];
                 
-                log_action('UPDATE_STATUS_GURU', "Mengubah status guru {$nama_guru} dari {$current_status} menjadi {$new_status}", $meta);
+                log_action('UPDATE_STATUS_GURU', "Admin {$adminName} mengubah status guru {$nama_guru} dari {$current_status} menjadi {$new_status}", $meta);
 
                 echo json_encode([
                     'status' => 'success', 
@@ -251,13 +271,15 @@ try {
 
             $pdo->commit();
             
-            // LOG AKTIVITAS: Hapus data guru
+            // LOG AKTIVITAS: Hapus data guru - PERBAIKAN: Tambah info admin
             $meta = [
                 'id_guru' => $id_guru,
-                'data_dihapus' => $deleted_data
+                'data_dihapus' => $deleted_data,
+                'admin_id' => $adminId,
+                'admin_name' => $adminName
             ];
             
-            log_action('DELETE_GURU', "Menghapus data guru: {$deleted_data['nama']}", $meta);
+            log_action('DELETE_GURU', "Admin {$adminName} menghapus data guru: {$deleted_data['nama']}", $meta);
             
             echo json_encode(['status' => 'success', 'message' => 'Data guru berhasil dihapus']);
             break;
@@ -272,8 +294,14 @@ try {
         $pdo->rollBack();
     }
     
-    // LOG AKTIVITAS: Error
-    log_action('ERROR_GURU', "Error pada operasi guru: " . $e->getMessage());
+    // LOG AKTIVITAS: Error - PERBAIKAN: Tambah info admin
+    $meta = [
+        'error_message' => $e->getMessage(),
+        'admin_id' => $adminId,
+        'admin_name' => $adminName
+    ];
+    
+    log_action('ERROR_GURU', "Error pada operasi guru oleh admin {$adminName}: " . $e->getMessage(), $meta);
     
     // PERBAIKAN: Bersihkan output buffer sebelum mengirim JSON
     ob_clean(); 

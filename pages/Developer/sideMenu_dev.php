@@ -1,3 +1,24 @@
+<?php
+// TAMBAHKAN DI AWAL FILE
+session_start();
+
+// CEK APAKAH SUDAH LOGIN
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+// CEK ROLE (jika perlu spesifik role)
+if ($_SESSION['admin_role'] !== 'superadmin') {
+    header("Location: ../../login.php?error=unauthorized");
+    exit;
+}
+
+// CEGAH CACHING
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -63,8 +84,8 @@
         </button>
         <div class="dropdown-menu-custom" id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; z-index: 1000; background: white;">
             <div class="px-3 py-2 border-bottom">
-                <div class="fw-bold">SuperAdmin</div>
-                
+                <div class="fw-bold"><?php echo $_SESSION['admin_name'] ?? 'SuperAdmin'; ?></div>
+                <small class="text-muted"><?php echo $_SESSION['admin_role'] ?? 'superadmin'; ?></small>
             </div>
             <div class="p-2">
                 <div class="dropdown-divider-custom"></div>
@@ -137,7 +158,8 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Handle logout
+// Handle logout - DIPERBAIKI
+// Handle logout - VERSI LEBIH ROBUST
 logoutBtn.addEventListener('click', () => {
     if (confirm('Apakah Anda yakin ingin logout?')) {
         // Tampilkan loading state
@@ -145,14 +167,12 @@ logoutBtn.addEventListener('click', () => {
         logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Logging out...';
         logoutBtn.disabled = true;
         
-        // Simulasi proses logout
+        // Force redirect dengan parameter cache bust
         setTimeout(() => {
-            // Redirect ke halaman logout
-            window.location.href = '../../login.php'; // Sesuaikan dengan URL logout Anda
-        }, 1000);
+            window.location.href = '../../includes/logout.php?nocache=' + Date.now();
+        }, 500);
     }
 });
-
 // Load content (FUNGSI INI DIMODIFIKASI)
 async function loadContent(file) {
     try {
@@ -207,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script src="../../includes/js/developer/log_aktivitas.js"></script>
 <script src="../../includes/js/developer/manajemen_account.js"></script>
-
 
 </body>
 </html>

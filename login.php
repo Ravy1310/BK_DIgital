@@ -1,10 +1,57 @@
+<?php
+// File: login.php
 
+// MULAI SESSION
+session_start();
+
+// CEK JIKA ADA PARAMETER LOGOUT, HAPUS SESSION
+if (isset($_GET['logout']) && $_GET['logout'] === 'success') {
+    // Hapus semua session data
+    $_SESSION = [];
+    session_destroy();
+    
+    // Hapus session cookie
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
+}
+
+// HANYA REDIRECT JIKA BENAR-BENAR MASIH LOGIN
+if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    // VERIFIKASI ULANG DATA SESSION
+    if (isset($_SESSION['admin_role'])) {
+        if ($_SESSION['admin_role'] === 'superadmin') {
+            header("Location: pages/Developer/sideMenu_dev.php");
+            exit;
+        } else if ($_SESSION['admin_role'] === 'admin') {
+            header("Location: pages/admin/sideMenu_admin.php");
+            exit;
+        }
+    }
+}
+
+// JIKA ADA SESSION TAPI TIDAK VALID, HAPUS
+if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] !== true) {
+    session_destroy();
+}
+
+
+?>
 <!doctype html>
 <html lang="id">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login BK Digital - SMA AL-ISLAM KRIAN</title>
+
+    <!-- CEGAH CACHING -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           crossorigin="anonymous">
@@ -15,6 +62,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    
 <style>
 :root {
     --primary-blue: #004d9c;
@@ -118,6 +166,14 @@ body {
 @media (max-width: 767.98px) {
     .shapedividers_com-652::before { content: none !important; }
 }
+
+/* Success message styles */
+.alert-success {
+    border: none;
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+    border-radius: 15px;
+}
 </style>
 
 </head>
@@ -152,6 +208,15 @@ body {
 
         <div id="statusMessage" class="alert d-none text-center rounded-3 mb-4"></div>
 
+        <!-- Tampilkan pesan logout sukses -->
+        <?php if (!empty($logout_message)): ?>
+            <div class="alert alert-success alert-dismissible fade show text-center rounded-3 mb-4">
+                <i class="fas fa-check-circle me-2"></i>
+                <?php echo $logout_message; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+
         <!-- Username -->
         <div class="mb-4">
           <label for="username" class="form-label small fw-semibold text-muted mb-1">Username</label>
@@ -184,8 +249,5 @@ body {
 </div>
 
   <script src="includes/js/login.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-     ></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body></html>

@@ -1,3 +1,25 @@
+<?php
+// TAMBAHKAN DI AWAL FILE
+session_start();
+
+// CEK APAKAH SUDAH LOGIN
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+// CEK ROLE (admin atau superadmin bisa akses)
+if ($_SESSION['admin_role'] !== 'admin' && $_SESSION['admin_role'] !== 'superadmin') {
+    header("Location: ../../login.php?error=unauthorized");
+    exit;
+}
+
+// CEGAH CACHING
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -89,7 +111,8 @@
         </button>
         <div class="dropdown-menu-custom" id="profileDropdown" style="display: none; position: absolute; right: 0; top: 100%; z-index: 1000; background: white;">
             <div class="px-3 py-2 border-bottom">
-                <div class="fw-bold">Admin</div>
+                <div class="fw-bold"><?php echo $_SESSION['admin_name'] ?? 'Admin'; ?></div>
+                <small class="text-muted"><?php echo $_SESSION['admin_role'] ?? 'admin'; ?></small>
             </div>
             <div class="p-2">
                 <div class="dropdown-divider-custom"></div>
@@ -188,15 +211,16 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Handle logout
+// Handle logout - DIPERBAIKI
 logoutBtn.addEventListener('click', () => {
     if (confirm('Apakah Anda yakin ingin logout?')) {
         const originalText = logoutBtn.innerHTML;
         logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Logging out...';
         logoutBtn.disabled = true;
         
+        // Redirect ke file logout.php yang benar
         setTimeout(() => {
-            window.location.href = '../../login.php';
+            window.location.href = '../../includes/logout.php';
         }, 1000);
     }
 });

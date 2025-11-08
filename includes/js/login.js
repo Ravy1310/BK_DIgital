@@ -24,13 +24,11 @@ loginForm.addEventListener("submit", async function(e) {
 
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
-  // const pesan = document.getElementById("pesan"); // Variabel 'pesan' TIDAK ADA di HTML, dihilangkan
 
   const username = usernameInput.value.trim();
   const password = passwordInput.value.trim();
 
   if (!username || !password) {
-    // Menggunakan showStatus sebagai pengganti 'pesan'
     showStatus("Harap isi semua kolom Username dan Password.", "error"); 
     return;
   }
@@ -45,26 +43,20 @@ loginForm.addEventListener("submit", async function(e) {
 
     const responseText = await response.text();
   
-   
     let result;
     try {
       result = JSON.parse(responseText);
-     
-   
     } catch (err) {
-     
-      // Menggunakan showStatus sebagai pengganti 'pesan'
       showStatus("Server tidak mengirim data JSON yang valid.", "error"); 
-      // kosongkan field walau gagal parse
       usernameInput.value = "";
       passwordInput.value = "";
       return;
     }
 
     if (result.status === "success") {
-
-      localStorage.setItem("username", result.user);
-      localStorage.setItem("role", result.role);
+      // HAPUS LOCALSTORAGE KARENA SUDAH PAKAI SESSION
+      // localStorage.removeItem("username");
+      // localStorage.removeItem("role");
 
       // Kosongkan input
       usernameInput.value = "";
@@ -73,7 +65,6 @@ loginForm.addEventListener("submit", async function(e) {
       // Redirect sesuai role
       if (result.role === "superadmin") {
         window.location.href = "pages/Developer/sideMenu_dev.php";
-       
       } else if (result.role === "admin") {
         window.location.href = "pages/admin/sideMenu_admin.php";
       } else {
@@ -81,23 +72,17 @@ loginForm.addEventListener("submit", async function(e) {
       }
 
     } else {
-      // Menggunakan showStatus sebagai pengganti 'pesan'
       showStatus(result.message, "error"); 
-
-      // Kosongkan field meski login gagal
       usernameInput.value = "";
       passwordInput.value = "";
     }
 
   } catch (error) {
-    
-    // Perbaikan: Ganti pesan agar lebih umum saat error koneksi
     showStatus("Terjadi kesalahan saat koneksi ke server.", "error"); 
     usernameInput.value = "";
     passwordInput.value = "";
   }
 });
-
 
 // Fungsi lupa password
 function handleForgotPassword(e) {
@@ -111,7 +96,7 @@ const passwordField = document.getElementById('password');
 
 togglePassword.addEventListener('click', function() {
   const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-  passwordField.setAttribute('type', type); // Menghapus typo 'w' yang error
+  passwordField.setAttribute('type', type);
   this.querySelector('i').classList.toggle('fa-eye');
   this.querySelector('i').classList.toggle('fa-eye-slash');
 });
