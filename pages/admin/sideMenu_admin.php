@@ -156,7 +156,7 @@ header("Expires: 0");
         </li>
         
         <li>
-            <a href="#" class="fw-bolder my-2" data-file="log_aktivitas.php">
+            <a href="#" class="fw-bolder my-2" data-file="kelolaTes.php">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-journal-bookmark-fill" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8z"/>
                     <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
@@ -181,6 +181,7 @@ header("Expires: 0");
 // Simple state management
 let currentPage = '';
 let kelolaGuruHandler = null;
+let kelolaSiswaHandler = null;
 
 // DOM Elements
 const sidebar = document.getElementById('sidebar');
@@ -238,6 +239,15 @@ function cleanupPage() {
         kelolaGuruHandler = null;
     }
     
+    // Remove Kelola Siswa event handler if exists - DIPERBAIKI
+    if (kelolaSiswaHandler) {
+        const container = document.getElementById('contentArea');
+        if (container) {
+            container.removeEventListener('click', kelolaSiswaHandler);
+        }
+        kelolaSiswaHandler = null;
+    }
+    
     // Remove any dynamically added scripts
     const dynamicScripts = document.querySelectorAll('script[data-dynamic="true"]');
     dynamicScripts.forEach(script => {
@@ -247,6 +257,7 @@ function cleanupPage() {
     
     console.log('✅ Page cleanup completed');
 }
+
 
 // Load script dengan prevention untuk multiple loading
 function loadScript(src) {
@@ -325,6 +336,26 @@ async function loadContent(file) {
                 }
             }, 300);
         }
+        // Handle Kelola Siswa initialization - DIPERBAIKI
+        else if (file.includes('kelola_Siswa.php')) {
+            console.log('🔄 Setting up Kelola Siswa...');
+            
+            setTimeout(async () => {
+                try {
+                    // Pastikan path konsisten
+                    await loadScript('../../includes/js/admin/kelola_Siswa.js');
+                    
+                    if (typeof window.initKelolaSiswa === 'function') {
+                        console.log('🚀 Initializing Kelola Siswa...');
+                        window.initKelolaSiswa();
+                    } else {
+                        console.error('❌ initKelolaSiswa function not found');
+                    }
+                } catch (error) {
+                    console.error('❌ Error setting up Kelola Siswa:', error);
+                }
+            }, 300); // ✅ FIXED: menggunakan angka, bukan variable yang tidak terdefinisi
+        }
 
     } catch (error) {
         console.error('❌ Error loading content:', error);
@@ -337,7 +368,6 @@ async function loadContent(file) {
         currentPage = '';
     }
 }
-
 // Set active & load on click
 menuLinks.forEach(link => {
     link.addEventListener('click', function(e) {

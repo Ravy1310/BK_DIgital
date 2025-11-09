@@ -5,6 +5,7 @@ require_once $base_dir . 'includes/logAktivitas.php';
 
 // AMBIL DATA TOTAL GURU DARI DATABASE
 $total_guru = 0;
+
 try {
     $query_guru = "SELECT COUNT(*) as total FROM guru";
     $stmt_guru = $pdo->prepare($query_guru);
@@ -14,8 +15,17 @@ try {
 } catch (Exception $e) {
     $total_guru = 0;
 }
+$total_Siswa = 0;
+try {
+    $query_siswa = "SELECT COUNT(*) as total FROM siswa";
+    $stmt_siswa = $pdo->prepare($query_siswa);
+    $stmt_siswa->execute();
+    $result_siswa = $stmt_siswa->fetch(PDO::FETCH_ASSOC);
+    $total_Siswa = $result_siswa['total'] ?? 0;
+} catch (Exception $e) {
+    $total_Siswa = 0;
+}
 ?>
-
 <style>
     body {
         background: url('../../assets/image/background.jpg');
@@ -131,7 +141,7 @@ try {
                             <path fill-rule="evenodd" d="M14 14s-1-1.5-6-1.5S2 14 2 14s1-4 6-4 6 4 6 4z"/>
                         </svg>
                         <h6 class="card-title">Total Siswa Aktif</h6>
-                        <h5 class="card-value text-success">22</h5>
+                        <h5 class="card-value text-success"><?php echo $total_Siswa; ?></h5>
                     </div>
                 </div>
             </div>
