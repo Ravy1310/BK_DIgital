@@ -5,44 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tes BK Digital</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Font: Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  
   <style>
     body {
       font-family: 'Poppins', sans-serif;
       background: url('../../assets/image/background.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
       padding: 20px;
     }
-
-    h4.fw-bold {
-      font-weight: 700;
-      color: #343a40;
-    }
-
     .summary-card {
       border-radius: 10px;
-      background-color: #fff;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+      background: #fff;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
       padding: 25px;
       text-align: center;
-      font-weight: 600;
     }
-
-    .summary-card h5 {
-      font-weight: 700;
-      color: #222;
-    }
-
-    .summary-card h3 {
-      font-weight: 700;
-      color: #000;
-    }
-
     .action-btn {
       font-weight: 600;
       font-size: 16px;
@@ -50,241 +27,63 @@
       border-radius: 10px;
       box-shadow: 0 3px 6px rgba(13,110,253,0.3);
     }
-
-    .test-card {
-      border-radius: 10px;
-      background-color: #fff;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      transition: 0.2s;
-    }
-
-    .test-card:hover {
-      background-color: #f3f6ff;
-      transform: scale(1.01);
-    }
-
-    .test-card img {
-      width: 60px;
-      height: 60px;
-      margin-right: 15px;
-    }
-
-    .icon-btn {
-      width: 18px;
-      height: 18px;
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-
-    .btn-small {
-      font-size: 14px;
-      padding: 6px 12px;
-      border-radius: 6px;
-    }
-
-    /* --- Modul Kelola Tes --- */
-    .kelola-card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background: #fff;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-      padding: 15px;
-      margin-bottom: 15px;
-    }
-
-    .kelola-card h5 {
-      font-weight: 700;
-      margin-bottom: 5px;
-    }
-
-    .kelola-card p {
-      color: #555;
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-
-    /* Semua tombol merah */
-    .btn-merah {
-      background-color: #C60000 !important;
-      color: #fff !important;
-      border: none !important;
-      transition: 0.2s;
-    }
-
-    .btn-merah:hover {
-      background-color: #a00000 !important;
-    }
+   .icon-wrapper {
+    width: 70px;
+    height: 70px;
+    background-color: #68a7ff; /* biru muda */
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  svg {
+    width: 55px;
+    height: 55px;
+  }
   </style>
 </head>
 <body>
 
-  <!-- ===== DASHBOARD ===== -->
-  <div class="container" id="kelolaTes">
-      <h4 class="fw-bold">Tes BK Digital</h4>
-      <p class="text-muted mb-4">Ringkasan dan daftar tes BK yang tersedia.</p>
+  <div class="container">
+    <h4 class="fw-bold">Tes BK Digital</h4>
+    <p class="text-muted mb-4">Ringkasan dan daftar tes BK yang tersedia.</p>
 
-      <!-- Ringkasan -->
-      <div class="row text-center mb-3">
-        <div class="col-md-6 mb-3">
-          <div class="summary-card">
-            <h5>Total Soal</h5>
-            <h3>500</h3>
-          </div>
-        </div>
-        <div class="col-md-6 mb-3">
-          <div class="summary-card">
-            <h5>Jenis Tes</h5>
-            <h3>10</h3>
-          </div>
+    <div class="row text-center mb-3">
+      <div class="col-md-6 mb-3">
+        <div class="summary-card">
+          <h5>Total Soal</h5>
+          <h3>500</h3>
         </div>
       </div>
-
-      <!-- Tombol -->
-      <div class="row text-center mb-4">
-        <div class="col-md-6 mb-3">
-          <button class="btn btn-primary w-100 action-btn" onclick="tampilKelolaTesBK()">Kelola Tes BK</button>
+      <div class="col-md-6 mb-3">
+        <div class="summary-card">
+          <h5>Jenis Tes</h5>
+          <h3>10</h3>
         </div>
-        <div class="col-md-6 mb-3">
-          <button class="btn btn-primary w-100 action-btn" onclick="tampilTambahTes()">
-            <i class="bi bi-plus-lg"></i> Tambah Tes Baru
-          </button>
-        </div>
-      </div>
-
-      <!-- Tes contoh -->
-      <div class="test-card mb-2">
-        <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" alt="icon">
-        <div>
-          <h5>Tes Minat Belajar</h5>
-          <p>Mengukur minat belajar siswa<br>50 soal</p>
-        </div>
-      </div>
-  </div>
-
-  <!-- ===== TAMBAH TES ===== -->
-  <div class="container my-4" id="tambahTes" style="display:none;">
-    <div class="card p-4">
-      <h4 class="fw-bold">Tambah Tes Baru & Import Soal</h4>
-      <p class="text-muted">Gunakan format CSV untuk menambah banyak soal.</p>
-
-      <div class="card p-3 mb-3">
-        <p><strong>Gunakan format CSV</strong> untuk mengimpor banyak soal sekaligus.</p>
-        <div class="text-start">
-          <button class="btn btn-success btn-small" onclick="alert('Template CSV berhasil diunduh!')">
-            <img src="gambar/iconcsv.svg" class="icon-btn" alt="icon"> Unduh Template Soal (CSV)
-          </button>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="fw-bold">Nama Tes Baru</label>
-        <input type="text" class="form-control" placeholder="Masukkan nama tes baru">
-      </div>
-
-      <div class="mb-3">
-        <label class="fw-bold">Deskripsi Tes</label>
-        <textarea class="form-control" rows="3" placeholder="Masukkan deskripsi tes"></textarea>
-      </div>
-
-      <div class="mb-3">
-        <label class="fw-bold">Unggah File Soal (CSV)</label>
-        <input type="file" class="form-control">
-      </div>
-
-      <div class="d-flex justify-content-between">
-        <button class="btn btn-merah px-4" onclick="kembali()">Batal</button>
-        <button class="btn btn-primary px-4" onclick="alert('Tes baru berhasil disimpan!')">Simpan</button>
       </div>
     </div>
-  </div>
 
-  <!-- ===== KELOLA TES BK ===== -->
-  <div class="container my-4" id="modulKelolaTes" style="display:none;">
-    <div class="card p-4">
-      <h4 class="fw-bold">Kelola Tes BK</h4>
-      <p class="text-muted">Ubah atau hapus jenis tes yang sudah ada.</p>
-
-      <div id="daftarTes">
-        <div class="kelola-card">
-          <h5>Tes Minat Belajar</h5>
-          <p>Mengukur minat belajar siswa</p>
-          <button class="btn btn-success btn-sm" onclick="tampilKelolaSoal()"><i class="bi bi-pencil"></i> Edit</button>
-          <button class="btn btn-merah btn-sm" onclick="hapusItem(this)"><i class="bi bi-trash"></i> Hapus</button>
-        </div>
-
-        <div class="kelola-card">
-          <h5>Tes Kepribadian</h5>
-          <p>Mengukur karakter dan tipe kepribadian siswa</p>
-          <button class="btn btn-success btn-sm" onclick="tampilKelolaSoal()"><i class="bi bi-pencil"></i> Edit</button>
-          <button class="btn btn-merah btn-sm" onclick="hapusItem(this)"><i class="bi bi-trash"></i> Hapus</button>
-        </div>
+    <div class="row text-center mb-4">
+      <div class="col-md-6 mb-3">
+        <a href="kelola_tes.php" class="btn btn-primary w-100 action-btn">Kelola Tes BK</a>
       </div>
-
-      <div class="text-start mt-3">
-        <button class="btn btn-merah btn-sm px-3" onclick="kembali()">Kembali</button>
+      <div class="col-md-6 mb-3">
+        <a href="tambah_tes.php" class="btn btn-primary w-100 action-btn">Tambah Tes Baru</a>
       </div>
     </div>
-  </div>
 
-  <!-- ===== KELOLA SOAL ===== -->
-  <div class="container my-4" id="modulKelolaSoal" style="display:none;">
-    <div class="card p-4">
-      <h4 class="fw-bold">Kelola Soal : Tes Minat Belajar</h4>
-      <p class="text-muted">Daftar soal yang tersedia untuk tes ini.</p>
+   <div class="card p-3 shadow-sm">
+  <div class="d-flex align-items-center">
+    <!-- Kotak biru di belakang ikon -->
+    <div class="icon-wrapper me-3 d-flex align-items-center justify-content-center">
+      <!-- SVG ikon -->
+      <?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1024" height="1024" viewBox="0 0 1024 1024"><path fill="#2C386C" transform="scale(2 2)" d="M215.313 241.986C216.203 242.584 220.256 247.545 221.452 248.771C240.483 268.295 271.318 269.428 290.188 249.031C292.401 246.639 295.965 241.431 298.256 239.716C298.299 242.167 298.54 248.099 298.256 250.226L299.082 251.351C303.57 248.76 302.768 260.547 305.825 262.555C313.052 266.277 318.436 274.361 327.243 278.04C341.769 284.1 404.286 308.166 413.542 318.2C433.028 339.324 434.785 415.063 434.76 441.744C431.477 442.492 427.269 442.963 423.858 443.429L406.144 445.747C368.735 450.336 331.685 452.899 294.026 453.973C287.835 454.15 280.983 454.527 274.816 454.242C272.986 454.567 266.732 454.264 264.486 454.255L240.216 454.242C193.806 454.278 146.34 450.173 100.27 444.416C92.5217 443.448 85.0569 442.253 77.2431 441.744C77.7414 437.808 77.3316 433.76 77.2506 429.801C76.5702 396.543 79.9436 362.684 90.4066 330.987C93.6485 321.166 96.4636 317.947 105.619 313.094C131.256 299.48 158.011 288.451 185.082 278.111C186.214 277.679 203.624 264.335 206.23 262.555C209.511 259.816 208.937 249.539 215.313 254.321C214.141 249.07 214.747 247.357 215.313 241.986Z"/><path fill="#2C386C" transform="scale(2 2)" d="M206.23 262.555C206.188 266.38 203.643 271.509 203.816 278.251C205.105 328.479 213.815 378.74 229.93 426.344C230.446 427.868 230.92 429.344 231.579 430.799C234.007 437.566 238.628 447.687 240.216 454.242C193.806 454.278 146.34 450.173 100.27 444.416C92.5217 443.448 85.0569 442.253 77.2431 441.744C77.7414 437.808 77.3316 433.76 77.2506 429.801C76.5702 396.543 79.9436 362.684 90.4066 330.987C93.6485 321.166 96.4636 317.947 105.619 313.094C131.256 299.48 158.011 288.451 185.082 278.111C186.214 277.679 203.624 264.335 206.23 262.555Z"/><path fill="#F0F0EF" transform="scale(2 2)" d="M215.313 241.986C216.203 242.584 220.256 247.545 221.452 248.771C240.483 268.295 271.318 269.428 290.188 249.031C292.401 246.639 295.965 241.431 298.256 239.716C298.299 242.167 298.54 248.099 298.256 250.226L299.082 251.351C303.57 248.76 302.768 260.547 305.825 262.555C305.697 267.444 306.247 272.251 306.387 277.124C307.554 317.627 300.541 358.17 290.107 397.187C287.592 406.594 285.045 418.352 281.39 427.325C278.894 434.95 276.177 442.5 273.585 450.093C272.616 452.932 271.308 454.149 274.816 454.242C272.986 454.567 266.732 454.264 264.486 454.255L240.216 454.242C238.628 447.687 234.007 437.566 231.579 430.799C230.92 429.344 230.446 427.868 229.93 426.344C213.815 378.74 205.105 328.479 203.816 278.251C203.643 271.509 206.188 266.38 206.23 262.555C209.511 259.816 208.937 249.539 215.313 254.321C214.141 249.07 214.747 247.357 215.313 241.986Z"/><path fill="#627DC2" transform="scale(2 2)" d="M254.16 298.548L258.471 298.548C262.472 301.907 266.152 306.214 270.431 309.854C268.167 312.086 264.402 317.822 262.376 320.695C263.365 323.87 264.062 328.273 264.656 331.633C266.277 340.801 278.923 422.724 281.39 427.325C278.894 434.95 276.177 442.5 273.585 450.093C272.616 452.932 271.308 454.149 274.816 454.242C272.986 454.567 266.732 454.264 264.486 454.255L240.216 454.242C238.628 447.687 234.007 437.566 231.579 430.799C232.625 428.787 233.957 417.22 234.447 414.135C236.138 403.48 246.727 327.323 250.352 320.695C248.202 317.169 245.059 313.161 242.503 309.854C244.436 307.329 251.545 300.646 254.16 298.548Z"/><path fill="#D18C80" transform="scale(2 2)" d="M215.313 241.986C216.203 242.584 220.256 247.545 221.452 248.771C240.483 268.295 271.318 269.428 290.188 249.031C292.401 246.639 295.965 241.431 298.256 239.716C298.299 242.167 298.54 248.099 298.256 250.226C297.217 264.507 276.055 283.042 265.706 291.986C263.759 293.669 259.225 298.424 256.555 298.195C250.852 297.704 215.57 262.859 215.313 254.321C214.141 249.07 214.747 247.357 215.313 241.986Z"/><path fill="#EECEB3" transform="scale(2 2)" d="M212.929 82.6292C213.913 80.5548 215.442 77.1965 217.013 75.5719C261.091 29.9979 324.552 63.5562 330.425 120.004C331.58 131.101 330.754 148.329 326.78 158.922C338.237 160.648 327.798 197.978 314.302 203.569C311.05 208.217 307.637 223.35 302.826 231.585C301.359 234.096 299.018 236.969 298.256 239.716C295.965 241.431 292.401 246.639 290.188 249.031C271.318 269.428 240.483 268.295 221.452 248.771C220.256 247.545 216.203 242.584 215.313 241.986L215.34 241.519C213.673 238.13 210.768 235.126 208.99 231.731C205.55 225.16 202.926 218.146 200.306 211.209C199.53 209.154 198.664 203.069 197.329 201.98C182.853 201.91 174.998 161.517 185.813 158.922C180.261 138.492 183.308 114.46 193.558 95.9278C197.677 88.4802 203.918 82.3444 212.929 82.6292Z"/><path fill="#2C386C" transform="scale(2 2)" d="M212.929 82.6292C213.913 80.5548 215.442 77.1965 217.013 75.5719C261.091 29.9979 324.552 63.5562 330.425 120.004C331.58 131.101 330.754 148.329 326.78 158.922C338.237 160.648 327.798 197.978 314.302 203.569C314.46 201.007 315.964 195.937 316.231 192.962C316.347 191.658 317.003 185.639 317.199 185.115C317.94 171.529 321.18 160.451 314.165 147.288C313.421 145.442 310.881 141.584 310.68 139.791C309.484 129.103 311.94 115.952 303.602 107.354C294.515 97.9854 279.16 96.5307 267.352 100.604C258.075 103.804 246.694 100.66 237.647 98.6027C217.389 96.0718 202.334 108.497 203.034 129.269C203.379 139.493 202.098 140.322 198.122 149.073C192.96 160.434 193.446 173.691 195.249 185.932C194.615 191.223 196.504 196.888 197.329 201.98C182.853 201.91 174.998 161.517 185.813 158.922C180.261 138.492 183.308 114.46 193.558 95.9278C197.677 88.4802 203.918 82.3444 212.929 82.6292Z"/><path fill="#E5B796" transform="scale(2 2)" d="M185.813 158.922C188.315 162.931 193.426 184.64 195.132 185.917L195.249 185.932C194.615 191.223 196.504 196.888 197.329 201.98C182.853 201.91 174.998 161.517 185.813 158.922Z"/><path fill="#E5B796" transform="scale(2 2)" d="M317.199 185.115C318.449 183.944 324.395 163.209 326.78 158.922C338.237 160.648 327.798 197.978 314.302 203.569C314.46 201.007 315.964 195.937 316.231 192.962C316.347 191.658 317.003 185.639 317.199 185.115Z"/></svg>
+    </div>
 
-      <div id="daftarSoal" class="border rounded p-3 mb-3">
-        <div class="mb-3 soal">
-          <p><strong>1.</strong> Ketika mencoba mengingat petunjuk arah, cara apa yang paling efektif bagi anda?</p>
-          <p>A. Membayangkan peta<br>B. Mengulang dengan suara keras<br>C. Bergerak atau menunjuk</p>
-          <button class="btn btn-success btn-sm"><i class="bi bi-pencil"></i> Edit</button>
-          <button class="btn btn-merah btn-sm" onclick="hapusItem(this)"><i class="bi bi-trash"></i> Hapus</button>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-between align-items-center mt-3">
-        <button class="btn btn-merah btn-sm px-3" onclick="kembali()">Kembali</button>
-        <button class="btn btn-primary btn-sm px-3" onclick="alert('Fitur tambah soal sedang dikembangkan!')"><i class="bi bi-plus-lg"></i> Tambah soal baru</button>
-      </div>
+    <!-- Bagian teks -->
+    <div>
+      <h5 class="fw-bold mb-1">Tes Minat Belajar</h5>
+      <p class="text-muted mb-0">Mengukur minat belajar siswa<br>50 soal</p>
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.js"></script>
-  <script>
-    function tampilTambahTes() {
-      tampilHalaman("tambahTes");
-    }
-
-    function tampilKelolaTesBK() {
-      tampilHalaman("modulKelolaTes");
-    }
-
-    function tampilKelolaSoal() {
-      tampilHalaman("modulKelolaSoal");
-    }
-
-    function kembali() {
-      tampilHalaman("kelolaTes");
-    }
-
-    // Fungsi umum untuk tampil/menyembunyikan halaman
-    function tampilHalaman(id) {
-      const semua = ["kelolaTes", "tambahTes", "modulKelolaTes", "modulKelolaSoal"];
-      semua.forEach(el => document.getElementById(el).style.display = "none");
-      document.getElementById(id).style.display = "block";
-    }
-
-    // Fungsi hapus umum
-    function hapusItem(btn) {
-      const card = btn.closest(".kelola-card, .soal");
-      if (card && confirm("Yakin ingin menghapus item ini?")) {
-        card.remove();
-        alert("Item berhasil dihapus!");
-      }
-    }
-  </script>
-
+</div>
 </body>
 </html>
