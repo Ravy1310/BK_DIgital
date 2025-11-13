@@ -81,6 +81,7 @@ header("Expires: 0");
     #mainContent.minimized {
         margin-left: 70px;
     }
+   
 
     /* Loading indicator */
     .loading {
@@ -97,6 +98,7 @@ header("Expires: 0");
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+    
 </style>
 
 </head>
@@ -182,6 +184,7 @@ header("Expires: 0");
 let currentPage = '';
 let kelolaGuruHandler = null;
 let kelolaSiswaHandler = null;
+let kelolaTesHandler = null;
 
 // DOM Elements
 const sidebar = document.getElementById('sidebar');
@@ -246,6 +249,13 @@ function cleanupPage() {
             container.removeEventListener('click', kelolaSiswaHandler);
         }
         kelolaSiswaHandler = null;
+    }
+    if (kelolaTesHandler) {
+        const container = document.getElementById('contentArea');
+        if (container) {
+            container.removeEventListener('click', kelolaTesHandler);
+        }
+        kelolaTesHandler = null;
     }
     
     // Remove any dynamically added scripts
@@ -356,6 +366,86 @@ async function loadContent(file) {
                 }
             }, 300); // ✅ FIXED: menggunakan angka, bukan variable yang tidak terdefinisi
         }
+    
+
+// Handle Kelola Tes initialization
+else if (file.includes('kelolaTes.php')) {
+    console.log('🔄 Setting up Kelola Tes...');
+    
+    setTimeout(() => {
+        try {
+            // Setup event handlers untuk tombol-tombol di kelolaTes
+            const contentContainer = document.getElementById('contentArea');
+            if (contentContainer) {
+                kelolaTesHandler = function(e) {
+                    const target = e.target;
+                    
+                    // Handle tombol "Kelola Tes BK"
+                    if (target.classList.contains('action-btn') && target.textContent.includes('Kelola Tes BK')) {
+                        e.preventDefault();
+                        loadContent('kelolasoal.php');
+                    }
+                    
+                    // Handle tombol "Tambah Tes Baru"
+                    if (target.classList.contains('action-btn') && target.textContent.includes('Tambah Tes Baru')) {
+                        e.preventDefault();
+                        loadContent('tambahtes.php');
+                    }
+                };
+                
+                contentContainer.addEventListener('click', kelolaTesHandler);
+                console.log('✅ Kelola Tes event handler setup completed');
+            }
+        } catch (error) {
+            console.error('❌ Error setting up Kelola Tes:', error);
+        }
+    }, 300);
+}
+
+// TAMBAHKAN HANDLE UNTUK tambahtes.php - INI YANG BARU
+else if (file.includes('tambahtes.php')) {
+    console.log('🔄 Setting up Tambah Tes...');
+    
+    setTimeout(async () => {
+        try {
+            // Load JavaScript untuk tambah tes
+            await loadScript('../../includes/js/admin/tambahTes.js');
+            
+            // Setup event handlers untuk form tambah tes
+            const contentContainer = document.getElementById('contentArea');
+            if (contentContainer) {
+                kelolaTesHandler = function(e) {
+                    const target = e.target;
+                    
+                    // Handle tombol "Batal" - kembali ke kelola tes
+                    if (target.classList.contains('btn-merah') && target.textContent.includes('Batal')) {
+                        e.preventDefault();
+                        loadContent('kelolaTes.php');
+                    }
+                    
+                    // Handle tombol download template
+                    if (target.classList.contains('btn-csv') || target.closest('.btn-csv')) {
+                        e.preventDefault();
+                        if (typeof downloadTemplate === 'function') {
+                            downloadTemplate();
+                        }
+                    }
+                };
+                
+                contentContainer.addEventListener('click', kelolaTesHandler);
+                console.log('✅ Tambah Tes event handler setup completed');
+            }
+            
+            // Initialize form handling jika function tersedia
+            if (typeof window.initTambahTes === 'function') {
+                window.initTambahTes();
+            }
+            
+        } catch (error) {
+            console.error('❌ Error setting up Tambah Tes:', error);
+        }
+    }, 300);
+}
 
     } catch (error) {
         console.error('❌ Error loading content:', error);

@@ -48,7 +48,7 @@ function initKelolaSiswa() {
 
         // Download template
         btnDownloadTemplate.addEventListener('click', () => {
-            window.open('../../includes/admin_control/download_template.php', '_blank');
+            window.open('../../includes/admin_control/download_templateSiswa.php', '_blank');
         });
 
         // File upload area click
