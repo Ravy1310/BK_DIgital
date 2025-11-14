@@ -3,105 +3,185 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ajukan Jadwal</title>
+  <title>Jadwal Konseling</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     body {
+      background: linear-gradient(135deg, #d9eafd, #ffffff);
       font-family: 'Poppins', sans-serif;
-      background: url('../../assets/image/background.jpg'); /* Bisa diganti */
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      min-height: 100vh;
     }
-    .card-custom {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+
+    .section-box {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 25px;
+      border-radius: 15px;
+      backdrop-filter: blur(5px);
     }
-    .btn-merah {
-      background-color: #dc3545;
+
+    .kartu-konseling {
+      border-radius: 15px !important;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: 0.2s;
+    }
+
+    .kartu-konseling:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
+
+    .badge-status {
+      background: #007bff;
+      border-radius: 20px;
+      padding: 5px 12px;
       color: #fff;
-      border-radius: 8px;
-      padding: 10px 25px;
+      font-size: 13px;
+      font-weight: 600;
     }
-    .btn-biru {
-      background-color: #0d6efd;
-      color: #fff;
-      border-radius: 8px;
-      padding: 10px 25px;
+
+    .icon-waktu {
+      font-size: 19px;
+      margin-left: 8px;
+      color: #2a4d8f;
+    }
+
+    h3 {
+      font-weight: 600;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container py-4">
+<!-- =================== JADWAL KONSELING =================== -->
+<div class="container py-4">
 
-    <div class="card-custom mx-auto" style="max-width: 700px;">
-      <h4 class="fw-bold mb-4">Ajukan Jadwal</h4>
+  <div class="section-box mb-4">
+    <h3 class="text-center mb-4">Jadwal Konseling</h3>
 
-      <form>
-        <!-- Nama -->
-        <div class="mb-3">
-          <label class="form-label">Nama</label>
-          <input type="text" class="form-control" placeholder="Masukkan nama">
+    <div class="row g-3">
+
+      <!-- Card 1 -->
+      <div class="col-md-4">
+        <div class="kartu-konseling">
+          <div class="d-flex justify-content-between">
+            <span class="badge-status">Konseling Selesai</span>
+            <span class="icon-waktu">🕒</span>
+          </div>
+
+          <h5 class="mt-3 mb-1">Rabu, 1 Oktober 2025</h5>
+          <p class="mb-1">10.00 - 12.00 WIB</p>
+
+          <p class="mb-0"><strong>Konselor:</strong> Ibu Rika, S.Pd.</p>
+          <p class="mb-0"><strong>Status:</strong> Selesai</p>
         </div>
+      </div>
 
-        <!-- Tanggal -->
-        <div class="mb-3">
-          <label class="form-label">Tanggal Bimbingan</label>
-          <input type="date" class="form-control">
-        </div>
+      <!-- Duplicate card 2 -->
+      <div class="col-md-4">
+        <div class="kartu-konseling">
+          <div class="d-flex justify-content-between">
+            <span class="badge-status">Konseling Selesai</span>
+            <span class="icon-waktu">🕒</span>
+          </div>
 
-        <!-- Topik (sudah diganti menjadi dropdown) -->
-        <div class="mb-3">
-          <label class="form-label">Topik Konseling</label>
-          <select class="form-select">
-            <option selected disabled>Pilih topik konseling</option>
-            <option>Masalah Akademik</option>
-            <option>Masalah Pergaulan</option>
-            <option>Masalah Keluarga</option>
-            <option>Perencanaan Karir</option>
-            <option>Kesehatan Mental</option>
-            <option>Lainnya</option>
-          </select>
-        </div>
+          <h5 class="mt-3 mb-1">Rabu, 1 Oktober 2025</h5>
+          <p class="mb-1">10.00 - 12.00 WIB</p>
 
-        <!-- Jam -->
-        <div class="mb-3">
-          <label class="form-label">Jam</label>
-          <select class="form-select">
-            <option>Pilih jam</option>
-            <option>07:00</option>
-            <option>08:00</option>
-            <option>09:00</option>
-            <option>10:00</option>
-            <option>11:00</option>
-          </select>
+          <p class="mb-0"><strong>Konselor:</strong> Ibu Rika, S.Pd.</p>
+          <p class="mb-0"><strong>Status:</strong> Selesai</p>
         </div>
+      </div>
 
-        <!-- Guru BK -->
-        <div class="mb-4">
-          <label class="form-label">Guru BK</label>
-          <select class="form-select">
-            <option>Pilih guru BK</option>
-            <option>Ibu A</option>
-            <option>Bapak B</option>
-            <option>Ibu C</option>
-          </select>
-        </div>
+      <!-- Duplicate card 3 -->
+      <div class="col-md-4">
+        <div class="kartu-konseling">
+          <div class="d-flex justify-content-between">
+            <span class="badge-status">Konseling Selesai</span>
+            <span class="icon-waktu">🕒</span>
+          </div>
 
-        <!-- Tombol -->
-        <div class="d-flex justify-content-between">
-          <button type="button" class="btn btn-merah">Batal</button>
-          <button type="submit" class="btn btn-biru">Kirim</button>
+          <h5 class="mt-3 mb-1">Rabu, 1 Oktober 2025</h5>
+          <p class="mb-1">10.00 - 12.00 WIB</p>
+
+          <p class="mb-0"><strong>Konselor:</strong> Ibu Rika, S.Pd.</p>
+          <p class="mb-0"><strong>Status:</strong> Selesai</p>
         </div>
-      </form>
+      </div>
+
+    </div>
+
+    <div class="text-end mt-4">
+      <a href="#" class="btn btn-primary px-4">Ajukan Jadwal Konseling Baru</a>
     </div>
   </div>
+
+  <!-- =================== RIWAYAT KONSELING =================== -->
+  <div class="section-box">
+
+    <h3 class="text-center mb-4">Riwayat Konseling</h3>
+
+    <div class="row g-3">
+
+      <!-- Riwayat 1 -->
+      <div class="col-md-4">
+        <div class="kartu-konseling">
+          <div class="d-flex justify-content-between">
+            <span class="badge-status">Konseling Selesai</span>
+            <span class="icon-waktu">🕒</span>
+          </div>
+
+          <h5 class="mt-3 mb-1">Rabu, 1 Oktober 2025</h5>
+          <p class="mb-1">10.00 - 12.00 WIB</p>
+
+          <p class="mb-0"><strong>Konselor:</strong> Ibu Rika, S.Pd.</p>
+          <p class="mb-0"><strong>Status:</strong> Selesai</p>
+        </div>
+      </div>
+
+      <!-- Riwayat 2 -->
+      <div class="col-md-4">
+        <div class="kartu-konseling">
+          <div class="d-flex justify-content-between">
+            <span class="badge-status">Konseling Selesai</span>
+            <span class="icon-waktu">🕒</span>
+          </div>
+
+          <h5 class="mt-3 mb-1">Rabu, 1 Oktober 2025</h5>
+          <p class="mb-1">10.00 - 12.00 WIB</p>
+
+          <p class="mb-0"><strong>Konselor:</strong> Ibu Rika, S.Pd.</p>
+          <p class="mb-0"><strong>Status:</strong> Selesai</p>
+        </div>
+      </div>
+
+      <!-- Riwayat 3 -->
+      <div class="col-md-4">
+        <div class="kartu-konseling">
+          <div class="d-flex justify-content-between">
+            <span class="badge-status">Konseling Selesai</span>
+            <span class="icon-waktu">🕒</span>
+          </div>
+
+          <h5 class="mt-3 mb-1">Rabu, 1 Oktober 2025</h5>
+          <p class="mb-1">10.00 - 12.00 WIB</p>
+
+          <p class="mb-0"><strong>Konselor:</strong> Ibu Rika, S.Pd.</p>
+          <p class="mb-0"><strong>Status:</strong> Selesai</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-end mt-4">
+      <a href="#" class="btn btn-primary px-4">Lihat Semua Riwayat Konseling</a>
+    </div>
+
+  </div>
+
+</div>
 
 </body>
 </html>

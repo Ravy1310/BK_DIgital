@@ -13,7 +13,7 @@
 
   <style>
     body {
-      background: linear-gradient(to bottom right, #e8f1ff, #cfe4ff);
+      background: url('../../assets/image/background.jpg');
       font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
@@ -196,32 +196,51 @@
         <div class="carousel-inner">
 
           <!-- Slide 1 -->
-          <div class="carousel-item active">
-            <div class="row g-4 justify-content-center">
-              <div class="col-md-4 col-lg-3 d-flex">
-                <div class="test-card flex-fill">
-                  <div>
-                    <h5>Test Penjurusan</h5>
-                    <p>Mengetahui Penjurusan Siswa</p>
-                    <div class="status text-dark">1 Tahun Lalu</div>
-                    <p class="text-muted small mb-3">Total Soal: 8 Soal</p>
-                  </div>
-                  <button class="btn btn-utama">Lihat Hasil</button>
-                </div>
-              </div>
-              <div class="col-md-4 col-lg-3 d-flex">
-                <div class="test-card flex-fill">
-                  <div>
-                    <h5>Test Kepribadian</h5>
-                    <p>Untuk Mengenali Kepribadian Diri</p>
-                    <div class="status text-dark">6 Bulan Lalu</div>
-                    <p class="text-muted small mb-3">Total Soal: 7 Soal</p>
-                  </div>
-                  <button class="btn btn-utama">Lihat Hasil</button>
-                </div>
-              </div>
-            </div>
-          </div>
+         <div class="carousel-item active">
+  <div class="row g-4 justify-content-center">
+
+    <!-- Card 1 -->
+    <div class="col-md-4 col-lg-3 d-flex">
+      <div class="test-card flex-fill">
+        <div>
+          <h5>Test Penjurusan</h5>
+          <p>Mengetahui Penjurusan Siswa</p>
+          <div class="status text-dark">1 Tahun Lalu</div>
+          <p class="text-muted small mb-3">Total Soal: 8 Soal</p>
+        </div>
+        <button class="btn btn-utama">Lihat Hasil</button>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="col-md-4 col-lg-3 d-flex">
+      <div class="test-card flex-fill">
+        <div>
+          <h5>Test Kepribadian</h5>
+          <p>Untuk Mengenali Kepribadian Diri</p>
+          <div class="status text-dark">6 Bulan Lalu</div>
+          <p class="text-muted small mb-3">Total Soal: 7 Soal</p>
+        </div>
+        <button class="btn btn-utama">Lihat Hasil</button>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="col-md-4 col-lg-3 d-flex">
+      <div class="test-card flex-fill">
+        <div>
+          <h5>Test Minat Belajar</h5>
+          <p>Untuk Mengetahui Minat Belajar Siswa</p>
+          <div class="status text-dark">3 Bulan Lalu</div>
+          <p class="text-muted small mb-3">Total Soal: 3 Soal</p>
+        </div>
+        <button class="btn btn-utama">Lihat Hasil</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
           <!-- Slide 2 -->
           <div class="carousel-item">
@@ -248,6 +267,17 @@
                   <button class="btn btn-utama">Lihat Hasil</button>
                 </div>
               </div>
+              <div class="col-md-4 col-lg-3 d-flex">
+              <div class="test-card flex-fill">
+             <div>
+              <h5>Test Minat Belajar</h5>
+              <p>Untuk Mengetahui Minat Belajar Siswa</p>
+              <div class="status text-dark">3 Bulan Lalu</div>
+              <p class="text-muted small mb-3">Total Soal: 3 Soal</p>
+              </div>
+              <button class="btn btn-utama">Lihat Hasil</button>
+            </div>
+            </div>
             </div>
           </div>
         </div>
