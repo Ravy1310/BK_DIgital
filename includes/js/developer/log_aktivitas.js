@@ -1,6 +1,6 @@
 
 // Global base URL
-const BASE_URL = window.location.origin + '/PBL BK';
+const BASE_URL = window.location.origin + '/BK_DIGITAL';
 
 class LogAktivitas {
     constructor() {

@@ -1,5 +1,5 @@
 <?php
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/PBL BK/';
+$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
 require_once $base_dir . 'includes/db_connection.php';
 require_once $base_dir . 'includes/logAktivitas.php';
 

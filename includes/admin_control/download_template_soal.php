@@ -1,5 +1,5 @@
 <?php
-// includes/admin_control/download_template_excel_soal.php
+// includes/admin_control/download_template_soal.php
 session_start();
 
 // CEK LOGIN
