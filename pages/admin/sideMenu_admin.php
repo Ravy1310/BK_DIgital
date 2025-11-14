@@ -255,8 +255,13 @@ function cleanupPage() {
         if (container) {
             container.removeEventListener('click', kelolaTesHandler);
         }
+
         kelolaTesHandler = null;
     }
+    if (window.__tambahTesLoaded) {
+    delete window.__tambahTesLoaded;
+}
+
     
     // Remove any dynamically added scripts
     const dynamicScripts = document.querySelectorAll('script[data-dynamic="true"]');
@@ -403,6 +408,7 @@ else if (file.includes('kelolaTes.php')) {
 }
 
 // TAMBAHKAN HANDLE UNTUK tambahtes.php - INI YANG BARU
+// Dalam bagian loadContent, tambahkan handler untuk tambahtes.php
 else if (file.includes('tambahtes.php')) {
     console.log('🔄 Setting up Tambah Tes...');
     
@@ -411,34 +417,9 @@ else if (file.includes('tambahtes.php')) {
             // Load JavaScript untuk tambah tes
             await loadScript('../../includes/js/admin/tambahTes.js');
             
-            // Setup event handlers untuk form tambah tes
-            const contentContainer = document.getElementById('contentArea');
-            if (contentContainer) {
-                kelolaTesHandler = function(e) {
-                    const target = e.target;
-                    
-                    // Handle tombol "Batal" - kembali ke kelola tes
-                    if (target.classList.contains('btn-merah') && target.textContent.includes('Batal')) {
-                        e.preventDefault();
-                        loadContent('kelolaTes.php');
-                    }
-                    
-                    // Handle tombol download template
-                    if (target.classList.contains('btn-csv') || target.closest('.btn-csv')) {
-                        e.preventDefault();
-                        if (typeof downloadTemplate === 'function') {
-                            downloadTemplate();
-                        }
-                    }
-                };
-                
-                contentContainer.addEventListener('click', kelolaTesHandler);
-                console.log('✅ Tambah Tes event handler setup completed');
-            }
-            
-            // Initialize form handling jika function tersedia
-            if (typeof window.initTambahTes === 'function') {
-                window.initTambahTes();
+            // Initialize tambah tes
+            if (typeof initTambahTes === 'function') {
+                initTambahTes();
             }
             
         } catch (error) {

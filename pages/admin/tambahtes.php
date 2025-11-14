@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-    body {
+   body {
       font-family: 'Poppins', sans-serif;
       background: url('../../assets/image/background.jpg');
       background-size: cover;
@@ -146,7 +146,54 @@
         transform: translateX(0);
         opacity: 1;
       }
+    } 
+    .nama-tes-feedback {
+      font-size: 0.875em;
+      margin-top: 5px;
     }
+    
+    .nama-tes-valid {
+      color: #198754;
+    }
+    
+    .nama-tes-invalid {
+      color: #dc3545;
+    }
+    
+    .nama-tes-checking {
+      color: #6c757d;
+    }
+    
+    /* Style untuk suggestion */
+    .suggestion-box {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 0.875em;
+    }
+  /* CARI bagian CSS dan TAMBAHKAN: */
+
+/* Loading state untuk button - PASTIKAN ADA */
+.btn-loading .button-text {
+    display: none !important;
+}
+
+.btn-loading .loading-spinner {
+    display: inline !important;
+}
+
+.btn-loading {
+    pointer-events: none !important;
+    opacity: 0.7 !important;
+}
+
+/* Disabled state */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
   </style>
 </head>
 <body>
@@ -168,142 +215,50 @@
       </div>
 
       <!-- FORM TAMBAH TES -->
-      <form id="formTambahTes" enctype="multipart/form-data">
-        <!-- INPUT TES -->
-        <div class="mb-3">
-          <label class="fw-bold">Nama Tes Baru</label>
-          <input type="text" class="form-control" name="nama_tes" placeholder="Masukkan nama tes baru" required>
-        </div>
+      <!-- Dalam file tambahtes.php, pastikan form seperti ini: -->
 
-        <div class="mb-3">
-          <label class="fw-bold">Deskripsi Tes</label>
-          <textarea class="form-control" name="deskripsi_tes" rows="3" placeholder="Masukkan deskripsi tes" required></textarea>
+<!-- FORM TAMBAH TES -->
+<form id="formTambahTes" enctype="multipart/form-data">
+    <!-- INPUT TES -->
+    <div class="mb-3">
+        <label class="fw-bold">Nama Tes Baru</label>
+        <input type="text" class="form-control" name="nama_tes" id="namaTesInput" 
+               placeholder="Masukkan nama tes baru" required>
+        <!-- <div id="namaTesFeedback" class="nama-tes-feedback"></div> -->
+        <div id="suggestionBox" class="suggestion-box" style="display: none;">
+            <strong>💡 Suggestion:</strong> 
+            Coba gunakan nama yang lebih spesifik atau tambahkan tahun/tanggal.
+            <div id="suggestedNames" class="mt-2"></div>
         </div>
+    </div>
 
-        <div class="mb-4">
-          <label class="fw-bold">Unggah File Soal (CSV)</label>
-          <input type="file" class="form-control" name="csv_file" accept=".csv">
-          <small class="text-muted">Format file harus CSV dengan struktur kolom sesuai template</small>
-        </div>
+    <div class="mb-3">
+        <label class="fw-bold">Deskripsi Tes</label>
+        <textarea class="form-control" name="deskripsi_tes" rows="3" placeholder="Masukkan deskripsi tes" required></textarea>
+    </div>
 
-        <!-- TOMBOL AKSI -->
-        <div class="d-flex justify-content-between align-items-center">
-          <button type="button" class="btn btn-merah px-4" id="cancelBtn">Batal</button>
-          <button type="submit" class="btn btn-primary px-4" id="submitBtn">Simpan</button>
-        </div>
-      </form>
+   <div class="mb-4">
+    <label class="fw-bold">Unggah File Soal (CSV)</label>
+    <input type="file" class="form-control" name="csv_file" accept=".csv" id="csvFileInput">
+    <!-- PASTIKAN ELEMEN INI ADA -->
+    <div id="fileValidation" class="file-validation"></div>
+    <small class="text-muted">Format file harus CSV dengan struktur kolom sesuai template. Maksimal 2MB.</small>
+</div>
+
+   <!-- TOMBOL AKSI -->
+<div class="d-flex justify-content-between align-items-center">
+    <button type="button" class="btn btn-merah px-4" id="cancelBtn">Batal</button>
+    <button type="submit" class="btn btn-primary px-4" id="submitBtn">
+    <span class="button-text">Simpan</span>
+    <span class="loading-spinner" style="display: none;">
+        <span class="loading me-2"></span> Menyimpan...
+    </span>
+</button>
+</div>
+</form>
     </div>
   </div>
 
-  <!-- PASTIKAN SCRIPT DIPANGGIL DI AKHIR BODY -->
-  <script>
-    // Inline script untuk immediate initialization
-    console.log('🎯 Starting immediate initialization...');
-    
-    // Tunggu sampai DOM benar-benar siap
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('📄 DOM fully loaded, initializing...');
-        initializeTambahTes();
-      });
-    } else {
-      // DOM sudah siap
-      console.log('⚡ DOM already ready, initializing now...');
-      setTimeout(initializeTambahTes, 100);
-    }
-    
-    function initializeTambahTes() {
-      console.log('🔍 Looking for form...');
-      
-      // Cari form dengan berbagai cara
-      const form = document.getElementById('formTambahTes');
-      console.log('Form found:', !!form);
-      
-      if (form) {
-        console.log('✅ Form found with ID formTambahTes');
-        
-        // Setup form handler
-        form.addEventListener('submit', function(event) {
-          event.preventDefault();
-          console.log('📝 Form submitted!');
-          handleFormSubmit(event);
-        });
-        
-        // Setup button handlers
-        setupButtonHandlers();
-        
-        // Setup file handler
-        const fileInput = document.querySelector('input[type="file"]');
-        if (fileInput) {
-          fileInput.addEventListener('change', handleFileUpload);
-        }
-        
-        console.log('🎉 Tambah Tes initialized successfully!');
-      } else {
-        console.error('❌ FORM STILL NOT FOUND!');
-        console.log('Available forms:', document.querySelectorAll('form'));
-        console.log('Document body:', document.body.innerHTML);
-        
-        // Coba lagi setelah delay
-        setTimeout(initializeTambahTes, 500);
-      }
-    }
-    
-    // Basic function definitions
-    function setupButtonHandlers() {
-      // Download button
-      const downloadBtn = document.getElementById('downloadTemplateBtn');
-      if (downloadBtn) {
-        downloadBtn.onclick = function(e) {
-          e.preventDefault();
-          downloadTemplate();
-        };
-      }
-      
-      // Cancel button
-      const cancelBtn = document.getElementById('cancelBtn');
-      if (cancelBtn) {
-        cancelBtn.onclick = function(e) {
-          e.preventDefault();
-          loadContent('kelolaTes.php');
-        };
-      }
-    }
-    
-    function handleFormSubmit(event) {
-      event.preventDefault();
-      alert('Form submit handled! Nama Tes: ' + document.querySelector('[name="nama_tes"]').value);
-      // Implementasi lengkap akan di-handle oleh external JS
-    }
-    
-    function handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        console.log('File selected:', file.name);
-      }
-    }
-    
-    function downloadTemplate() {
-      console.log('Downloading template...');
-      window.location.href = '../../includes/admin_control/download_template_soal.php';
-    }
-    
-    function loadContent(file) {
-      if (typeof window.parent.loadContent === 'function') {
-        window.parent.loadContent(file);
-      } else {
-        window.location.href = file;
-      }
-    }
-    
-    // Expose functions to global scope untuk external JS
-    window.handleFormSubmit = handleFormSubmit;
-    window.handleFileUpload = handleFileUpload;
-    window.downloadTemplate = downloadTemplate;
-    window.loadContent = loadContent;
-  </script>
 
-  <!-- External JS - Load setelah inline script -->
-  <script src="../../includes/js/admin/tambahtes.js"></script>
 </body>
 </html>
