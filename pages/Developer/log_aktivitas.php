@@ -1,5 +1,5 @@
 <?php
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/PBL BK/';
+$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIgital/';
 require_once $base_dir . 'includes/db_connection.php';
 require_once $base_dir . 'includes/logAktivitas.php';
 
@@ -140,7 +140,7 @@ try {
                             <path d="M8 8a3 3 0 1 0-2.995-3.176A3 3 0 0 0 8 8z"/>
                             <path fill-rule="evenodd" d="M14 14s-1-1.5-6-1.5S2 14 2 14s1-4 6-4 6 4 6 4z"/>
                         </svg>
-                        <h6 class="card-title">Total Siswa Aktif</h6>
+                        <h6 class="card-title">Total Siswa</h6>
                         <h5 class="card-value text-success"><?php echo $total_Siswa; ?></h5>
                     </div>
                 </div>

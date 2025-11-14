@@ -224,7 +224,7 @@
               <path d="M169.3,82.2a56,56,0,1,1-82.6,0" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
             </svg>
           </div>
-          <h6 class="mt-2 text-muted mb-1">Jumlah Siswa Aktif</h6>
+          <h6 class="mt-2 text-muted mb-1">Jumlah Siswa</h6>
           <h4></h4>
         </div>
       </div>
