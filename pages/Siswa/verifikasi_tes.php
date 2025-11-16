@@ -48,8 +48,8 @@
      alt="ikon biru">
             <h4 class="fw-bold">Verifikasi NIS</h4>
             <p class="mt-4">
-                Anda Akan Melakukan:<br>
-                <span class="fw-bold">(Test Minat Belajar)</span>
+                Anda Akan Masuk:<br>
+                <span class="fw-bold">(Menu Tes)</span>
             </p>
         </div>
 
@@ -64,7 +64,7 @@
 
                 <input type="text" class="form-control mb-3" placeholder="Nomor Induk Siswa (NIS)">
                 <div class="text-center">
-                    <button class="btn btn-custom">Mulai Test Sekarang</button>
+                    <button class="btn btn-custom">Masuk Menu Tes Sekarang</button>
                 </div>
             </div>
         </div>

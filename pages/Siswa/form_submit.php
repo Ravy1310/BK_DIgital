@@ -12,13 +12,13 @@
             background-color: #103c69;
         }
 
-        .top-bg {
-            background-image: url('../../assets/image/SekolahYapalis.jpeg');/* ganti dengan gambar Anda */
-            background-size: cover;
-            background-position: center;
-            height: 260px;
-            width: 100%;
-        }
+       .top-bg {
+    background-image: url('../../assets/image/SekolahYapalis.jpeg');
+    background-size: cover;
+    background-position: 5px -80px;
+    height: 260px;
+    width: 100%;
+}
 
         .content-card {
             background: white;
@@ -54,7 +54,7 @@
 
     <!-- Card Hasil -->
     <div class="content-card text-center">
-        <h2>Anda Sudah<br>Menyelesaikan Tes</h2>
+        <h2>Anda Sudah Menyelesaikan Tes</h2>
 
         <p class="mt-3 mb-4">
             Terimakasih Telah Mengikuti Tes ini.<br>

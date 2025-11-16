@@ -95,9 +95,8 @@
         <label for="jenisLaporan" class="form-label">Jenis Laporan</label>
         <select id="jenisLaporan" class="form-select" required>
           <option selected disabled>Pilih jenis laporan</option>
-          <option>Masalah Akademik</option>
-          <option>Masalah Non-Akademik</option>
-          <option>Lainnya</option>
+          <option>Anonim</option>
+          <option>Teridentifikasi</option>
         </select>
       </div>
 
