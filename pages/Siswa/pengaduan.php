@@ -81,47 +81,13 @@
     textarea {
       resize: vertical;
     }
-
-    /* Form kedua (verifikasi NIS) disembunyikan dulu */
-    #verifikasiForm {
-      display: none;
-    }
-
-    /* Gaya layout verifikasi */
-    .verif-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .verif-left {
-      flex: 1;
-      text-align: center;
-    }
-
-    .verif-right {
-      flex: 1;
-    }
-
-    .verif-left img {
-      width: 120px;
-      margin-bottom: 15px;
-    }
-
-    .verif-title {
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: #004AAD;
-    }
   </style>
 </head>
 
 <body>
 
   <!-- Form Pengaduan -->
-  <div class="form-container" id="pengaduanForm">
+  <div class="form-container">
     <h5 class="form-title">Buat Pengaduan</h5>
 
     <form id="formPengaduan">
@@ -129,9 +95,8 @@
         <label for="jenisLaporan" class="form-label">Jenis Laporan</label>
         <select id="jenisLaporan" class="form-select" required>
           <option selected disabled>Pilih jenis laporan</option>
-          <option>Masalah Akademik</option>
-          <option>Masalah Non-Akademik</option>
-          <option>Lainnya</option>
+          <option>Anonim</option>
+          <option>Teridentifikasi</option>
         </select>
       </div>
 
@@ -158,33 +123,14 @@
     </form>
   </div>
 
-  <!-- Form Verifikasi NIS -->
-  <div class="form-container" id="verifikasiForm">
-    <div class="verif-container">
-      <div class="verif-left">
-       <img src="data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><path fill='%23002E6E' d='M24 2l-18 8v12c0 11.11 7.67 21.47 18 24 10.33-2.53 18-12.89 18-24v-12l-18-8zm0 21.98h14c-1.06 8.24-6.55 15.58-14 17.87v-17.85h-14v-11.4l14-6.22v17.6z'/><path fill='none' d='M0 0h48v48h-48z'/></svg>" alt="ikon biru">
-        <h5 class="mt-2">Verifikasi NIS</h5>
-        <p>Anda Akan Melakukan:<br><strong>(pengajuan pengaduan)</strong></p>
-      </div>
-
-      <div class="verif-right">
-        <h5 class="verif-title text-center mb-3">MASUKKAN NOMOR INDUK SISWA (NIS)</h5>
-        <p class="text-center">NIS diperlukan untuk menyimpan data aduan anda agar tercatat dengan benar</p>
-        <input type="text" class="form-control mb-3" placeholder="Nomor Induk Siswa (NIS)" required>
-        <button class="btn btn-primary w-100">Ajukan Sekarang</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Script untuk ganti tampilan -->
   <script>
+    // Jalankan aksi submit biasa (tanpa verifikasi NIS)
     document.getElementById('formPengaduan').addEventListener('submit', function(e) {
-      e.preventDefault(); // cegah reload
-      document.getElementById('pengaduanForm').style.display = 'none';
-      document.getElementById('verifikasiForm').style.display = 'block';
+      e.preventDefault();
+      alert("Pengaduan berhasil dikirim!");
     });
   </script>
 

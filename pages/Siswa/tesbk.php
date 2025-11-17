@@ -13,7 +13,7 @@
 
   <style>
     body {
-      background: linear-gradient(to bottom right, #e8f1ff, #cfe4ff);
+      background: url('../../assets/image/background.jpg');
       font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
@@ -117,7 +117,7 @@
   <div class="container py-5">
 
     <!-- ===== BAGIAN TEST BK ===== -->
-    <h3 class="section-title">Test BK</h3>
+    <h3 class="section-title">Tes BK</h3>
     <div class="section-container">
       <div id="carouselTesBK" class="carousel slide" data-bs-interval="false">
         <div class="carousel-inner">
@@ -128,23 +128,23 @@
               <div class="col-md-5 col-lg-4 d-flex">
                 <div class="test-card flex-fill">
                   <div>
-                    <h5>Test Minat Belajar</h5>
+                    <h5>Tes Minat Belajar</h5>
                     <p>Untuk Mengetahui Minat Belajar Siswa</p>
                     <div class="status">Belum Dikerjakan</div>
                     <p class="text-muted small mb-3">Total Soal: 3 Soal</p>
                   </div>
-                  <button class="btn btn-utama">Mulai Test</button>
+                  <button class="btn btn-utama">Mulai Tes</button>
                 </div>
               </div>
               <div class="col-md-5 col-lg-4 d-flex">
                 <div class="test-card flex-fill">
                   <div>
-                    <h5>Test Gaya Belajar</h5>
+                    <h5>Tes Gaya Belajar</h5>
                     <p>Untuk Mengenali Gaya Belajar yang Cocok</p>
                     <div class="status">Belum Dikerjakan</div>
                     <p class="text-muted small mb-3">Total Soal: 4 Soal</p>
                   </div>
-                  <button class="btn btn-utama">Mulai Test</button>
+                  <button class="btn btn-utama">Mulai Tes</button>
                 </div>
               </div>
             </div>
@@ -156,23 +156,23 @@
               <div class="col-md-5 col-lg-4 d-flex">
                 <div class="test-card flex-fill">
                   <div>
-                    <h5>Test Kepribadian</h5>
+                    <h5>Tes Kepribadian</h5>
                     <p>Untuk Mengenal Kepribadian Diri Siswa</p>
                     <div class="status">Belum Dikerjakan</div>
                     <p class="text-muted small mb-3">Total Soal: 5 Soal</p>
                   </div>
-                  <button class="btn btn-utama">Mulai Test</button>
+                  <button class="btn btn-utama">Mulai Tes</button>
                 </div>
               </div>
               <div class="col-md-5 col-lg-4 d-flex">
                 <div class="test-card flex-fill">
                   <div>
-                    <h5>Test Penjurusan</h5>
+                    <h5>Tes Penjurusan</h5>
                     <p>Mengetahui Jurusan yang Sesuai</p>
                     <div class="status">Belum Dikerjakan</div>
                     <p class="text-muted small mb-3">Total Soal: 8 Soal</p>
                   </div>
-                  <button class="btn btn-utama">Mulai Test</button>
+                  <button class="btn btn-utama">Mulai Tes</button>
                 </div>
               </div>
             </div>
@@ -190,38 +190,57 @@
     </div>
 
     <!-- ===== BAGIAN RIWAYAT ===== -->
-    <h3 class="section-title">Riwayat</h3>
+    <h3 class="section-title">Riwayat Tes</h3>
     <div class="section-container">
       <div id="carouselRiwayat" class="carousel slide" data-bs-interval="false">
         <div class="carousel-inner">
 
           <!-- Slide 1 -->
-          <div class="carousel-item active">
-            <div class="row g-4 justify-content-center">
-              <div class="col-md-4 col-lg-3 d-flex">
-                <div class="test-card flex-fill">
-                  <div>
-                    <h5>Test Penjurusan</h5>
-                    <p>Mengetahui Penjurusan Siswa</p>
-                    <div class="status text-dark">1 Tahun Lalu</div>
-                    <p class="text-muted small mb-3">Total Soal: 8 Soal</p>
-                  </div>
-                  <button class="btn btn-utama">Lihat Hasil</button>
-                </div>
-              </div>
-              <div class="col-md-4 col-lg-3 d-flex">
-                <div class="test-card flex-fill">
-                  <div>
-                    <h5>Test Kepribadian</h5>
-                    <p>Untuk Mengenali Kepribadian Diri</p>
-                    <div class="status text-dark">6 Bulan Lalu</div>
-                    <p class="text-muted small mb-3">Total Soal: 7 Soal</p>
-                  </div>
-                  <button class="btn btn-utama">Lihat Hasil</button>
-                </div>
-              </div>
-            </div>
-          </div>
+         <div class="carousel-item active">
+  <div class="row g-4 justify-content-center">
+
+    <!-- Card 1 -->
+    <div class="col-md-4 col-lg-3 d-flex">
+      <div class="test-card flex-fill">
+        <div>
+          <h5>Tes Penjurusan</h5>
+          <p>Mengetahui Penjurusan Siswa</p>
+          <div class="status text-dark">1 Tahun Lalu</div>
+          <p class="text-muted small mb-3">Total Soal: 8 Soal</p>
+        </div>
+        <button class="btn btn-utama">Lihat Hasil</button>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="col-md-4 col-lg-3 d-flex">
+      <div class="test-card flex-fill">
+        <div>
+          <h5>Tes Kepribadian</h5>
+          <p>Untuk Mengenali Kepribadian Diri</p>
+          <div class="status text-dark">6 Bulan Lalu</div>
+          <p class="text-muted small mb-3">Total Soal: 7 Soal</p>
+        </div>
+        <button class="btn btn-utama">Lihat Hasil</button>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="col-md-4 col-lg-3 d-flex">
+      <div class="test-card flex-fill">
+        <div>
+          <h5>Tes Minat Belajar</h5>
+          <p>Untuk Mengetahui Minat Belajar Siswa</p>
+          <div class="status text-dark">3 Bulan Lalu</div>
+          <p class="text-muted small mb-3">Total Soal: 3 Soal</p>
+        </div>
+        <button class="btn btn-utama">Lihat Hasil</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
           <!-- Slide 2 -->
           <div class="carousel-item">
@@ -229,7 +248,7 @@
               <div class="col-md-4 col-lg-3 d-flex">
                 <div class="test-card flex-fill">
                   <div>
-                    <h5>Test Sosial Emosional</h5>
+                    <h5>Tes Sosial Emosional</h5>
                     <p>Untuk Mengenali Kesehatan Emosional</p>
                     <div class="status text-dark">2 Minggu Lalu</div>
                     <p class="text-muted small mb-3">Total Soal: 6 Soal</p>
@@ -240,7 +259,7 @@
               <div class="col-md-4 col-lg-3 d-flex">
                 <div class="test-card flex-fill">
                   <div>
-                    <h5>Test Kepemimpinan</h5>
+                    <h5>Tes Kepemimpinan</h5>
                     <p>Mengetahui Potensi Kepemimpinan</p>
                     <div class="status text-dark">1 Bulan Lalu</div>
                     <p class="text-muted small mb-3">Total Soal: 5 Soal</p>
@@ -248,6 +267,17 @@
                   <button class="btn btn-utama">Lihat Hasil</button>
                 </div>
               </div>
+              <div class="col-md-4 col-lg-3 d-flex">
+              <div class="test-card flex-fill">
+             <div>
+              <h5>Tes Minat Belajar</h5>
+              <p>Untuk Mengetahui Minat Belajar Siswa</p>
+              <div class="status text-dark">3 Bulan Lalu</div>
+              <p class="text-muted small mb-3">Total Soal: 3 Soal</p>
+              </div>
+              <button class="btn btn-utama">Lihat Hasil</button>
+            </div>
+            </div>
             </div>
           </div>
         </div>

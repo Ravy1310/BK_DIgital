@@ -283,6 +283,7 @@
       <h2 class="section-title">Layanan Kami</h2>
       <div class="row g-4 justify-content-center">
         <div class="col-md-4">
+            <a href="verifikasi_jadwal.php" class="text-decoration-none text-dark">
           <div class="feature-card">
             <i class="fas fa-comments"></i>
             <h5>Konseling Pribadi & Akademik</h5>
@@ -290,6 +291,7 @@
           </div>
         </div>
         <div class="col-md-4">
+            <a href="pengaduan.php" class="text-decoration-none text-dark">
           <div class="feature-card">
             <i class="fas fa-bullhorn"></i>
             <h5>Pengaduan Siswa</h5>
@@ -297,7 +299,7 @@
           </div>
         </div>
           <div class="col-md-4">
-            <a href="tesbk.php" class="text-decoration-none text-dark">
+            <a href="verifikasi_tes.php" class="text-decoration-none text-dark">
             <div class="feature-card">
               <i class="fas fa-file-alt"></i>
               <h5>Tes dan Evaluasi</h5>

@@ -2,6 +2,7 @@
 // Global base URL
 const BASE_URL = window.location.origin + '/BK_DIGITAL';
 
+
 class LogAktivitas {
     constructor() {
         // Cek jika instance sudah ada

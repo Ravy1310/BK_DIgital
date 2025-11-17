@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Tes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background-color: #103c69;
+        }
+
+       .top-bg {
+    background-image: url('../../assets/image/SekolahYapalis.jpeg');
+    background-size: cover;
+    background-position: 5px -80px;
+    height: 260px;
+    width: 100%;
+}
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px 30px;
+            max-width: 1000px;
+            margin: -120px auto 0; /* posisikan card naik */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            font-weight: 700;
+            color: #1d1d1d;
+        }
+
+        .btn-custom {
+            background-color: #003893;
+            color: white;
+            padding: 8px 22px;
+            border-radius: 6px;
+        }
+
+        .btn-custom:hover {
+            background-color: #002d73;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Gambar Atas -->
+    <div class="top-bg"></div>
+
+    <!-- Card Hasil -->
+    <div class="content-card text-center">
+        <h2>Anda Sudah Menyelesaikan Tes</h2>
+
+        <p class="mt-3 mb-4">
+            Terimakasih Telah Mengikuti Tes ini.<br>
+            Jawaban anda telah berhasil direkam.
+        </p>
+
+        <button class="btn btn-custom">Lihat Akurasi</button>
+    </div>
+
+</body>
+</html>
