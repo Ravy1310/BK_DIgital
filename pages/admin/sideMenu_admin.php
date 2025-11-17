@@ -379,6 +379,7 @@ else if (file.includes('kelolaTes.php')) {
     
     setTimeout(() => {
         try {
+           
             // Setup event handlers untuk tombol-tombol di kelolaTes
             const contentContainer = document.getElementById('contentArea');
             if (contentContainer) {
@@ -386,7 +387,7 @@ else if (file.includes('kelolaTes.php')) {
                     const target = e.target;
                     
                     // Handle tombol "Kelola Tes BK"
-                    if (target.classList.contains('action-btn') && target.textContent.includes('Kelola Tes BK')) {
+                    if (target.classList.contains('action-btn') && target.textContent.includes('Kelola Soal Tes')) {
                         e.preventDefault();
                         loadContent('kelolasoal.php');
                     }
@@ -427,6 +428,7 @@ else if (file.includes('tambahtes.php')) {
         }
     }, 300);
 }
+
 
     } catch (error) {
         console.error('❌ Error loading content:', error);
