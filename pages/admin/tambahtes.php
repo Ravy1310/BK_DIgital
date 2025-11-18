@@ -247,7 +247,7 @@
 
    <!-- TOMBOL AKSI -->
 <div class="d-flex justify-content-between align-items-center">
-    <button type="button" class="btn btn-merah px-4" id="cancelBtn">Batal</button>
+    <button type="button" class="btn btn-merah px-4"  onclick="window.loadContent('kelolaTes.php')">Batal</button>
     <button type="submit" class="btn btn-primary px-4" id="submitBtn">
     <span class="button-text">Simpan</span>
     <span class="loading-spinner" style="display: none;">

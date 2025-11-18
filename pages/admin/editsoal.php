@@ -42,18 +42,23 @@ $tes = isset($_GET['tes']) ? $_GET['tes'] : "Nama Tes Tidak Ditemukan";
     .btn-merah {
       background-color: #C60000 !important;
       color: #fff !important;
+      border: none !important;
+    }
+    .btn-merah:hover {
+       background-color: #710303ff !important;
+      transform: translateY(-1px);
     }
   </style>
 </head>
 
 <body>
 
-<div class="container my-5">
+<div class="container my-3">
   <div class="card p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="fw-bold">Kelola Soal: <?= htmlspecialchars($tes) ?></h4>
-      <button class="btn btn-primary btn-sm">+ Tambah Soal Baru</button>
+      <button class="btn btn-primary px-4">+ Tambah Soal Baru</button>
     </div>
 
     <p class="text-muted">Daftar soal untuk tes ini.</p>
@@ -67,13 +72,13 @@ $tes = isset($_GET['tes']) ? $_GET['tes'] : "Nama Tes Tidak Ditemukan";
         C. Bergerak atau menunjuk
       </p>
       <div class="text-end">
-        <button class="btn btn-success btn-sm me-1">Edit</button>
-        <button class="btn btn-merah btn-sm">Hapus</button>
+        <button class="btn btn-success px-3 me-1">Edit</button>
+        <button class="btn btn-merah px-3">Hapus</button>
       </div>
     </div>
 <div class="text-start mt-3">
-        <button class="btn btn-merah btn-sm" onclick="loadContent('kelolaTes.php')">Kembali</button>
-      </div>
+        <button type="button" class="btn btn-merah px-4" onclick="window.loadContent('kelolasoal.php')">Kembali</button>
+  </div>
     </div>
   </script>
 
