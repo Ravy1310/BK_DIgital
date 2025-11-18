@@ -1,4 +1,5 @@
 <?php
+include 'header.php';
 session_start();
 require_once __DIR__ . "/../../includes/db_connection.php";
 
@@ -81,7 +82,7 @@ $riwayat = $stmt2->fetchAll();
     }
 
     .konseling-header {
-      background: #0d47a1;
+      background: #0050BC;
       padding: 12px 18px;
       color: #fff;
       font-weight: 600;
@@ -137,7 +138,7 @@ $riwayat = $stmt2->fetchAll();
 }
 
 .btn-konseling:hover {
-  background: #08306b;
+  background: #0050BC;
   transform: translateY(-3px);
 }
 

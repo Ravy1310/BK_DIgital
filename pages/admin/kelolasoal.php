@@ -91,7 +91,7 @@ header("Expires: 0");
           <small class="text-muted">Mengukur karakter siswa</small>
         </div>
         <div>
-          <a href="kelola_soal.php?tes=Kepribadian" class="btn btn-success btn-sm me-1">Edit</a>
+          <a href="editsoal.php?tes=Kepribadian" class="btn btn-success btn-sm me-1">Edit</a>
           <button class="btn btn-merah btn-sm">Hapus</button>
         </div>
       </div>

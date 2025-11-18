@@ -1,3 +1,7 @@
+<?php
+// Jika siswa sudah diverifikasi → akan masuk dengan parameter ?idsiswa=
+$verified_id = isset($_GET['idsiswa']) ? $_GET['idsiswa'] : null;
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -77,23 +81,25 @@
     .btn-primary:hover {
       background-color: #003580;
     }
-
-    textarea {
-      resize: vertical;
-    }
   </style>
 </head>
 
 <body>
 
-  <!-- Form Pengaduan -->
   <div class="form-container">
     <h5 class="form-title">Buat Pengaduan</h5>
 
-    <form id="formPengaduan">
+    <!-- FORM -->
+    <form id="formPengaduan" action="../../includes/pengaduan_controller.php" method="POST">
+
+      <!-- Jika sudah diverifikasi, kirim id siswa -->
+      <?php if ($verified_id): ?>
+        <input type="hidden" name="id_siswa" value="<?= $verified_id ?>">
+      <?php endif; ?>
+
       <div class="mb-3">
-        <label for="jenisLaporan" class="form-label">Jenis Laporan</label>
-        <select id="jenisLaporan" class="form-select" required>
+        <label class="form-label">Jenis Laporan</label>
+        <select name="jenis_laporan" class="form-select" required>
           <option selected disabled>Pilih jenis laporan</option>
           <option>Anonim</option>
           <option>Teridentifikasi</option>
@@ -101,8 +107,8 @@
       </div>
 
       <div class="mb-3">
-        <label for="jenisKejadian" class="form-label">Jenis Kejadian</label>
-        <select id="jenisKejadian" class="form-select" required>
+        <label class="form-label">Jenis Kejadian</label>
+        <select name="jenis_kejadian" class="form-select" required>
           <option selected disabled>Pilih jenis kejadian</option>
           <option>Bully</option>
           <option>Kekerasan Fisik</option>
@@ -112,8 +118,8 @@
       </div>
 
       <div class="mb-3">
-        <label for="penjelasan" class="form-label">Penjelasan</label>
-        <textarea id="penjelasan" class="form-control" rows="5" placeholder="Tuliskan penjelasan Anda..." required></textarea>
+        <label class="form-label">Penjelasan</label>
+        <textarea name="penjelasan" class="form-control" rows="5" placeholder="Tuliskan penjelasan Anda..." required></textarea>
       </div>
 
       <div class="d-flex justify-content-between mt-4">
@@ -121,16 +127,23 @@
         <button type="submit" class="btn btn-primary">Kirim</button>
       </div>
     </form>
+
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+  <!-- SCRIPT VERIFIKASI -->
   <script>
-    // Jalankan aksi submit biasa (tanpa verifikasi NIS)
-    document.getElementById('formPengaduan').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert("Pengaduan berhasil dikirim!");
+    document.getElementById("formPengaduan").addEventListener("submit", function(event) {
+
+        const jenis = document.querySelector("select[name='jenis_laporan']").value;
+        const alreadyVerified = window.location.search.includes("idsiswa");
+
+        // Jika pilih teridentifikasi tetapi belum diverifikasi, arahkan ke halaman verifikasi
+        if (jenis === "Teridentifikasi" && !alreadyVerified) {
+            event.preventDefault();
+            window.location.href = "verifikasi_pengaduan.php";
+        }
+
+        // Jika sudah diverifikasi, proses lanjut kirim ke controller
     });
   </script>
 
