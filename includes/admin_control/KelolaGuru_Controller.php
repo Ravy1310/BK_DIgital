@@ -94,9 +94,9 @@ try {
                 
                 // Ambil data lama untuk log
                 $old_data_query = "SELECT g.nama, g.telepon, g.alamat, g.status, u.username, u.email 
-                                 FROM guru g 
-                                 LEFT JOIN users u ON g.id_guru = u.id_guru 
-                                 WHERE g.id_guru = ?";
+                                FROM guru g 
+                                LEFT JOIN users u ON g.id_guru = u.id_guru 
+                                WHERE g.id_guru = ?";
                 $old_data_stmt = $pdo->prepare($old_data_query);
                 $old_data_stmt->execute([$id_guru]);
                 $old_data = $old_data_stmt->fetch(PDO::FETCH_ASSOC);
@@ -246,9 +246,9 @@ try {
 
             // Ambil data sebelum dihapus untuk log
             $data_query = "SELECT g.nama, g.telepon, g.alamat, u.username, u.email 
-                         FROM guru g 
-                         LEFT JOIN users u ON g.id_guru = u.id_guru 
-                         WHERE g.id_guru = ?";
+                        FROM guru g 
+                        LEFT JOIN users u ON g.id_guru = u.id_guru 
+                        WHERE g.id_guru = ?";
             $data_stmt = $pdo->prepare($data_query);
             $data_stmt->execute([$id_guru]);
             $deleted_data = $data_stmt->fetch(PDO::FETCH_ASSOC);
@@ -304,10 +304,10 @@ try {
     log_action('ERROR_GURU', "Error pada operasi guru oleh admin {$adminName}: " . $e->getMessage(), $meta);
     
     // PERBAIKAN: Bersihkan output buffer sebelum mengirim JSON
-    ob_clean(); 
+    ob_clean();
     
     // Kirim status error ke client
-    http_response_code(400); 
+    http_response_code(400);
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }
 

@@ -16,6 +16,7 @@ if ($_SESSION['admin_role'] !== 'admin' && $_SESSION['admin_role'] !== 'superadm
 }
 
 require_once '../db_connection.php';
+require_once '../logAktivitas.php'; // Tambahkan ini untuk log aktivitas
 
 header('Content-Type: application/json');
 
@@ -245,6 +246,18 @@ try {
     $validation_result = validateCSVFile($file_path);
     if ($validation_result['status'] === 'error') {
         unlink($file_path);
+        
+        // Log aktivitas - Gagal validasi CSV
+        log_action(
+            'ADD_TEST_VALIDATION_FAILED', 
+            "Validasi CSV gagal untuk tes: $kategori_tes", 
+            [
+                'nama_tes' => $kategori_tes,
+                'error_message' => $validation_result['message'],
+                'file_name' => $_FILES['csv_file']['name']
+            ]
+        );
+        
         throw new Exception($validation_result['message']);
     }
     
@@ -302,6 +315,19 @@ try {
         // Clean up uploaded file
         unlink($file_path);
         
+        // Log aktivitas - Sukses tambah tes
+        log_action(
+            'ADD_TEST_SUCCESS', 
+            "Berhasil menambahkan tes baru: $kategori_tes", 
+            [
+                'tes_id' => $tes_id,
+                'nama_tes' => $kategori_tes,
+                'jumlah_soal' => $inserted_questions,
+                'jumlah_opsi' => $inserted_options,
+                'file_name' => $_FILES['csv_file']['name']
+            ]
+        );
+        
         echo json_encode([
             'status' => 'success',
             'message' => "Tes berhasil ditambahkan dengan $inserted_questions soal dan $inserted_options opsi jawaban",
@@ -313,6 +339,18 @@ try {
         if (file_exists($file_path)) {
             unlink($file_path);
         }
+        
+        // Log aktivitas - Gagal tambah tes
+        log_action(
+            'ADD_TEST_FAILED', 
+            "Gagal menambahkan tes: $kategori_tes", 
+            [
+                'nama_tes' => $kategori_tes,
+                'error_message' => $e->getMessage(),
+                'file_name' => $_FILES['csv_file']['name']
+            ]
+        );
+        
         throw $e;
     }
     
