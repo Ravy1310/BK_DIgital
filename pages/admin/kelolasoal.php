@@ -13,6 +13,10 @@ if ($_SESSION['admin_role'] !== 'admin' && $_SESSION['admin_role'] !== 'superadm
     exit;
 }
 
+// Sesuaikan base_dir jika perlu; ini tidak wajib jika kamu sudah include db_connection di sini.
+$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
+require_once $base_dir . 'includes/db_connection.php';
+
 // CEGAH CACHING
 header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
@@ -34,7 +38,7 @@ header("Expires: 0");
       background-position: center;
       background-attachment: fixed;
       min-height: 100vh;
-      padding: 40px 10px;
+      padding-top: 30px;
     }
     .card {
       border: none;
@@ -45,6 +49,10 @@ header("Expires: 0");
       background-color: #C60000 !important;
       color: #fff !important;
       border: none !important;
+    }
+    .btn-merah:hover {
+       background-color: #710303ff !important;
+      transform: translateY(-1px);
     }
     .btn-primary {
       background-color: #0066cc;
@@ -63,45 +71,110 @@ header("Expires: 0");
 
 <body>
 
-<div class="container my-5">
+<div class="container my-3">
   <div class="card p-4">
 
     <h4 class="fw-bold mb-3">Kelola Tes BK</h4>
     <p class="text-muted">Ubah atau hapus jenis tes yang tersedia.</p>
 
-    <!-- Tes Minat Belajar -->
+   <?php
+try {
+    // Query untuk mengambil data tes beserta jumlah soal
+    $query_tes_list = "SELECT t.*, COUNT(s.id_soal) as jumlah_soal 
+                      FROM tes t 
+                      LEFT JOIN soal_tes s ON t.id_tes = s.id_tes 
+                      GROUP BY t.id_tes
+                      ORDER BY t.kategori_tes ASC";
+    $stmt_tes_list = $pdo->prepare($query_tes_list);
+    $stmt_tes_list->execute();
+    $tes_list = $stmt_tes_list->fetchAll(PDO::FETCH_ASSOC);
+    
+    if (count($tes_list) > 0) {
+        foreach ($tes_list as $tes) {
+            // pastikan index ada
+            $id_tes = (int) $tes['id_tes'];
+            $kategori = htmlspecialchars($tes['kategori_tes']);
+            $deskripsi = htmlspecialchars($tes['deskripsi_tes'] ?? '');
+            $jumlah = (int) $tes['jumlah_soal'];
+?>
     <div class="kelola-card mb-3 p-3 border rounded">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h5 class="mb-1">Tes Minat Belajar</h5>
-          <small class="text-muted">Mengukur minat belajar siswa</small>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-1"><?= $kategori ?></h5>
+                <small class="text-muted"><?= $deskripsi ?></small>
+                <div class="small text-muted">Jumlah soal: <?= $jumlah ?></div>
+            </div>
+            <div>
+                <!-- Tombol membuka Kelola Soal (edit soal) -->
+                <button type="button"
+                        class="btn btn-success px-3 btn-sm me-1"
+                        onclick="window.location.href='editsoal.php?id_tes=<?= $id_tes ?>&tes=<?= urlencode($kategori) ?>'">
+                   Edit
+                </button>
+
+                <!-- Tombol hapus -->
+                <button class="btn btn-merah btn-sm px-3"
+                        onclick="hapusTes(<?= $id_tes ?>, this)">
+                    Hapus
+                </button>
+            </div>
         </div>
-        <div>
-          <a href="kelola_soal.php?tes=Minat%20Belajar" class="btn btn-success btn-sm me-1">Edit</a>
-          <button class="btn btn-merah btn-sm">Hapus</button>
-        </div>
-      </div>
+    </div>
+<?php
+        }
+    } else {
+        echo '<div class="alert alert-info">Belum ada tes yang tersedia.</div>';
+    }
+} catch (Exception $e) {
+    echo '<div class="alert alert-danger">Gagal memuat data tes: ' . htmlspecialchars($e->getMessage()) . '</div>';
+}
+?>
+    <!-- Tombol kembali (opsional) -->
+    <div class="text-start mt-3">
+      <button type="button" class="btn btn-secondary px-4" onclick="window.history.back()">Kembali</button>
     </div>
 
-    <!-- Tes Kepribadian -->
-    <div class="kelola-card mb-3 p-3 border rounded">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h5 class="mb-1">Tes Kepribadian</h5>
-          <small class="text-muted">Mengukur karakter siswa</small>
-        </div>
-        <div>
-          <a href="editsoal.php?tes=Kepribadian" class="btn btn-success btn-sm me-1">Edit</a>
-          <button class="btn btn-merah btn-sm">Hapus</button>
-        </div>
-      </div>
-    </div>
- <!-- Tombol kembali -->
-      <div class="text-start mt-3">
-        <button class="btn btn-merah btn-sm" onclick="loadContent('kelolaTes.php')">Kembali</button>
-      </div>
-    </div>
-  </script>
+  </div>
+</div>
+
+<!-- SCRIPT: fungsi hapus ajax -->
+<script>
+/**
+ * hapusTes(id, btn)
+ * id: integer id_tes
+ * btn: elemen tombol (dipakai untuk men-disable)
+ */
+function hapusTes(id, btn) {
+    if (!confirm("Yakin ingin menghapus tes ini beserta semua soalnya? Tindakan ini tidak bisa dibatalkan.")) {
+        return;
+    }
+
+    // disable tombol sementara
+    if (btn) { btn.disabled = true; btn.textContent = 'Menghapus...'; }
+
+    fetch('../../includes/admin_control/HapusTes_Controller.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id_tes=' + encodeURIComponent(id)
+    })
+    .then(response => response.json())
+    .then(json => {
+        if (json.success) {
+            alert(json.message || 'Tes berhasil dihapus.');
+            // reload halaman utk update daftar
+            window.location.reload();
+        } else {
+            alert(json.message || 'Gagal menghapus tes.');
+            if (btn) { btn.disabled = false; btn.textContent = 'Hapus'; }
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Terjadi kesalahan saat menghapus.');
+        if (btn) { btn.disabled = false; btn.textContent = 'Hapus'; }
+    });
+}
+</script>
 
 </body>
 </html>

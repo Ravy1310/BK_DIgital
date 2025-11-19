@@ -7,11 +7,11 @@ function initTambahTes() {
     
     const form = document.getElementById('formTambahTes');
     const downloadBtn = document.getElementById('downloadTemplateBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
+    
 
     if (form) form.addEventListener('submit', handleFormSubmit);
     if (downloadBtn) downloadBtn.addEventListener('click', downloadTemplate);
-    if (cancelBtn) cancelBtn.addEventListener('click', handleCancel);
+   
 }
 
 async function handleFormSubmit(event) {
@@ -103,11 +103,6 @@ function downloadTemplate() {
     showAlert('Template berhasil diunduh!', 'success');
 }
 
-function handleCancel() {
-    if (confirm('Batalkan penambahan tes?')) {
-        if (typeof loadContent === 'function') loadContent('kelolaTes.php');
-    }
-}
 
 function showAlert(message, type) {
     const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';

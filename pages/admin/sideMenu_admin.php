@@ -185,6 +185,7 @@ let currentPage = '';
 let kelolaGuruHandler = null;
 let kelolaSiswaHandler = null;
 let kelolaTesHandler = null;
+let kelolaSoalHandler = null;
 
 // DOM Elements
 const sidebar = document.getElementById('sidebar');
@@ -257,6 +258,13 @@ function cleanupPage() {
         }
 
         kelolaTesHandler = null;
+    }
+    if (kelolaSoalHandler) {
+        const container = document.getElementById('contentArea');
+        if (container) {
+            container.removeEventListener('click', kelolaSoalHandler);
+        }
+        kelolaSoalHandler = null;
     }
     if (window.__tambahTesLoaded) {
     delete window.__tambahTesLoaded;
@@ -407,6 +415,55 @@ else if (file.includes('kelolaTes.php')) {
         }
     }, 300);
 }
+
+else if (file.includes('kelolasoal.php')) {
+    console.log('🔄 Setting up Kelola Soal...');
+    
+    setTimeout(() => {
+        try {
+            const contentContainer = document.getElementById('contentArea');
+            if (contentContainer) {
+                kelolaSoalHandler = function(e) {
+                    const target = e.target;
+                    const button = target.closest('button');
+                    
+                    // Handle tombol Edit Tes
+                    if (button && button.classList.contains('action-btn') && button.textContent.includes('Edit')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const idTes = button.getAttribute('data-edit-tes');
+                        console.log('📝 Loading edit tes for ID:', idTes);
+                        
+                        // Load editsoal.php dengan parameter id_tes
+                        loadContent(`editsoal.php?id_tes=${idTes}`);
+                    }
+                    
+                    // Handle tombol Hapus Tes
+                    if (button && button.classList.contains('btn-merah') && button.textContent.includes('Hapus')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const idTes = button.getAttribute('data-hapus-tes');
+                        console.log('🗑️ Deleting tes with ID:', idTes);
+                        
+                        if (confirm('Apakah Anda yakin ingin menghapus tes ini?')) {
+                            // Panggil fungsi hapus tes
+                            hapusTes(idTes);
+                        }
+                    }
+                };
+                
+                contentContainer.addEventListener('click', kelolaSoalHandler);
+                console.log('✅ Kelola Soal event handler setup completed');
+            }
+        } catch (error) {
+            console.error('❌ Error setting up Kelola Soal:', error);
+        }
+    }, 300);
+}
+
+
 
 // TAMBAHKAN HANDLE UNTUK tambahtes.php - INI YANG BARU
 // Dalam bagian loadContent, tambahkan handler untuk tambahtes.php
