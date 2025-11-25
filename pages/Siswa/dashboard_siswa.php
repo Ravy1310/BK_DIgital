@@ -206,7 +206,7 @@ include 'header.php';
         </div>
 
         <div class="col-md-4">
-            <a href="pengaduan.php" class="text-decoration-none text-dark">
+            <a href="verifikasi_pengaduan.php" class="text-decoration-none text-dark">
           <div class="feature-card">
             <i class="fas fa-bullhorn"></i>
             <h5>Pengaduan Siswa</h5>
