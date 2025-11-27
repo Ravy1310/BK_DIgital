@@ -387,7 +387,7 @@ else if (file.includes('kelolaTes.php')) {
     
     setTimeout(() => {
         try {
-           
+        
             // Setup event handlers untuk tombol-tombol di kelolaTes
             const contentContainer = document.getElementById('contentArea');
             if (contentContainer) {
@@ -406,7 +406,6 @@ else if (file.includes('kelolaTes.php')) {
                         loadContent('tambahtes.php');
                     }
                 };
-                
                 contentContainer.addEventListener('click', kelolaTesHandler);
                 console.log('✅ Kelola Tes event handler setup completed');
             }
@@ -423,39 +422,74 @@ else if (file.includes('kelolasoal.php')) {
         try {
             const contentContainer = document.getElementById('contentArea');
             if (contentContainer) {
-                kelolaSoalHandler = function(e) {
-                    const target = e.target;
-                    const button = target.closest('button');
+                
+                const kelolaSoalHandler = function(e) {
+                    const button = e.target.closest('button');
+                    if (!button) return;
                     
-                    // Handle tombol Edit Tes
-                    if (button && button.classList.contains('action-btn') && button.textContent.includes('Edit')) {
+                    // Handle tombol Toggle Status
+                    if (button.classList.contains('btn-toggle-status')) {
                         e.preventDefault();
-                        e.stopPropagation();
+                        e.stopImmediatePropagation();
                         
-                        const idTes = button.getAttribute('data-edit-tes');
-                        console.log('📝 Loading edit tes for ID:', idTes);
+                        const idTes = button.getAttribute('data-tes-id');
+                        const action = button.getAttribute('data-action');
+                        const tesName = button.closest('.kelola-card')?.querySelector('h5')?.textContent || 'Tes';
                         
-                        // Load editsoal.php dengan parameter id_tes
-                        loadContent(`editsoal.php?id_tes=${idTes}`);
+                        if (idTes && action) {
+                            const actionText = action === 'aktif' ? 'mengaktifkan' : 'menonaktifkan';
+                            
+                            if (confirm(`Apakah Anda yakin ingin ${actionText} tes "${tesName}"?`)) {
+                                // SELALU gunakan fallbackToggleStatusTes
+                                if (typeof fallbackToggleStatusTes === 'function') {
+                                    console.log('✅ Calling fallbackToggleStatusTes');
+                                    fallbackToggleStatusTes(idTes, action, button);
+                                } else {
+                                    console.error('❌ fallbackToggleStatusTes not found');
+                                    // Fallback langsung
+                                    directToggleStatus(idTes, action, button);
+                                }
+                            }
+                        }
+                        return;
                     }
                     
-                    // Handle tombol Hapus Tes
-                    if (button && button.classList.contains('btn-merah') && button.textContent.includes('Hapus')) {
+                    // Handle tombol Edit
+                    if (button.classList.contains('btn-edit-tes')) {
                         e.preventDefault();
-                        e.stopPropagation();
-                        
-                        const idTes = button.getAttribute('data-hapus-tes');
-                        console.log('🗑️ Deleting tes with ID:', idTes);
-                        
-                        if (confirm('Apakah Anda yakin ingin menghapus tes ini?')) {
-                            // Panggil fungsi hapus tes
-                            hapusTes(idTes);
+                        e.stopImmediatePropagation();
+                        const idTes = button.getAttribute('data-tes-id');
+                        if (idTes) {
+                            loadContent(`editsoal.php?id_tes=${idTes}`);
                         }
+                        return;
+                    }
+                    
+                    // Handle tombol Hapus
+                    if (button.classList.contains('btn-hapus-tes')) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        const idTes = button.getAttribute('data-tes-id');
+                        const tesName = button.getAttribute('data-tes-name') || 'Tes';
+                        if (idTes && confirm(`Apakah Anda yakin ingin menghapus tes "${tesName}" beserta semua soalnya?`)) {
+                            if (typeof window.hapusTes === 'function') {
+                                window.hapusTes(idTes, button);
+                            }
+                        }
+                        return;
+                    }
+                    
+                    // Handle tombol Kembali
+                    if (button.id === 'btn-kembali') {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        window.loadContent('kelolaTes.php');
+                        return;
                     }
                 };
                 
                 contentContainer.addEventListener('click', kelolaSoalHandler);
-                console.log('✅ Kelola Soal event handler setup completed');
+                console.log('✅ Kelola Soal event handler setup completed - using fallbackToggleStatusTes');
             }
         } catch (error) {
             console.error('❌ Error setting up Kelola Soal:', error);
@@ -464,28 +498,248 @@ else if (file.includes('kelolasoal.php')) {
 }
 
 
-
-// TAMBAHKAN HANDLE UNTUK tambahtes.php - INI YANG BARU
-// Dalam bagian loadContent, tambahkan handler untuk tambahtes.php
-else if (file.includes('tambahtes.php')) {
-    console.log('🔄 Setting up Tambah Tes...');
+// Dalam bagian loadContent di sideMenu_admin.php
+else if (file.includes('editsoal.php')) {
+    console.log('🔄 Loading Edit Soal Page...');
     
     setTimeout(async () => {
         try {
-            // Load JavaScript untuk tambah tes
-            await loadScript('../../includes/js/admin/tambahTes.js');
-            
-            // Initialize tambah tes
-            if (typeof initTambahTes === 'function') {
-                initTambahTes();
-            }
-            
+            // Load JavaScript untuk edit soal
+            await loadScript('../../includes/js/admin/editsoal.js');
+            console.log('✅ Edit Soal JS loaded successfully');
         } catch (error) {
-            console.error('❌ Error setting up Tambah Tes:', error);
+            console.error('❌ Error loading Edit Soal JS:', error);
         }
     }, 300);
 }
 
+// Fungsi untuk menampilkan alert
+window.showAlert = function(type, message) {
+    // Hapus alert sebelumnya jika ada
+    const existingAlert = document.querySelector('.custom-alert');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+    
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `custom-alert alert ${alertClass} alert-dismissible fade show`;
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 99999;
+        min-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    
+    alertDiv.innerHTML = `
+        <i class="fas ${icon} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Auto remove setelah 5 detik untuk success
+    if (type === 'success') {
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
+};
+
+// Fallback function untuk toggle status - PASTIKAN INI DI GLOBAL SCOPE
+function fallbackToggleStatusTes(id, action, btn) {
+    console.log('🔄 Using fallback toggle status for ID:', id, 'Action:', action);
+    
+    // Tampilkan loading state
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Memproses...';
+    btn.disabled = true;
+
+    fetch('../../includes/admin_control/ToggleStatusTes_Controller.php', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'id_tes=' + encodeURIComponent(id) + '&action=' + encodeURIComponent(action)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(json => {
+        if (json.success) {
+            alert(json.message || 'Status tes berhasil diubah.');
+            // Reload konten
+            window.loadContent('kelolasoal.php');
+        } else {
+            throw new Error(json.message || 'Gagal mengubah status tes.');
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        alert('Terjadi kesalahan saat mengubah status: ' + err.message);
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+    });
+}
+
+// Fallback langsung jika fallbackToggleStatusTes tidak tersedia
+function directToggleStatus(id, action, btn) {
+    console.log('🔧 Using direct toggle status');
+    
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Memproses...';
+    btn.disabled = true;
+
+    fetch('includes/admin_control/ToggleStatusTes_Controller.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id_tes=' + encodeURIComponent(id) + '&action=' + encodeURIComponent(action)
+    })
+    .then(response => response.json())
+    .then(json => {
+        if (json.success) {
+            alert(json.message || 'Status tes berhasil diubah.');
+            window.loadContent('kelolasoal.php');
+        } else {
+            throw new Error(json.message);
+        }
+    })
+    .catch(err => {
+        alert('Error: ' + err.message);
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+    });
+}
+// Fallback function untuk toggle status jika function utama tidak tersedia
+function fallbackToggleStatusTes(id, action, btn) {
+    console.log('🔄 Using fallback toggle status for ID:', id, 'Action:', action);
+    
+    // Tampilkan loading state
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Memproses...';
+    btn.disabled = true;
+
+    fetch('../../includes/admin_control/ToggleStatusTes_Controller.php', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'id_tes=' + encodeURIComponent(id) + '&action=' + encodeURIComponent(action)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(json => {
+        if (json.success) {
+            alert(json.message || 'Status tes berhasil diubah.');
+            // Reload konten
+            window.loadContent('kelolasoal.php');
+        } else {
+            throw new Error(json.message || 'Gagal mengubah status tes.');
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        alert('Terjadi kesalahan saat mengubah status: ' + err.message);
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+    });
+}
+
+// Pastikan function tersedia di global scope
+window.fallbackToggleStatusTes = fallbackToggleStatusTes;
+
+// Fallback function untuk hapus tes
+function fallbackHapusTes(id, btn) {
+    const tesName = btn.getAttribute('data-tes-name') || 'Tes';
+    
+    console.log('🗑️ Fallback: Menghapus tes ID:', id);
+    
+    // Tampilkan loading state
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menghapus...';
+    btn.disabled = true;
+
+    fetch('../../includes/admin_control/HapusTes_Controller.php', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'id_tes=' + encodeURIComponent(id)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(json => {
+        if (json.success) {
+            alert(json.message || 'Tes berhasil dihapus.');
+            
+            // Hapus card dari DOM
+            const tesCard = document.getElementById(`tes-card-${id}`);
+            if (tesCard) {
+                tesCard.style.transition = 'all 0.3s ease';
+                tesCard.style.opacity = '0';
+                tesCard.style.height = '0';
+                tesCard.style.margin = '0';
+                tesCard.style.padding = '0';
+                tesCard.style.overflow = 'hidden';
+                
+                setTimeout(() => {
+                    tesCard.remove();
+                    
+                    // Jika tidak ada tes lagi, reload content
+                    const remainingCards = document.querySelectorAll('[id^="tes-card-"]');
+                    if (remainingCards.length === 0) {
+                        setTimeout(() => {
+                            window.loadContent('kelolaTes.php');
+                        }, 1000);
+                    }
+                }, 300);
+            } else {
+                window.loadContent('kelolasoal.php');
+            }
+        } else {
+            throw new Error(json.message || 'Gagal menghapus tes.');
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        alert('Terjadi kesalahan saat menghapus: ' + err.message);
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+    });
+} 
+
+
+// Helper function untuk extract id_tes dari current page
+function extractIdTesFromCurrentPage() {
+    const contentArea = document.getElementById('contentArea');
+    if (contentArea) {
+        // Cari link atau element yang mengandung id_tes
+        const links = contentArea.querySelectorAll('a[href*="id_tes="]');
+        for (let link of links) {
+            const match = link.href.match(/id_tes=(\d+)/);
+            if (match) return match[1];
+        }
+    }
+    return null;
+}
 
     } catch (error) {
         console.error('❌ Error loading content:', error);
