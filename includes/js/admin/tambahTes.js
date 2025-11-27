@@ -104,7 +104,7 @@ function downloadTemplate() {
 }
 
 
-function showAlert(message, type) {
+function showAlert(type, message) {
     const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
     const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
     

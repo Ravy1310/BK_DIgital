@@ -13,14 +13,8 @@ if ($_SESSION['admin_role'] !== 'admin' && $_SESSION['admin_role'] !== 'superadm
     exit;
 }
 
-// Sesuaikan base_dir jika perlu; ini tidak wajib jika kamu sudah include db_connection di sini.
 $base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
 require_once $base_dir . 'includes/db_connection.php';
-
-// CEGAH CACHING
-header("Cache-Control: no-cache, no-store, must-revalidate");
-header("Pragma: no-cache");
-header("Expires: 0");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -30,6 +24,7 @@ header("Expires: 0");
   <title>Kelola Tes BK | Tes BK Digital</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -49,14 +44,29 @@ header("Expires: 0");
       background-color: #C60000 !important;
       color: #fff !important;
       border: none !important;
+      border-radius: 8px;
+      padding: 8px 20px;
+      transition: all 0.3s ease;
     }
     .btn-merah:hover {
-       background-color: #710303ff !important;
-      transform: translateY(-1px);
+      background-color: #710303 !important;
+      transform: translateY(-2px);
     }
-    .btn-primary {
-      background-color: #0066cc;
-      border: none;
+    .btn-success {
+      border-radius: 8px;
+      padding: 8px 20px;
+      transition: all 0.3s ease;
+    }
+    .btn-success:hover {
+      transform: translateY(-2px);
+    }
+    .btn-warning {
+      border-radius: 8px;
+      padding: 8px 20px;
+      transition: all 0.3s ease;
+    }
+    .btn-warning:hover {
+      transform: translateY(-2px);
     }
     .kelola-card {
       background-color: #fff;
@@ -65,6 +75,40 @@ header("Expires: 0");
     .kelola-card:hover {
       background-color: #f8f9fa;
       transform: scale(1.01);
+    }
+    .btn-loading {
+      position: relative;
+      color: transparent !important;
+    }
+    .btn-loading::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 50%;
+      left: 50%;
+      margin-left: -8px;
+      margin-top: -8px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-right-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+    .status-badge {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 12px;
+    }
+    .status-aktif {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .status-nonaktif {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -75,11 +119,10 @@ header("Expires: 0");
   <div class="card p-4">
 
     <h4 class="fw-bold mb-3">Kelola Tes BK</h4>
-    <p class="text-muted">Ubah atau hapus jenis tes yang tersedia.</p>
+    <p class="text-muted">Ubah, hapus, atau aktifkan/nonaktifkan jenis tes yang tersedia.</p>
 
    <?php
 try {
-    // Query untuk mengambil data tes beserta jumlah soal
     $query_tes_list = "SELECT t.*, COUNT(s.id_soal) as jumlah_soal 
                       FROM tes t 
                       LEFT JOIN soal_tes s ON t.id_tes = s.id_tes 
@@ -91,31 +134,51 @@ try {
     
     if (count($tes_list) > 0) {
         foreach ($tes_list as $tes) {
-            // pastikan index ada
             $id_tes = (int) $tes['id_tes'];
             $kategori = htmlspecialchars($tes['kategori_tes']);
             $deskripsi = htmlspecialchars($tes['deskripsi_tes'] ?? '');
             $jumlah = (int) $tes['jumlah_soal'];
+            $status = $tes['status'];
+            $status_text = $status === 'aktif' ? 'Aktif' : 'Nonaktif';
+            $status_class = $status === 'aktif' ? 'status-aktif' : 'status-nonaktif';
 ?>
-    <div class="kelola-card mb-3 p-3 border rounded">
+    <div class="kelola-card mb-3 p-3 border rounded" id="tes-card-<?= $id_tes ?>">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h5 class="mb-1"><?= $kategori ?></h5>
+                <div class="d-flex align-items-center mb-1">
+                    <h5 class="mb-0 me-2"><?= $kategori ?></h5>
+                    <span class="status-badge <?= $status_class ?>"><?= $status_text ?></span>
+                </div>
                 <small class="text-muted"><?= $deskripsi ?></small>
                 <div class="small text-muted">Jumlah soal: <?= $jumlah ?></div>
             </div>
-            <div>
-                <!-- Tombol membuka Kelola Soal (edit soal) -->
-                <button type="button"
-                        class="btn btn-success px-3 btn-sm me-1"
-                        onclick="window.location.href='editsoal.php?id_tes=<?= $id_tes ?>&tes=<?= urlencode($kategori) ?>'">
-                   Edit
+            <div class="d-flex gap-2">
+                <!-- Tombol Aktif/Nonaktif -->
+                <?php if ($status === 'aktif'): ?>
+                    <button class="btn btn-warning px-3 btn-toggle-status" 
+                            data-tes-id="<?= $id_tes ?>"
+                            data-action="nonaktif">
+                        <i class="fas fa-pause me-1"></i>Nonaktifkan
+                    </button>
+                <?php else: ?>
+                    <button class="btn btn-success px-3 btn-toggle-status" 
+                            data-tes-id="<?= $id_tes ?>"
+                            data-action="aktif">
+                        <i class="fas fa-play me-1"></i>Aktifkan
+                    </button>
+                <?php endif; ?>
+
+                <!-- Tombol Edit -->
+                <button class="btn btn-success px-3 btn-edit-tes" 
+                       data-tes-id="<?= $id_tes ?>">
+                    <i class="fas fa-edit me-1"></i>Edit
                 </button>
 
-                <!-- Tombol hapus -->
-                <button class="btn btn-merah btn-sm px-3"
-                        onclick="hapusTes(<?= $id_tes ?>, this)">
-                    Hapus
+                <!-- Tombol Hapus -->
+                <button class="btn btn-merah px-3 btn-hapus-tes" 
+                        data-tes-id="<?= $id_tes ?>"
+                        data-tes-name="<?= htmlspecialchars($kategori) ?>">
+                    <i class="fas fa-trash me-1"></i>Hapus
                 </button>
             </div>
         </div>
@@ -129,52 +192,81 @@ try {
     echo '<div class="alert alert-danger">Gagal memuat data tes: ' . htmlspecialchars($e->getMessage()) . '</div>';
 }
 ?>
-    <!-- Tombol kembali (opsional) -->
+    <!-- Tombol kembali -->
     <div class="text-start mt-3">
-      <button type="button" class="btn btn-secondary px-4" onclick="window.history.back()">Kembali</button>
+      <button type="button" class="btn btn-merah px-4" id="btn-kembali">Kembali</button>
     </div>
 
   </div>
 </div>
-
-<!-- SCRIPT: fungsi hapus ajax -->
 <script>
-/**
- * hapusTes(id, btn)
- * id: integer id_tes
- * btn: elemen tombol (dipakai untuk men-disable)
- */
-function hapusTes(id, btn) {
-    if (!confirm("Yakin ingin menghapus tes ini beserta semua soalnya? Tindakan ini tidak bisa dibatalkan.")) {
-        return;
-    }
-
-    // disable tombol sementara
-    if (btn) { btn.disabled = true; btn.textContent = 'Menghapus...'; }
+// Hanya sediakan fungsi hapusTes saja
+window.hapusTes = function(id, btn) {
+    const tesName = btn.getAttribute('data-tes-name') || 'Tes';
+    
+    console.log('🗑️ Menghapus tes ID:', id);
+    
+    // Tampilkan loading state
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menghapus...';
+    btn.disabled = true;
 
     fetch('../../includes/admin_control/HapusTes_Controller.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
         body: 'id_tes=' + encodeURIComponent(id)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(json => {
         if (json.success) {
             alert(json.message || 'Tes berhasil dihapus.');
-            // reload halaman utk update daftar
-            window.location.reload();
+            
+            // Hapus card dari DOM
+            const tesCard = document.getElementById(`tes-card-${id}`);
+            if (tesCard) {
+                tesCard.style.transition = 'all 0.3s ease';
+                tesCard.style.opacity = '0';
+                tesCard.style.height = '0';
+                tesCard.style.margin = '0';
+                tesCard.style.padding = '0';
+                tesCard.style.overflow = 'hidden';
+                
+                setTimeout(() => {
+                    tesCard.remove();
+                    
+                    // Jika tidak ada tes lagi, reload content
+                    const remainingCards = document.querySelectorAll('[id^="tes-card-"]');
+                    if (remainingCards.length === 0) {
+                        setTimeout(() => {
+                            window.loadContent('kelolaTes.php');
+                        }, 1000);
+                    }
+                }, 300);
+            } else {
+                window.loadContent('kelolasoal.php');
+            }
         } else {
-            alert(json.message || 'Gagal menghapus tes.');
-            if (btn) { btn.disabled = false; btn.textContent = 'Hapus'; }
+            throw new Error(json.message || 'Gagal menghapus tes.');
         }
     })
     .catch(err => {
-        console.error(err);
-        alert('Terjadi kesalahan saat menghapus.');
-        if (btn) { btn.disabled = false; btn.textContent = 'Hapus'; }
+        console.error('Error:', err);
+        alert('Terjadi kesalahan saat menghapus: ' + err.message);
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
     });
-}
+};
+
+console.log('✅ kelolasoal.php loaded - hanya hapusTes function available');
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

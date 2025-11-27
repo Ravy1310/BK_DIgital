@@ -16,7 +16,7 @@ if ($_SESSION['admin_role'] !== 'admin' && $_SESSION['admin_role'] !== 'superadm
 }
 
 require_once '../db_connection.php';
-require_once '../logAktivitas.php'; // Tambahkan ini untuk log aktivitas
+require_once '../logAktivitas.php';
 
 header('Content-Type: application/json');
 
@@ -267,8 +267,8 @@ try {
     $pdo->beginTransaction();
     
     try {
-        // PERBAIKAN: Hapus updated_at dari query INSERT
-        $tes_sql = "INSERT INTO tes (kategori_tes, deskripsi_tes, created_at) VALUES (?, ?, NOW())";
+        // PERBAIKAN: Gunakan atribut 'status' dengan default 'nonaktif'
+        $tes_sql = "INSERT INTO tes (kategori_tes, deskripsi_tes, status, created_at) VALUES (?, ?, 'nonaktif', NOW())";
         $tes_stmt = $pdo->prepare($tes_sql);
         
         if (!$tes_stmt->execute([$kategori_tes, $deskripsi_tes])) {
@@ -277,11 +277,11 @@ try {
         
         $tes_id = $pdo->lastInsertId();
         
-        // PERBAIKAN: Hapus updated_at dari query INSERT
+        // Insert soal
         $soal_sql = "INSERT INTO soal_tes (id_tes, pertanyaan, created_at) VALUES (?, ?, NOW())";
         $soal_stmt = $pdo->prepare($soal_sql);
         
-        // PERBAIKAN: Hapus updated_at dari query INSERT
+        // Insert opsi jawaban
         $opsi_sql = "INSERT INTO opsi_jawaban (id_soal, opsi, bobot, created_at) VALUES (?, ?, ?, NOW())";
         $opsi_stmt = $pdo->prepare($opsi_sql);
         
@@ -324,13 +324,14 @@ try {
                 'nama_tes' => $kategori_tes,
                 'jumlah_soal' => $inserted_questions,
                 'jumlah_opsi' => $inserted_options,
-                'file_name' => $_FILES['csv_file']['name']
+                'file_name' => $_FILES['csv_file']['name'],
+                'status' => 'nonaktif'
             ]
         );
         
         echo json_encode([
             'status' => 'success',
-            'message' => "Tes berhasil ditambahkan dengan $inserted_questions soal dan $inserted_options opsi jawaban",
+            'message' => "Tes berhasil ditambahkan dengan $inserted_questions soal dan $inserted_options opsi jawaban. Status: Nonaktif",
             'tes_id' => $tes_id
         ]);
         
