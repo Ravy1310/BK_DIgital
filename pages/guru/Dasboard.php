@@ -35,7 +35,7 @@
     .card-stat {
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-      border: 1px solid #ddd;
+     background-color: #ffffff;
       height: 90px;
       display: flex;
       justify-content: center;
