@@ -58,7 +58,7 @@ $riwayat = $stmt2->fetchAll();
 
   /* ===================== CARD KONSELING ===================== */
   .schedule-wrapper {
-      background: #ffffffd0;
+      background: #ffffff;
       border-radius: 20px;
       padding: 25px;
       margin-bottom: 35px;
