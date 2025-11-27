@@ -11,7 +11,7 @@ $ASSETS_URL = $BASE_URL . "assets/";
      ========================= -->
 <style>
   .navbar {
-    background-color: #0050BC !important;
+    background-color: #ffffff !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     padding: 0.3rem 0 !important;
     transition: all 0.3s ease;
@@ -21,20 +21,20 @@ $ASSETS_URL = $BASE_URL . "assets/";
   }
 
   .navbar.scrolled {
-    padding: 0.8rem 0 !important;
-    background-color: #0046a3 !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    padding: 0.3rem 0 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
 
   .navbar-brand {
     font-weight: 700;
-    color: white !important;
+    color: blue !important;
     font-size: 1.3rem;
     letter-spacing: 0.5px;
   }
 
   .nav-link {
-    color: white !important;
+    color: blue !important;
     font-weight: 500;
     margin: 0 12px;
     font-size: 1rem;
@@ -49,13 +49,13 @@ $ASSETS_URL = $BASE_URL . "assets/";
   .dropdown-menu {
     border-radius: 12px;
     border: none;
-    box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
   .dropdown-item {
     color: #333;
     font-weight: 500;
-    padding: 10px 18px;
+    padding: 5px 9px;
     transition: background 0.3s ease, color 0.3s ease;
   }
 

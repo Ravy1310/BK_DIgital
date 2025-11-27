@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <style>
         body {
-            background-color: #f5f7fb;
+            background-color: #ffff;
             font-family: 'Poppins', sans-serif;
             animation: fadeIn 0.8s ease-in-out;
         }

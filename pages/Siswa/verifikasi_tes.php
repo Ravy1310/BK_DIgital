@@ -43,7 +43,7 @@ if (isset($_POST['cek_id'])) {
 
     <style>
          body {
-            background-color: #f5f7fb;
+            background-color: #ffff;
             font-family: 'Poppins', sans-serif;
             animation: fadeIn 0.8s ease-in-out;
         }
