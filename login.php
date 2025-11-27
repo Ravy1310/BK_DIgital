@@ -30,6 +30,9 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
         } else if ($_SESSION['admin_role'] === 'admin') {
             header("Location: pages/admin/sideMenu_admin.php");
             exit;
+        } else if ($_SESSION['admin_role'] === 'user') {
+            header("Location: pages/guru/SideMenu.php");
+            exit;
         }
     }
 }
@@ -39,7 +42,11 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] !== true
     session_destroy();
 }
 
-
+// Tampilkan pesan logout jika ada
+$logout_message = '';
+if (isset($_GET['logout']) && $_GET['logout'] === 'success') {
+    $logout_message = 'Anda telah berhasil logout.';
+}
 ?>
 <!doctype html>
 <html lang="id">
