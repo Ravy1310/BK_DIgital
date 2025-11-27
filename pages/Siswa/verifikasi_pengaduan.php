@@ -7,22 +7,39 @@ $error = "";
 // Jika ada notifikasi sukses dari pengaduan.php
 $success = isset($_GET["success"]) ? true : false;
 
-// PROSES VERIFIKASI
+// ===========================
+// FITUR BARU: PENGADUAN ANONIM
+// ===========================
+// Jika URL: verifikasi_pengaduan.php?anonim=1
+// Maka langsung masuk pengaduan anonim tanpa verifikasi ID
+if (isset($_GET["anonim"]) && $_GET["anonim"] == "1") {
+
+    // Tidak menyimpan ID siswa
+    $_SESSION["verified_siswa_id"] = null;
+
+    // Langsung menuju form pengaduan anonim
+    header("Location: riwayat_aduan.php?idsiswa=0&anonim=1");
+    exit;
+}
+
+// ===========================
+// PROSES VERIFIKASI ID
+// ===========================
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $id_siswa = trim($_POST["id_siswa"]);
 
-    // CARI ID SISWA MENGGUNAKAN PDO
+    // Cek ID siswa di database
     $stmt = $pdo->prepare("SELECT id_siswa FROM siswa WHERE id_siswa = ? LIMIT 1");
     $stmt->execute([$id_siswa]);
     $siswa = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($siswa) {
-        // Simpan ke SESSION
+        // Simpan ID ke session
         $_SESSION["verified_siswa_id"] = $siswa["id_siswa"];
 
-        // Lanjut ke halaman pengaduan
-        header("Location: pengaduan.php?idsiswa=" . $siswa["id_siswa"]);
+        // Lanjut ke form pengaduan teridentifikasi
+        header("Location: riwayat_aduan.php?idsiswa=" . $siswa["id_siswa"] . "&anonim=0");
         exit;
     } else {
         $error = "ID tidak ditemukan. Pastikan data benar.";
@@ -84,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <div class="container py-5">
 
-    <!-- NOTIFIKASI SUKSES JIKA ADA -->
+    <!-- NOTIFIKASI SUKSES -->
     <?php if ($success): ?>
         <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
             <strong>Berhasil!</strong> Pengaduan Anda telah terkirim dan dicatat.
@@ -116,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     ID diperlukan untuk menyimpan data aduan anda agar tercatat dengan benar
                 </p>
 
-                <!-- ALERT ERROR -->
+                <!-- ERROR -->
                 <?php if (!empty($error)): ?>
                     <div class="alert alert-danger text-center"><?= $error ?></div>
                 <?php endif; ?>

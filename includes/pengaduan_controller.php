@@ -1,43 +1,52 @@
 <?php
 session_start();
-require_once __DIR__ . "/../../includes/db_connection.php";
+require_once "db_connection.php";
 
-// Pastikan form dikirim
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: buat_pengaduan.php");
-    exit;
-}
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-// Ambil data form
-$jenis_laporan = $_POST['jenis_laporan'] ?? '';
-$jenis_kejadian = $_POST['jenis_kejadian'] ?? '';
-$penjelasan = $_POST['penjelasan'] ?? '';
+    // SAMAKAN DENGAN FORM
+    $jenis_laporan  = $_POST["jenis_laporan"] ?? null;  
+    $jenis_kejadian = $_POST["jenis_kejadian"] ?? null; 
+    $isi_aduan      = $_POST["penjelasan"] ?? null;
+    $id_siswa       = $_POST["id_siswa"] ?? null;
 
-// Tentukan id_siswa sesuai jenis laporan
-if ($jenis_laporan === 'Anonim') {
-    $id_siswa = null; // disembunyikan / anonim
-} else {
-    // Harus sudah verifikasi NIS
-    if (!isset($_SESSION['siswa_logged_in'])) {
-        header("Location: verifikasi_id.php?error=need_verify");
+    // VALIDASI
+    if (!$jenis_laporan || !$jenis_kejadian || !$isi_aduan) {
+        $_SESSION["error"] = "Semua field wajib diisi!";
+        header("Location: ../pages/Siswa/pengaduan.php");
         exit;
     }
-    $id_siswa = $_SESSION['siswa_id'];
-}
 
-// Query INSERT
-$stmt = $pdo->prepare("
-    INSERT INTO pengaduan (id_siswa, jenis_laporan, jenis_kejadian, penjelasan, tanggal)
-    VALUES (?, ?, ?, ?, NOW())
-");
+    // HANDLE ANONIM
+    if ($jenis_laporan === "Anonim") {
+        $id_siswa = null;
+        $kode_hash = hash("sha256", time() . rand());
+    } else {
+        if (!$id_siswa) {
+            $_SESSION["error"] = "ID siswa tidak valid untuk laporan teridentifikasi.";
+            header("Location: ../pages/Siswa/buat_aduan.php");
+            exit;
+        }
+        $kode_hash = hash("sha256", $id_siswa . time());
+    }
 
-$success = $stmt->execute([$id_siswa, $jenis_laporan, $jenis_kejadian, $penjelasan]);
+    // SIMPAN KE DATABASE
+    $sql = "INSERT INTO pengaduan 
+            (id_siswa, kode_hash, jenis_aduan, jenis_kejadian, isi_aduan, tanggal_pengaduan)
+            VALUES 
+            (:id_siswa, :kode_hash, :jenis_aduan, :jenis_kejadian, :isi_aduan, NOW())";
 
-// Redirect
-if ($success) {
-    header("Location: sukses_pengaduan.php");
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ":id_siswa"       => $id_siswa,
+        ":kode_hash"      => $kode_hash,
+        ":jenis_aduan"    => $jenis_laporan,
+        ":jenis_kejadian" => $jenis_kejadian,
+        ":isi_aduan"      => $isi_aduan
+    ]);
+
+    $_SESSION["success"] = "Pengaduan berhasil dikirim!";
+    header("Location: ../pages/Siswa/riwayat_aduan.php");
     exit;
-} else {
-    echo "Terjadi kesalahan saat menyimpan data.";
 }
 ?>
