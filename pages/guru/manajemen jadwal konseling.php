@@ -1,200 +1,306 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manajemen Jadwal Konseling</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      background-color: transparent;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Jadwal Konseling</title>
+    <!-- Memuat Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Memuat Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-    body {
-      background-image: url('background.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start; /* ubah ke center kalau mau box di tengah layar */
-      min-height: 100vh;
-    }
+    <style>
+        /* Font modern */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        
+        body {
+             background: url('../../assets/image/background.jpg');
+        background-size: cover;
+        font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Kontainer Utama */
+        .main-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+           margin: 40px -20px 0 -20px;
+        }
 
-    h2 {
-      font-weight: 700;
-      margin-bottom: 25px;
-      color: #000;
-    }
+        /* Judul */
+        h2 {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 1.75rem;
+        }
 
-    .search-box {
-      position: relative;
-      margin-bottom: 20px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+        /* Search Bar */
+        .search-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
 
-    .search-box input {
-      border-radius: 10px;
-      padding-left: 45px;
-      border: 1px solid #ccc;
-    }
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 0.95rem;
+        }
+        
+        /* Gaya Tabel */
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
 
-    .search-box svg {
-      position: absolute;
-      top: 50%;
-      left: 35px;
-      transform: translateY(-50%);
-      width: 18px;
-      height: 18px;
-      fill: gray;
-    }
+        .table-tight {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        
+        /* Header Tabel */
+        .table-tight thead th {
+            font-weight: 600;
+            color: #4b5563;
+            background-color: #f9fafb;
+            font-size: 0.85rem;
+            padding: 12px 10px;
+            border: none; /* Hilangkan border ganda */
+        }
+        
+        /* Isi Tabel */
+        .table-tight tbody td {
+            padding: 12px 10px;
+            font-size: 0.9rem;
+            color: #374151;
+            border-top: 1px solid #f3f4f6; /* Garis pemisah antar baris yang lembut */
+        }
 
-    th {
-      background-color: #f1f1f1;
-      text-align: center;
-      vertical-align: middle;
-    }
+        .table-tight tbody tr:hover {
+            background-color: #f9fafb;
+        }
 
-    td {
-      vertical-align: middle;
-      text-align: center;
-    }
+        /* Tombol Status */
+        .status-badge {
+            border-radius: 9999px; /* Bentuk pil */
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
 
-    .status-badge {
-      background-color: #ffcf5c;
-      color: #000;
-      padding: 5px 10px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
+        .status-menunggu {
+            background-color: #fef3c7; /* Kuning muda */
+            color: #92400e; /* Cokelat tua */
+        }
+        .status-diterima {
+            background-color: #d1fae5; /* Hijau muda */
+            color: #065f46; /* Hijau tua */
+        }
+        .status-ditolak {
+            background-color: #fee2e2; /* Merah muda */
+            color: #991b1b; /* Merah tua */
+        }
 
-    .dropdown-menu {
-      min-width: 120px;
-      text-align: left;
-    }
+        /* Tombol Aksi Dropdown */
+        .btn-dot {
+            padding: 4px 10px;
+            font-size: 1rem;
+            line-height: 1;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: white;
+            color: #4b5563;
+        }
+        
+        .btn-dot:hover {
+            background-color: #f3f4f6;
+        }
 
-    .dropdown-item svg {
-      width: 18px;
-      height: 18px;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
+        .dropdown-menu {
+            min-width: 130px;
+            padding: 6px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-    .dropdown-item.accept {
-      color: green;
-    }
+        .dropdown-item {
+            font-size: 0.85rem;
+            padding: 8px 12px;
+        }
+        
+        .dropdown-item i {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+        }
 
-    .dropdown-item.reject {
-      color: black;
-    }
-
-    .table-wrapper {
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-      background: #fff;
-    }
-  </style>
+    </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>Manajemen Jadwal Konseling</h2>
+    <div class="container-fluid">
+        <div class="main-card">
+            <h2>Manajemen Jadwal Konseling</h2>
 
-    <div class="search-box">
-      <!-- SVG ICON -->
-      <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-        <path d="M221.12,389.43A173.22,173.22,0,0,1,98.25,338.61c-67.75-67.75-67.75-178,0-245.74s178-67.75,245.74,0A173.69,173.69,0,0,1,221.12,389.43Zm0-317.39a143.37,143.37,0,0,0-101.66,42c-56,56.06-56,147.26,0,203.32A143.77,143.77,0,1,0,322.78,114.08h0A143.35,143.35,0,0,0,221.12,72Z"/>
-        <path d="M221.12,332.16a116.42,116.42,0,1,1,82.36-34.06A116.1,116.1,0,0,1,221.12,332.16Zm0-202.86a86.44,86.44,0,1,0,61.15,25.29A86.22,86.22,0,0,0,221.12,129.3Z"/>
-        <path d="M414.82,450.44a40.78,40.78,0,0,1-29-12L302.89,355.5a15,15,0,0,1,21.22-21.22L407,417.21a11,11,0,1,0,15.55-15.55l-82.93-82.93a15,15,0,1,1,21.22-21.22l82.93,82.93a41,41,0,0,1-29,70Z"/>
-      </svg>
+            <!-- Search bar -->
+            <div class="row">
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="search-box">
+                        <!-- Ikon Bootstrap untuk pencarian -->
+                        <i class="bi bi-search text-muted me-2"></i>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Cari berdasarkan Nama, Kelas, Topik...">
+                    </div>
+                </div>
+            </div>
 
-      <input type="text" id="searchInput" class="form-control" placeholder="Cari berdasarkan Nama, Kelas, Topik...">
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-tight align-middle">
+                    <thead class="text-center">
+                        <tr>
+                            <th scope="col">Nama Siswa</th>
+                            <th scope="col">Kelas</th>
+                            <th scope="col">Topik Bimbingan</th>
+                            <th scope="col">Tanggal & Jam</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" style="width: 80px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTable">
+                        <!-- Data Baris 1: Menunggu -->
+                        <tr data-status="Menunggu">
+                            <td>Selvi</td>
+                            <td>XI IPS 3</td>
+                            <td class="text-start">Masalah Tidur</td>
+                            <td>5 Okt 2025 11.36</td>
+                            <td><span class="status-badge status-menunggu">Menunggu</span></td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-dot dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item text-success" href="#" data-action="accept">
+                                                <i class="bi bi-check-circle"></i> Terima
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#" data-action="reject">
+                                                <i class="bi bi-x-circle"></i> Tolak
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Data Baris 2: Diterima -->
+                        <tr data-status="Diterima">
+                            <td>Budi Santoso</td>
+                            <td>X IPA 1</td>
+                            <td class="text-start">Kesulitan mengatur waktu belajar</td>
+                            <td>4 Okt 2025 09.00</td>
+                            <td><span class="status-badge status-diterima">Diterima</span></td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-dot dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item text-secondary" href="#" data-action="detail">
+                                                <i class="bi bi-info-circle"></i> Detail
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Data Baris 3: Ditolak -->
+                        <tr data-status="Ditolak">
+                            <td>Alex Dion</td>
+                            <td>XII Bahasa</td>
+                            <td class="text-start">Kecemasan pasca ujian</td>
+                            <td>3 Okt 2025 14.30</td>
+                            <td><span class="status-badge status-ditolak">Ditolak</span></td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-dot dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item text-secondary" href="#" data-action="detail">
+                                                <i class="bi bi-info-circle"></i> Detail
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Baris Kosong (diisi ulang jika perlu) -->
+                        <tr class="text-muted text-center"><td colspan="6">-</td></tr>
+                        <tr class="text-muted text-center"><td colspan="6">-</td></tr>
+                        <tr class="text-muted text-center"><td colspan="6">-</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div class="table-wrapper">
-      <table class="table table-bordered mb-0">
-        <thead>
-          <tr>
-            <th>Nama Siswa</th>
-            <th>Kelas</th>
-            <th>Topik Bimbingan</th>
-            <th>Tanggal & Jam</th>
-            <th>Status</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="dataTable">
-          <tr>
-            <td>Selvi</td>
-            <td>XI IPS 3</td>
-            <td>Masalah Tidur</td>
-            <td>5 Oktober 2025 pukul 11.36</td>
-            <td><span class="status-badge">Menunggu</span></td>
-            <td>
-              <div class="dropdown">
-                <button class="btn btn-light border rounded-pill" data-bs-toggle="dropdown" aria-expanded="false">⋯</button>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="dropdown-item accept" href="#">
-                      <!-- SVG ICON TERIMA -->
-                      <svg id="Icons" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                          <linearGradient gradientUnits="userSpaceOnUse" id="linear-gradient" x1="12" x2="12" y1="0.957" y2="22.957">
-                            <stop offset="0" stop-color="#71ff7b"/>
-                            <stop offset="1" stop-color="#27f42c"/>
-                          </linearGradient>
-                        </defs>
-                        <circle fill="url(#linear-gradient)" cx="12" cy="12" r="11"/>
-                        <path fill="#a4ffa6" d="M10,17a1,1,0,0,1-.707-.293l-3-3a1,1,0,0,1,1.414-1.414L10,14.586l6.293-6.293a1,1,0,0,1,1.414,1.414l-7,7A1,1,0,0,1,10,17Z"/>
-                      </svg>
-                      Terima
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item reject" href="#">
-                      <!-- SVG ICON TOLAK -->
-                      <svg fill="none" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
-                        <path clip-rule="evenodd" d="M18.7071 5.29289C19.0976 5.68341 19.0976 6.31658 18.7071 6.7071L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.2929 6.70711C4.90238 6.31658 4.90238 5.68342 5.2929 5.29289C5.68342 4.90237 6.31659 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289Z" fill="black" fill-rule="evenodd"/>
-                      </svg>
-                      Tolak
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </td>
-          </tr>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-          <!-- Baris kosong tambahan -->
-          <tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-          <tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-          <tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+    <script>
+        // Fungsi pencarian tabel
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll('#dataTable tr');
+            rows.forEach(row => {
+                // Jangan sembunyikan baris placeholder kosong
+                if (row.classList.contains('text-muted')) {
+                    return;
+                }
+                
+                let text = row.innerText.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+        
+        // Logika Aksi (Simulasi)
+        document.getElementById('dataTable').addEventListener('click', function(event) {
+            const target = event.target.closest('.dropdown-item');
+            if (!target) return;
+            
+            const action = target.getAttribute('data-action');
+            const row = target.closest('tr');
+            const studentName = row.querySelector('td:first-child').innerText;
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    // Fungsi pencarian tabel
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-      let filter = this.value.toLowerCase();
-      let rows = document.querySelectorAll('#dataTable tr');
-      rows.forEach(row => {
-        let text = row.innerText.toLowerCase();
-        row.style.display = text.includes(filter) ? '' : 'none';
-      });
-    });
-  </script>
+            if (action === 'accept') {
+                alert(`Permintaan konseling dari ${studentName} diterima!`);
+                // Di sini Anda akan menambahkan logika untuk update status di database
+            } else if (action === 'reject') {
+                alert(`Permintaan konseling dari ${studentName} ditolak.`);
+                // Di sini Anda akan menambahkan logika untuk update status di database
+            } else if (action === 'detail') {
+                 alert(`Menampilkan detail jadwal untuk ${studentName}.`);
+                 // Di sini Anda akan menampilkan modal detail (jika ada)
+            }
+        });
+    </script>
 
 </body>
 </html>

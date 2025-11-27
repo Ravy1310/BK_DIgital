@@ -67,6 +67,9 @@ loginForm.addEventListener("submit", async function(e) {
         window.location.href = "pages/Developer/sideMenu_dev.php";
       } else if (result.role === "admin") {
         window.location.href = "pages/admin/sideMenu_admin.php";
+      } else if (result.role === "user") {
+        // Untuk role 'user' yang adalah guru, redirect ke dashboard guru
+        window.location.href = "pages/guru/SideMenu.php";
       } else {
         window.location.href = "dashboard_user.php";
       }
