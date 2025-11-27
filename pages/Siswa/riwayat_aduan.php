@@ -1,4 +1,5 @@
 <?php
+include 'header.php';
 session_start();
 require_once "../../includes/db_connection.php"; 
 
@@ -82,7 +83,7 @@ $riwayat = $stmt2->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .card-header-custom {
-            background:#2e62ad;
+            background:#0050BC;
             padding:12px 18px;
             color:white;
             font-size:16px;

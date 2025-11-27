@@ -126,7 +126,7 @@ if(isset($_SESSION['success'])){
         </div>
 
         <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-outline-secondary" onclick="location.href='dashboard_siswa.php'">Batal</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="location.href='riwayat_aduan.php'">Batal</button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#konfirmasiModal">Kirim</button>
         </div>
 

@@ -19,7 +19,7 @@ if (isset($_POST['cek_id'])) {
 
         // simpan session
         $_SESSION['id_valid'] = true;
-        $_SESSION['siswa_id'] = $data["id_siswa"];
+        $_SESSION['id_siswa'] = $data["id_siswa"];
         $_SESSION['siswa_nama'] = $data["nama"];
 
         // langsung masuk ke halaman tes
@@ -42,29 +42,41 @@ if (isset($_POST['cek_id'])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { background-color: #f5f7fb; }
-        .shield { width: 200px; }
+         body {
+            background-color: #f5f7fb;
+            font-family: 'Poppins', sans-serif;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+        .shield {
+            width: 200px;
+        }
         .card-custom {
             background: white;
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            animation: slideUp 0.8s ease;
         }
-        h2 { font-weight: 700; color: #003893; }
+        @keyframes slideUp {
+            from {transform: translateY(30px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+        h2 {
+            font-weight: 700;
+            color: #003893;
+        }
         .btn-custom {
             background-color: #003893;
             color: white;
             padding: 10px 25px;
             border-radius: 6px;
         }
-        .btn-custom:hover { background-color: #002d73; }
-        .error-box {
-            background: #ffe1e1;
-            color: #b10000;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            text-align: center;
+        .btn-custom:hover {
+            background-color: #002d73;
         }
     </style>
 </head>
