@@ -1,185 +1,403 @@
 <?php
+$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
+require_once $base_dir . 'includes/db_connection.php';
+
+// Inisialisasi variabel
 $jumlahGuru = 0;
 $akunAktif = 0;
 $akunNonaktif = 0;
 $dataGuru = [];
+$keyword = $_GET['cari'] ?? '';
+
+if ($pdo) {
+    try {
+        // Query data guru
+        if (!empty($keyword)) {
+            $sql = "SELECT g.*, u.username, u.email 
+                    FROM guru g 
+                    LEFT JOIN users u ON g.id_guru = u.id_guru 
+                    WHERE (g.nama LIKE ? OR g.telepon LIKE ?)
+                    ORDER BY g.nama";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(["%$keyword%", "%$keyword%"]);
+        } else {
+            $sql = "SELECT g.*, u.username, u.email 
+                    FROM guru g 
+                    LEFT JOIN users u ON g.id_guru = u.id_guru 
+                    ORDER BY g.nama";
+            $stmt = $pdo->query($sql);
+        }
+        
+        $dataGuru = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Hitung statistik
+        $sqlJumlah = "SELECT COUNT(*) as total FROM guru";
+        $stmtJumlah = $pdo->query($sqlJumlah);
+        $jumlahGuru = $stmtJumlah->fetch()['total'];
+
+        $sqlAktif = "SELECT COUNT(*) as aktif FROM guru WHERE status = 'Aktif'";
+        $stmtAktif = $pdo->query($sqlAktif);
+        $akunAktif = $stmtAktif->fetch()['aktif'];
+
+        $sqlNonaktif = "SELECT COUNT(*) as nonaktif FROM guru WHERE status = 'Nonaktif'";
+        $stmtNonaktif = $pdo->query($sqlNonaktif);
+        $akunNonaktif = $stmtNonaktif->fetch()['nonaktif'];
+
+    } catch (PDOException $e) {
+        error_log("Error fetching data: " . $e->getMessage());
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kelola Data Guru</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
+  <title>Kelola Data Guru - BK Digital</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
   <style>
     body {
+      font-family: 'Poppins', sans-serif;
       background: url('../../assets/image/background.jpg');
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-attachment: fixed;
       background-size: cover;
-      display: flex;
-      flex-direction: column;
-    }
-    .content-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 2rem;
-    }
-    .card {
-      background-color: rgba(255, 255, 255, 0.93);
-      backdrop-filter: blur(6px);
-      border: none;
-    }
-    .card-header {
-      background-color: rgba(255, 255, 255, 0.9);
-    }
-    .table {
-      width: 100%;
+      background-position: center;
+      background-attachment: fixed;
+      margin-top: 50px !important;
     }
 
-    /* Warna khusus untuk card Jumlah Akun Aktif */
-    .bg-success {
-      background-color: #DBF4D6 !important;
-      color: #000 !important;
+    h4 {
+      font-weight: 700;
+      color: #004AAD;
     }
 
-    /* Warna khusus untuk card Jumlah Akun Nonaktif */
-    .bg-danger {
-      background-color: #F4D6D6 !important;
-      color: #000 !important;
+    .stat-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      background: white;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
     }
 
-    /* Tombol Cari (oval hijau seperti gambar) */
-    .btn-cari {
-      background-color: #4CAF50;
-      border: none;
-      border-radius: 50px;
-      padding: 5px 14px;
-      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-      transition: 0.3s;
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-color: rgba(0, 74, 173, 0.1);
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-right: 15px;
+      transition: transform 0.2s ease;
     }
 
-    .btn-cari:hover {
-      background-color: #43a047;
+    .stat-card:hover .stat-icon {
+      transform: scale(1.05);
     }
 
-    .btn-cari i {
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 24px;
+      margin-top: 20px;
+    }
+
+    .btn-tambah {
+      background-color: #0050BC;
       color: white;
-      font-size: 1rem;
+      border: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-tambah:hover {
+      background-color: #003580;
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .search-container { 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+    }
+
+    .search-box {
+      width: 280px; 
+      background: white; 
+      border-radius: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0; 
+      padding: 10px 20px; 
+      font-size: 14px;
+      outline: none; 
+      transition: all 0.2s ease;
+    }
+
+    .search-box:focus {
+      border-color: #38A169;
+      box-shadow: 0 0 0 2px rgba(56, 161, 105, 0.1);
+    }
+
+    .btn-cari {
+      background-color: #38A169; 
+      border: none; 
+      border-radius: 50%;
+      width: 44px; 
+      height: 44px; 
+      display: flex; 
+      align-items: center;
+      justify-content: center; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+      color: white;
+    }
+
+    .btn-cari:hover { 
+      background-color: #2F855A; 
+      transform: scale(1.05);
+    }
+
+    table { 
+      font-size: 0.9rem; 
+      margin-bottom: 0;
+    }
+
+    .table th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #2d3748;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 12px 8px;
+    }
+
+    .table tbody tr {
+      transition: background-color 0.2s ease;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .modal-content {
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      border: none;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .modal-header-custom {
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #eee;
+      padding: 20px 24px;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+
+    .modal-title-custom {
+      font-weight: 600;
+      color: #004AAD;
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .btn-close-custom {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #666;
+      transition: color 0.2s ease;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+
+    .btn-close-custom:hover { 
+      color: #d11a2a;
+      background: #f8f9fa;
+    }
+
+    .btn-primary {
+      background-color: #004AAD;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #003580;
+      transform: translateY(-1px);
+    }
+
+    .status-badge {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .status-aktif {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-nonaktif {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .btn-action {
+      padding: 6px 10px;
+      border: none;
+      background: none;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+      color: #004AAD;
+    }
+    .btn-edit:hover {
+      background-color: #e3f2fd;
+    }
+
+    .btn-delete {
+      color: #dc3545;
+    }
+    .btn-delete:hover {
+      background-color: #fde8e8;
+    }
+
+    .btn-status {
+      color: #38A169;
+    }
+    .btn-status:hover {
+      background-color: #e8f5e8;
+    }
+
+    .password-match {
+      border-color: #38A169 !important;
+      box-shadow: 0 0 0 2px rgba(56, 161, 105, 0.1) !important;
+    }
+
+    .password-mismatch {
+      border-color: #dc3545 !important;
+      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1) !important;
+    }
+
+    .password-feedback {
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .password-valid {
+      color: #38A169;
+    }
+
+    .password-invalid {
+      color: #dc3545;
     }
   </style>
 </head>
+
 <body>
-
-  <div class="content-wrapper container-fluid">
-
-    <!-- Statistik -->
-    <!-- Statistik -->
-<div class="row g-4 mb-4">
-  <!-- Kartu Jumlah Guru -->
-  <div class="col-lg-4 col-md-6">
-    <div class="card shadow-sm">
-      <div class="card-body d-flex align-items-center">
-        <!-- Kotak ikon -->
-        <div class="bg-primary text-white rounded  me-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px;">
-          <!-- SVG Ikon Guru (warna putih) -->
-          <svg id="Icons_Teacher" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" width="45" height="45">
-            <path fill="white" d="M87.8 19L23.8 19C21.6 19 19.8 20.8 19.8 23L19.8 37.5C20.9 37.2 22.2 37 23.4 37C24.2 37 25 37.1 25.8 37.2L25.8 25L85.8 25L85.8 63L51.9 63L46.2 69L87.8 69C90 69 91.8 67.2 91.8 65L91.8 23C91.8 20.8 90 19 87.8 19Z"/>
-            <path fill="white" d="M23.5 58C28.2 58 32 54.2 32 49.5C32 44.8 28.2 41 23.5 41C18.8 41 15 44.8 15 49.5C14.9 54.2 18.8 58 23.5 58Z"/>
-            <path fill="white" d="M56.2 48.1C54.9 46.1 52.3 45.6 50.3 46.8C49.9 47 49.7 47.4 49.5 47.6L34.9 62.8C33.5 62.1 32 61.5 30.5 61C28.2 60.6 25.8 60.1 23.5 60.1C21.2 60.1 18.8 60.5 16.5 61.2C13.1 62.1 10.1 63.8 7.6 65.9C7 66.5 6.5 67.4 6.3 68.2L4.2 77L34.1 77L34.1 76.9L42.6 67L55.7 53.2C56.9 52 57.3 49.7 56.2 48.1Z"/>
-          </svg>
+  <div class="container">
+    <div class="row g-4 mb-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="card stat-card">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-primary text-white">
+              <i class="bi bi-person-video3 fs-2"></i>
+            </div>
+            <div>
+              <h6 class="mb-0 text-muted">Jumlah Guru</h6>
+              <h4 class="fw-bold mt-1" id="jumlahGuru"><?= $jumlahGuru ?></h4>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Teks Statistik -->
-        <div>
-          <h6 class="mb-0">Jumlah Guru</h6>
-          <small class="text-muted">Aktif</small>
-          <h4 class="fw-bold mt-2" id="jumlahGuru"><?= $jumlahGuru ?></h4>
+      <div class="col-lg-4 col-md-6">
+        <div class="card stat-card">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-success text-white">
+              <i class="bi bi-check-circle-fill fs-2"></i>
+            </div>
+            <div>
+              <h6 class="mb-0 text-muted">Akun Aktif</h6>
+              <h4 class="fw-bold mt-1" id="akunAktif"><?= $akunAktif ?></h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card stat-card">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-danger text-white">
+              <i class="bi bi-x-circle-fill fs-2"></i>
+            </div>
+            <div>
+              <h6 class="mb-0 text-muted">Akun Nonaktif</h6>
+              <h4 class="fw-bold mt-1" id="akunNonaktif"><?= $akunNonaktif ?></h4>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-<div class="col-lg-4 col-md-6">
-  <div class="card shadow-sm">
-    <div class="card-body d-flex align-items-center">
-      <div class="bg-success text-white rounded p-3 me-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px;">
-        <!-- SVG Ikon Akun Aktif (Centang Baru) -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="45" height="45">
-          <style>.st0{fill:#41AD49;}</style>
-          <g>
-            <polygon class="st0" points="434.8,49 174.2,309.7 76.8,212.3 0,289.2 174.1,463.3 196.6,440.9 511.7,125.8 434.8,49"/>
-          </g>
-        </svg>
-      </div>
-      <div>
-        <h6 class="mb-0">Jumlah Akun</h6>
-        <small class="text-muted">Aktif</small>
-        <h4 class="fw-bold mt-2" id="akunAktif"><?= $akunAktif ?></h4>
-      </div>
-    </div>
-  </div>
-</div>
 
+    <div class="table-container">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <h6 class="fw-bold mb-2" style="font-size: 1.1rem;">Kelola Data Guru</h6>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <div class="search-container">
+            <input type="text" id="searchBox" class="search-box" placeholder="Cari Nama/Telepon Guru" value="<?= htmlspecialchars($keyword) ?>">
+            <button class="btn-cari" id="btnCari"><i class="bi bi-search"></i></button>
+          </div>
 
- <div class="col-lg-4 col-md-6">
-  <div class="card shadow-sm">
-    <div class="card-body d-flex align-items-center">
-      <div class="bg-danger text-white rounded p-3 me-3 d-flex align-items-center justify-content-center" style="width:70px; height:70px;">
-        <!-- SVG Ikon Akun Nonaktif (Baru) -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 114 114" width="45" height="45">
-          <defs>
-            <linearGradient id="def0" x1="0.5" x2="0.5" y1="0" y2="1">
-              <stop offset="0" stop-color="#F27E5E"/>
-              <stop offset="0.5" stop-color="#EB1C24"/>
-              <stop offset="1" stop-color="#CE2229"/>
-            </linearGradient>
-          </defs>
-          <g>
-            <path d="M0,87.5347L30.964,56.564 0,25.6013 25.7973,0 56.7627,30.7707 87.7267,0 113.527,25.6013 82.5627,56.5693 113.527,87.5347 87.7267,113.329 56.7667,82.364 25.7973,113.333 0,87.5347z" fill="#990000"/>
-            <path d="M111.641,87.5341L80.6768,56.5701 111.641,25.6021 87.7261,1.69014 56.7635,32.6555 25.7968,1.69014 1.8848,25.6021 32.8501,56.5648 1.8848,87.5341 25.7968,111.447 56.7675,80.4781 87.7261,111.443 111.641,87.5341z" fill="url(#def0)"/>
-            <path d="M53.5507,42.1597C69.9773,36.9184,86.2987,35.0784,101.036,36.2077L111.64,25.6024 87.7267,1.6904 56.7627,32.6557 25.7973,1.6904 1.88534,25.6024 29.0347,52.7491C36.5187,48.5651,44.7387,44.9717,53.5507,42.1597z" fill="#FFFFFF" style="fill-opacity:0.1"/>
-          </g>
-        </svg>
-      </div>
-      <div>
-        <h6 class="mb-0">Jumlah Akun</h6>
-        <small class="text-muted">Nonaktif</small>
-        <h4 class="fw-bold mt-2" id="akunNonaktif"><?= $akunNonaktif ?></h4>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-    <!-- Kelola Data Guru -->
-    <div class="card shadow-sm flex-grow-1">
-      <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
-        <h6 class="fw-bold mb-2 mb-md-0">Kelola Data Guru</h6>
-
-        <div class="d-flex align-items-center mb-2 mb-md-0">
-          <form method="GET" class="d-flex">
-            <input type="text" name="cari" class="form-control form-control-sm me-2" placeholder="Cari Nama Guru" style="width:200px;">
-            <button class="btn-cari btn-sm" type="submit"><i class="bi bi-search"></i></button>
-          </form>
+         <button class="btn btn-tambah btn-sm" id="btnTambah" data-bs-toggle="modal" data-bs-target="#modalTambah">
+    <i class="bi bi-plus-lg"></i> Tambah Data
+</button>
         </div>
-
-        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#tambahGuruModal">
-          <i class="bi bi-plus-lg"></i> Tambah Data
-        </button>
       </div>
 
       <div class="table-responsive">
-        <table class="table table-striped align-middle mb-0" id="tabelGuru">
-          <thead class="table-light">
+        <table class="table table-bordered align-middle" id="tabelGuru">
+          <thead class="table-light text-center">
             <tr>
-              <th>No.</th>
+              <th>No</th>
               <th>Nama</th>
               <th>No. Telepon</th>
               <th>Alamat</th>
@@ -187,43 +405,108 @@ $dataGuru = [];
               <th>Aksi</th>
             </tr>
           </thead>
-          <tbody id="bodyGuru">
-            <tr>
-              <td colspan="6" class="text-center text-muted py-4">Belum ada data</td>
-            </tr>
+          <tbody class="text-center">
+            <?php if (empty($dataGuru)): ?>
+              <tr>
+                <td colspan="6" class="text-center py-5">
+                  <div class="text-muted">
+                    <i class="bi bi-person-x fs-1 d-block mb-2"></i>
+                    <span>Belum ada data guru</span>
+                  </div>
+                </td>
+              </tr>
+            <?php else: ?>
+              <?php $no = 1; ?>
+              <?php foreach ($dataGuru as $guru): ?>
+                <tr>
+                  <td class="fw-medium"><?= $no++ ?></td>
+                  <td class="fw-medium"><?= htmlspecialchars($guru['nama']) ?></td>
+                  <td><?= htmlspecialchars($guru['telepon']) ?></td>
+                  <td><?= htmlspecialchars($guru['alamat']) ?></td>
+                  <td>
+                    <span class="status-badge <?= $guru['status'] == 'Aktif' ? 'status-aktif' : 'status-nonaktif' ?>">
+                      <?= $guru['status'] ?>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-action btn-edit edit-btn" 
+                              data-id="<?= $guru['id_guru'] ?>"
+                              data-username="<?= $guru['username'] ?? '' ?>"
+                              data-email="<?= $guru['email'] ?? '' ?>">
+                        <i class="bi bi-pencil-square"></i>
+                      </button>
+                      <button class="btn-action btn-delete delete-btn" data-id="<?= $guru['id_guru'] ?>">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                      <button class="btn-action btn-status status-btn" 
+                              data-id="<?= $guru['id_guru'] ?>" 
+                              data-status="<?= $guru['status'] ?>">
+                        <i class="bi bi-<?= $guru['status'] == 'Aktif' ? 'x' : 'check' ?>-circle"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- Modal Tambah/Edit Data Guru -->
-  <div class="modal fade" id="tambahGuruModal" tabindex="-1" aria-labelledby="tambahGuruModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+  <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title fw-bold" id="tambahGuruModalLabel">Tambah Data Guru</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        <div class="modal-header-custom">
+          <h5 class="modal-title-custom" id="modalTitle">Tambah Data Guru</h5>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></button>
         </div>
+
         <div class="modal-body">
-          <form id="formGuru">
-            <input type="hidden" id="editIndex" value="">
+          <form id="formTambah">
+            <input type="hidden" id="editId" name="id_guru">
+            
             <div class="mb-3">
-              <label class="form-label">Nama</label>
-              <input type="text" id="nama" class="form-control" required>
+              <label for="namaGuru" class="form-label">Nama Guru *</label>
+              <input type="text" class="form-control" id="namaGuru" name="nama_guru" required>
             </div>
+            
             <div class="mb-3">
-              <label class="form-label">No. Telepon</label>
-              <input type="text" id="telepon" class="form-control" required>
+              <label for="teleponGuru" class="form-label">Telepon *</label>
+              <input type="text" class="form-control" id="teleponGuru" name="telepon_guru" required>
             </div>
+            
             <div class="mb-3">
-              <label class="form-label">Alamat</label>
-              <textarea id="alamat" class="form-control" rows="2" required></textarea>
+              <label for="alamatGuru" class="form-label">Alamat *</label>
+              <textarea class="form-control" id="alamatGuru" name="alamat_guru" rows="3" required></textarea>
             </div>
-            <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary" id="btnSimpan">
-                <i class="bi bi-save"></i> Simpan Data
-              </button>
+            
+            <div class="mb-3">
+              <label for="username" class="form-label">Username *</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label">Email *</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="password" class="form-label">Password *</label>
+              <input type="password" class="form-control" id="password" name="password" >
+              <small class="form-text text-muted" id="passwordHelp">Minimal 6 karakter</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Konfirmasi Password *</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirm_password" >
+              <div class="password-feedback" id="passwordFeedback"></div>
+            </div>
+            
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary" id="submitBtn">Simpan Data</button>
             </div>
           </form>
         </div>
@@ -231,99 +514,149 @@ $dataGuru = [];
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Fungsi untuk validasi konfirmasi password
+    function validatePassword() {
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirmPassword');
+      const feedback = document.getElementById('passwordFeedback');
+      const submitBtn = document.getElementById('submitBtn');
+      const isEditMode = document.getElementById('editId').value !== '';
 
-  <script>
-    let dataGuru = [];
-    const bodyGuru = document.getElementById('bodyGuru');
-    const formGuru = document.getElementById('formGuru');
-    const jumlahGuruEl = document.getElementById('jumlahGuru');
-    const akunAktifEl = document.getElementById('akunAktif');
-    const akunNonaktifEl = document.getElementById('akunNonaktif');
-    const modalEl = document.getElementById('tambahGuruModal');
-    const modal = new bootstrap.Modal(modalEl);
+      console.log('Validating password - Edit Mode:', isEditMode, 'Password:', password.value);
 
-    // === Simpan data pakai tombol Enter ===
-    formGuru.addEventListener('keydown', function(e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        document.getElementById('btnSimpan').click();
-      }
-    });
-
-    formGuru.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const nama = document.getElementById('nama').value.trim();
-      const telepon = document.getElementById('telepon').value.trim();
-      const alamat = document.getElementById('alamat').value.trim();
-      const editIndex = document.getElementById('editIndex').value;
-
-      if (!nama || !telepon || !alamat) {
-        alert('Semua field wajib diisi!');
-        return;
+      // LOGIKA UTAMA: Jika mode edit dan password kosong, skip validasi
+      if (isEditMode && password.value === '') {
+        confirmPassword.required = false;
+        confirmPassword.classList.remove('password-match', 'password-mismatch');
+        feedback.textContent = 'Biarkan kosong jika tidak ingin mengubah password';
+        feedback.className = 'password-feedback text-muted';
+        submitBtn.disabled = false;
+        return true;
       }
 
-      if (editIndex === "") {
-        dataGuru.push({ nama, telepon, alamat, status: 'Aktif' });
+      // Jika mode edit dan password diisi, atau mode tambah
+      confirmPassword.required = true;
+
+      // Validasi panjang password
+      if (password.value !== '' && password.value.length < 6) {
+        password.classList.add('password-mismatch');
+        confirmPassword.classList.remove('password-match', 'password-mismatch');
+        feedback.textContent = 'Password harus minimal 6 karakter';
+        feedback.className = 'password-feedback password-invalid';
+        submitBtn.disabled = true;
+        return false;
       } else {
-        dataGuru[editIndex] = { nama, telepon, alamat, status: 'Aktif' };
+        password.classList.remove('password-mismatch');
       }
 
-      renderTable();
-      formGuru.reset();
-      document.getElementById('editIndex').value = "";
-      document.getElementById('tambahGuruModalLabel').textContent = "Tambah Data Guru";
-      modal.hide();
+      // Validasi konfirmasi password
+      if (confirmPassword.value === '') {
+        confirmPassword.classList.remove('password-match', 'password-mismatch');
+        feedback.textContent = isEditMode ? 'Harap konfirmasi password baru Anda' : 'Harap konfirmasi password Anda';
+        feedback.className = 'password-feedback password-invalid';
+        submitBtn.disabled = true;
+        return false;
+      }
+
+      // Validasi kecocokan password
+      if (password.value === confirmPassword.value) {
+        confirmPassword.classList.add('password-match');
+        confirmPassword.classList.remove('password-mismatch');
+        feedback.textContent = 'Password cocok';
+        feedback.className = 'password-feedback password-valid';
+        submitBtn.disabled = false;
+        return true;
+      } else {
+        confirmPassword.classList.add('password-mismatch');
+        confirmPassword.classList.remove('password-match');
+        feedback.textContent = 'Password tidak cocok';
+        feedback.className = 'password-feedback password-invalid';
+        submitBtn.disabled = true;
+        return false;
+      }
+    }
+
+    // Fungsi untuk setup mode edit - DIPANGGIL DARI JavaScript external
+    function setupEditMode() {
+      const editId = document.getElementById('editId');
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirmPassword');
+      const passwordHelp = document.getElementById('passwordHelp');
+      const feedback = document.getElementById('passwordFeedback');
+
+      console.log('Setting up edit mode, ID:', editId.value);
+
+      if (editId.value !== '') {
+        // Mode edit - Password opsional
+        password.required = false;
+        confirmPassword.required = false;
+        passwordHelp.textContent = 'Kosongkan jika tidak ingin mengubah password';
+        
+        // Reset field konfirmasi password
+        confirmPassword.value = '';
+        
+        // Reset validasi UI
+        password.classList.remove('password-match', 'password-mismatch');
+        confirmPassword.classList.remove('password-match', 'password-mismatch');
+        feedback.textContent = 'Biarkan kosong jika tidak ingin mengubah password';
+        feedback.className = 'password-feedback text-muted';
+        
+        // Enable submit button
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+        }
+      } else {
+        // Mode tambah - Password wajib
+        password.required = true;
+        confirmPassword.required = true;
+        passwordHelp.textContent = 'Minimal 6 karakter';
+        feedback.textContent = '';
+        feedback.className = 'password-feedback';
+      }
+      
+      // Jalankan validasi setelah perubahan mode
+      setTimeout(validatePassword, 100);
+    }
+
+    // Event listeners untuk validasi real-time
+    document.addEventListener('DOMContentLoaded', function() {
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirmPassword');
+
+      if (password && confirmPassword) {
+        password.addEventListener('input', validatePassword);
+        confirmPassword.addEventListener('input', validatePassword);
+      }
+
+      // Inisialisasi modal
+      const modalElement = document.getElementById('modalTambah');
+      if (modalElement) {
+        modalElement.addEventListener('show.bs.modal', function() {
+          // Reset validasi saat modal dibuka
+          setTimeout(validatePassword, 100);
+        });
+
+        modalElement.addEventListener('hidden.bs.modal', function() {
+          // Reset form saat modal ditutup
+          const form = document.getElementById('formTambah');
+          if (form) {
+            form.reset();
+            document.getElementById('editId').value = '';
+            document.getElementById('modalTitle').textContent = "Tambah Data Guru";
+            
+            // Reset ke mode tambah
+            setupEditMode();
+          }
+        });
+      }
     });
 
-    function renderTable() {
-      bodyGuru.innerHTML = "";
-      if (dataGuru.length === 0) {
-        bodyGuru.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Belum ada data</td></tr>`;
-        jumlahGuruEl.textContent = 0;
-        akunAktifEl.textContent = 0;
-        akunNonaktifEl.textContent = 0;
-        return;
-      }
-
-      dataGuru.forEach((guru, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${guru.nama}</td>
-          <td>${guru.telepon}</td>
-          <td>${guru.alamat}</td>
-          <td>${guru.status}</td>
-          <td>
-            <button class="btn btn-warning btn-sm" onclick="editGuru(${index})"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-danger btn-sm" onclick="hapusGuru(${index})"><i class="bi bi-trash"></i></button>
-          </td>
-        `;
-        bodyGuru.appendChild(tr);
-      });
-
-      jumlahGuruEl.textContent = dataGuru.length;
-      akunAktifEl.textContent = dataGuru.length; // anggap semua aktif
-      akunNonaktifEl.textContent = 0;
-    }
-
-    function hapusGuru(index) {
-      if (confirm('Yakin ingin menghapus data ini?')) {
-        dataGuru.splice(index, 1);
-        renderTable();
-      }
-    }
-
-    function editGuru(index) {
-      const guru = dataGuru[index];
-      document.getElementById('nama').value = guru.nama;
-      document.getElementById('telepon').value = guru.telepon;
-      document.getElementById('alamat').value = guru.alamat;
-      document.getElementById('editIndex').value = index;
-      document.getElementById('tambahGuruModalLabel').textContent = "Edit Data Guru";
-      modal.show();
-    }
+    // Export fungsi ke global scope untuk dipanggil dari JavaScript external
+    window.validatePassword = validatePassword;
+    window.setupEditMode = setupEditMode;
   </script>
-</body>
+  </body>
 </html>

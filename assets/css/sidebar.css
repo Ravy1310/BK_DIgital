@@ -28,6 +28,7 @@
     align-items: center;
     padding: 0.5rem 30px !important;
     color: var(--primary-color);
+    font-family: 'Poppins', sans-serif !important;
 }
 
 /* ==========================

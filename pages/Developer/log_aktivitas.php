@@ -1,9 +1,33 @@
 <?php
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/PBL BK/';
+
+$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
+
 require_once $base_dir . 'includes/db_connection.php';
 require_once $base_dir . 'includes/logAktivitas.php';
-?>
 
+// AMBIL DATA TOTAL GURU DARI DATABASE
+$total_guru = 0;
+
+try {
+    $query_guru = "SELECT COUNT(*) as total FROM guru";
+    $stmt_guru = $pdo->prepare($query_guru);
+    $stmt_guru->execute();
+    $result_guru = $stmt_guru->fetch(PDO::FETCH_ASSOC);
+    $total_guru = $result_guru['total'] ?? 0;
+} catch (Exception $e) {
+    $total_guru = 0;
+}
+$total_Siswa = 0;
+try {
+    $query_siswa = "SELECT COUNT(*) as total FROM siswa";
+    $stmt_siswa = $pdo->prepare($query_siswa);
+    $stmt_siswa->execute();
+    $result_siswa = $stmt_siswa->fetch(PDO::FETCH_ASSOC);
+    $total_Siswa = $result_siswa['total'] ?? 0;
+} catch (Exception $e) {
+    $total_Siswa = 0;
+}
+?>
 <style>
     body {
         background: url('../../assets/image/background.jpg');
@@ -49,6 +73,31 @@ require_once $base_dir . 'includes/logAktivitas.php';
     .filter-btn.active {
         font-weight: bold;
         transform: scale(1.05);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .filter-btn[data-filter="create"].active {
+        background-color: #198754;
+        color: white;
+        border-color: #198754;
+    }
+
+    .filter-btn[data-filter="edit"].active {
+        background-color: #ffc107;
+        color: black;
+        border-color: #ffc107;
+    }
+
+    .filter-btn[data-filter="delete"].active {
+        background-color: #dc3545;
+        color: white;
+        border-color: #dc3545;
+    }
+
+    .filter-btn[data-filter="all"].active {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
     }
 
     .stat-icon {
@@ -68,9 +117,18 @@ require_once $base_dir . 'includes/logAktivitas.php';
         font-weight: 700;
         margin-bottom: 0;
     }
+    
+    @keyframes fadeUpSmooth {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-container {
+        animation: fadeUpSmooth 0.8s ease-out;
+    }
 </style>
 
-<div class="d-flex pt-4">
+<div class="d-flex pt-4 fade-container">
     <div class="content flex-grow-1 p-4">
         <h4 class="fw-bold">Selamat Datang <span class="text-primary"><?php echo $_SESSION['admin_name'] ?? 'SuperAdmin'; ?></span></h4>
 
@@ -84,8 +142,8 @@ require_once $base_dir . 'includes/logAktivitas.php';
                             <path d="M8 8a3 3 0 1 0-2.995-3.176A3 3 0 0 0 8 8z"/>
                             <path fill-rule="evenodd" d="M14 14s-1-1.5-6-1.5S2 14 2 14s1-4 6-4 6 4 6 4z"/>
                         </svg>
-                        <h6 class="card-title">Total Siswa Aktif</h6>
-                        <h5 class="card-value text-success">22</h5>
+                        <h6 class="card-title">Total Siswa</h6>
+                        <h5 class="card-value text-success"><?php echo $total_Siswa; ?></h5>
                     </div>
                 </div>
             </div>
@@ -100,7 +158,7 @@ require_once $base_dir . 'includes/logAktivitas.php';
                             <path d="M13 3.5a.5.5 0 0 1 .5-.5h.793l.853-.854a.5.5 0 1 1 .708.708L15 3.707V4.5a.5.5 0 0 1-1 0V4H13.5a.5.5 0 0 1-.5-.5z"/>
                         </svg>
                         <h6 class="card-title">Total Guru Aktif</h6>
-                        <h5 class="card-value text-primary">22</h5>
+                        <h5 class="card-value text-primary"><?php echo $total_guru; ?></h5>
                     </div>
                 </div>
             </div>
@@ -143,13 +201,13 @@ require_once $base_dir . 'includes/logAktivitas.php';
                         <button class="btn btn-outline-primary btn-sm me-2 filter-btn active" data-filter="all">
                             <i class="fas fa-list"></i> Semua
                         </button>
-                        <button class="btn btn-outline-success btn-sm me-2 filter-btn" data-filter="tambah">
+                        <button class="btn btn-outline-success btn-sm me-2 filter-btn" data-filter="create">
                             <i class="fas fa-plus"></i> Tambah
                         </button>
                         <button class="btn btn-outline-warning btn-sm me-2 filter-btn" data-filter="edit">
                             <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn btn-outline-danger btn-sm me-2 filter-btn" data-filter="hapus">
+                        <button class="btn btn-outline-danger btn-sm me-2 filter-btn" data-filter="delete">
                             <i class="fas fa-trash"></i> Hapus
                         </button>
                     </div>

@@ -1,3 +1,7 @@
+<?php 
+include 'header.php'; 
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,7 +14,7 @@
   <link href="../../assets/css/all.min.css" rel="stylesheet"/>
 
   <style>
-   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
   body {
@@ -18,61 +22,6 @@
     background-color: #ffffff;
     overflow-x: hidden;
     color: #333;
-  }
-
-  /* Navbar */
-  .navbar {
-    background-color: #0050BC !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    padding: 1rem 0 !important;
-    transition: all 0.3s ease;
-    position: sticky;
-    top: 0;
-    z-index: 9999;
-  }
-
-  .navbar.scrolled {
-    padding: 0.8rem 0 !important;
-    background-color: #0046a3 !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-  }
-
-  .navbar-brand {
-    font-weight: 700;
-    color: white !important;
-    font-size: 1.3rem;
-    letter-spacing: 0.5px;
-  }
-
-  .nav-link {
-    color: white !important;
-    font-weight: 500;
-    margin: 0 12px;
-    font-size: 1rem;
-    transition: color 0.3s ease, transform 0.2s ease;
-  }
-
-  .nav-link:hover {
-    color: #dceaff !important;
-    transform: translateY(-2px);
-  }
-
-  .dropdown-menu {
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 4px 25px rgba(0,0,0,0.15);
-  }
-
-  .dropdown-item {
-    color: #333;
-    font-weight: 500;
-    padding: 10px 18px;
-    transition: background 0.3s ease, color 0.3s ease;
-  }
-
-  .dropdown-item:hover {
-    background-color: #0050BC;
-    color: #fff;
   }
 
   /* Hero */
@@ -122,21 +71,15 @@
     box-shadow: 0 0 25px rgba(0,80,188,0.55);
   }
 
-  /* 🔹 Responsive adjustment for mobile */
   @media (max-width: 768px) {
     .hero-content {
-      background: rgba(0,0,0,0.15); /* lebih transparan di HP */
+      background: rgba(0,0,0,0.15);
       padding: 20px;
     }
-    .hero-content h1 {
-      font-size: 1.6rem;
-    }
-    .hero-content p {
-      font-size: 0.95rem;
-    }
+    .hero-content h1 { font-size: 1.6rem; }
+    .hero-content p { font-size: 0.95rem; }
   }
 
-  /* Section */
   .section {
     padding: 80px 0;
     opacity: 0;
@@ -204,7 +147,7 @@
     font-weight: 700;
     color: #0050BC;
   }
-
+  
   footer {
     background: #0050BC;
     color: white;
@@ -226,36 +169,7 @@
 </head>
 
 <body>
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-      <a class="navbar-brand" href="#">BK Digital</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-        <span class="navbar-toggler-icon"></span>
-      </button>
 
-      <div class="collapse navbar-collapse" id="navMenu">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a href="../../index.html" class="nav-link"><i class="fas fa-home me-1"></i>Beranda</a></li>
-          <li class="nav-item"><a href="#tentang" class="nav-link">Tentang</a></li>
-          
-          <!-- DROPDOWN LAYANAN -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#layanan" id="layananMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Layanan
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="layananMenu">
-              <li><a class="dropdown-item" href="#layanan">Konseling Pribadi & Akademik</a></li>
-              <li><a class="dropdown-item" href="#layanan">Pengaduan Siswa</a></li>
-              <li><a class="dropdown-item" href="#layanan">Tes dan Evaluasi</a></li>
-            </ul>
-          </li>
-
-          <li class="nav-item"><a href="#kontak" class="nav-link">Kontak</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
 
   <!-- HERO -->
   <section class="hero-section">
@@ -283,25 +197,31 @@
       <h2 class="section-title">Layanan Kami</h2>
       <div class="row g-4 justify-content-center">
         <div class="col-md-4">
+            <a href="verifikasi_jadwal.php" class="text-decoration-none text-dark">
           <div class="feature-card">
             <i class="fas fa-comments"></i>
             <h5>Konseling Pribadi & Akademik</h5>
             <p>Bimbingan profesional untuk membantu siswa dalam hal emosional, sosial, dan akademik.</p>
           </div>
         </div>
+
         <div class="col-md-4">
+            <a href="verifikasi_pengaduan.php" class="text-decoration-none text-dark">
           <div class="feature-card">
             <i class="fas fa-bullhorn"></i>
             <h5>Pengaduan Siswa</h5>
             <p>Tempat aman dan rahasia untuk menyampaikan masalah atau kekhawatiran di lingkungan sekolah.</p>
           </div>
         </div>
+
         <div class="col-md-4">
-          <div class="feature-card">
-            <i class="fas fa-file-alt"></i>
-            <h5>Tes dan Evaluasi</h5>
-            <p>Beragam tes minat, bakat, dan kepribadian untuk membantu menentukan arah jurusan dan karier masa depan.</p>
-          </div>
+            <a href="verifikasi_tes.php" class="text-decoration-none text-dark">
+            <div class="feature-card">
+              <i class="fas fa-file-alt"></i>
+              <h5>Tes dan Evaluasi</h5>
+              <p>Beragam tes untuk membantu menentukan jurusan dan karier masa depan.</p>
+            </div>
+         </a>
         </div>
       </div>
     </div>
@@ -323,10 +243,9 @@
     <p>© 2025 BK Digital — SMA Al Islam Krian</p>
   </footer>
 
-  <!-- LOCAL JS -->
   <script src="../../assets/js/bootstrap.bundle.min.js"></script>
+
   <script>
-    // Fade-in effect for sections
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('show');
@@ -334,17 +253,7 @@
     }, { threshold: 0.2 });
 
     document.querySelectorAll('.section, .feature-card').forEach(el => observer.observe(el));
-
-    // Smooth scroll for anchors
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
   </script>
+
 </body>
 </html>
-z

@@ -1,8 +1,23 @@
+
 <?php
+// TAMBAHKAN SESSION CHECK DI AWAL
+session_start();
+
+// CEK APAKAH SUDAH LOGIN
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    http_response_code(401);
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
+    exit;
+}
+
 header('Content-Type: application/json');
 require '../db_connection.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
+
+// AMBIL DATA ADMIN DARI SESSION
+$adminId = $_SESSION['admin_id'];
+$adminName = $_SESSION['admin_name'];
 
 try {
     // 1. Inisialisasi koneksi PDO
@@ -111,6 +126,7 @@ try {
                 $user_stmt->execute();
 
                 $pdo->commit();
+
                 echo json_encode(['status' => 'success', 'message' => 'Akun admin berhasil diperbarui']);
 
             } else {
@@ -142,6 +158,7 @@ try {
                 $user_stmt->execute();
 
                 $pdo->commit();
+
                 echo json_encode(['status' => 'success', 'message' => 'Akun admin berhasil ditambahkan']);
             }
             break;
@@ -170,6 +187,7 @@ try {
             $admin_stmt->execute();
 
             $pdo->commit();
+
             echo json_encode(['status' => 'success', 'message' => 'Akun admin berhasil dihapus']);
             break;
 
