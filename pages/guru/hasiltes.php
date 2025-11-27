@@ -27,22 +27,6 @@
             margin: 0 auto;
         }
 
-        .header {
-            background: white;
-            padding: 20px 30px;
-            margin: -20px -30px 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h2 {
-            margin: 0;
-            color: var(--dark-blue);
-            font-weight: 600;
-        }
-
         .stats-card {
             background: white;
             border-radius: 10px;
@@ -198,20 +182,6 @@
 <body>
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Header -->
-        <div class="header">
-            <h2>Hasil Tes Siswa</h2>
-            <div class="user-profile">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div>
-                    <div style="font-weight: 600; font-size: 14px;">Guru BK</div>
-                    <div style="font-size: 12px; color: #666;">guru@bkdigital.id</div>
-                </div>
-            </div>
-        </div>
-
         <!-- Stats Cards -->
         <div class="row mb-4">
             <div class="col-md-6">
