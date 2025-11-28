@@ -165,11 +165,43 @@ include 'header.php';
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.15); opacity: 0.9; }
   }
+
+  /* Menyamakan tinggi ikon */
+.feature-card i {
+    font-size: 2.8rem !important;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px auto;
+}
+
+/* Menyamakan jarak antar elemen di dalam card */
+.feature-card a.btn-utama {
+    display: block;
+    margin: 15px auto 10px auto;
+    padding: 12px 15px;
+    width: 85%;
+    border-radius: 50px;
+}
+
+/* Menyamakan tinggi seluruh card */
+.feature-card {
+    min-height: 310px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Membuat paragraf agar tetap sejajar */
+.feature-card p {
+    margin-top: auto;
+}
+
   </style>
 </head>
 
 <body>
-
 
   <!-- HERO -->
   <section class="hero-section">
@@ -196,33 +228,52 @@ include 'header.php';
     <div class="container">
       <h2 class="section-title">Layanan Kami</h2>
       <div class="row g-4 justify-content-center">
+
+        <!-- CARD 1 -->
         <div class="col-md-4">
-            <a href="verifikasi_jadwal.php" class="text-decoration-none text-dark">
           <div class="feature-card">
             <i class="fas fa-comments"></i>
-            <h5>Konseling Pribadi & Akademik</h5>
-            <p>Bimbingan profesional untuk membantu siswa dalam hal emosional, sosial, dan akademik.</p>
+
+            <a href="verifikasi_jadwal.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
+              Konseling Pribadi & Akademik
+            </a>
+
+            <p class="mt-3 text-muted">
+              Bimbingan profesional untuk membantu siswa dalam hal emosional, sosial, dan akademik.
+            </p>
           </div>
         </div>
 
+        <!-- CARD 2 -->
         <div class="col-md-4">
-            <a href="verifikasi_pengaduan.php" class="text-decoration-none text-dark">
           <div class="feature-card">
             <i class="fas fa-bullhorn"></i>
-            <h5>Pengaduan Siswa</h5>
-            <p>Tempat aman dan rahasia untuk menyampaikan masalah atau kekhawatiran di lingkungan sekolah.</p>
+
+            <a href="verifikasi_pengaduan.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
+              Pengaduan Siswa
+            </a>
+
+            <p class="mt-3 text-muted">
+              Tempat aman dan rahasia untuk menyampaikan masalah atau kekhawatiran di lingkungan sekolah.
+            </p>
           </div>
         </div>
 
+        <!-- CARD 3 -->
         <div class="col-md-4">
-            <a href="verifikasi_tes.php" class="text-decoration-none text-dark">
-            <div class="feature-card">
-              <i class="fas fa-file-alt"></i>
-              <h5>Tes dan Evaluasi</h5>
-              <p>Beragam tes untuk membantu menentukan jurusan dan karier masa depan.</p>
-            </div>
-         </a>
+          <div class="feature-card">
+            <i class="fas fa-file-alt"></i>
+
+            <a href="verifikasi_tes.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
+              Tes dan Evaluasi
+            </a>
+
+            <p class="mt-3 text-muted">
+              Beragam tes untuk membantu menentukan jurusan dan karier masa depan.
+            </p>
+          </div>
         </div>
+
       </div>
     </div>
   </section>

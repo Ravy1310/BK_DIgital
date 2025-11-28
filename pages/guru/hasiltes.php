@@ -195,7 +195,7 @@
                 <div class="stats-card green">
                     <div class="icon"><i class="fas fa-check-circle"></i></div>
                     <h3 class="mb-0">120</h3>
-                    <p class="text-muted mb-0">Siswa Selesai Tes</p>
+                    <p class="text-muted mb-0">Siswa Siap Konseling</p>
                 </div>
             </div>
         </div>
