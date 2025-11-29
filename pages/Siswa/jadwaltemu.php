@@ -36,6 +36,39 @@ $stmt2 = $pdo->prepare("
 ");
 $stmt2->execute([$id_siswa]);
 $riwayat = $stmt2->fetchAll();
+
+// ===== DUMMY DATA JIKA TIDAK ADA RIWAYAT =====
+if (empty($riwayat)) {
+    $riwayat = [
+        [
+            'tanggal' => '2025-01-15',
+            'jam' => '09:00',
+            'nama_guru' => 'Budi Santoso'
+        ],
+        [
+            'tanggal' => '2025-01-10',
+            'jam' => '10:00',
+            'nama_guru' => 'Siti Rahayu'
+        ],
+        [
+            'tanggal' => '2024-12-22',
+            'jam' => '08:00',
+            'nama_guru' => 'Rafi Isnanto'
+        ],
+        [
+            'tanggal' => '2024-12-10',
+            'jam' => '11:00',
+            'nama_guru' => 'Siti Rahayu'
+        ]
+    ];
+}
+
+// ===== LIMIT RIWAYAT (HANYA 3 JIKA TIDAK KLIK LIHAT SEMUA) =====
+if (!isset($_GET['all'])) {
+    $riwayat_tampil = array_slice($riwayat, 0, 3);
+} else {
+    $riwayat_tampil = $riwayat;
+}
 ?>
 
 <!DOCTYPE html>
@@ -49,14 +82,12 @@ $riwayat = $stmt2->fetchAll();
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-  /* ===================== BODY PADDING UNTUK NAVBAR FIXED ===================== */
   body {
-      padding-top: 0px; /* sesuaikan tinggi navbar */
+      padding-top: 0px;
       background: url('../../assets/image/background.jpg');
       font-family: 'Poppins', sans-serif;
   }
 
-  /* ===================== CARD KONSELING ===================== */
   .schedule-wrapper {
       background: #ffffff;
       border-radius: 20px;
@@ -96,12 +127,9 @@ $riwayat = $stmt2->fetchAll();
       padding: 12px 18px;
       color: #fff;
       font-weight: 600;
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      animation: slideIn 0.5s ease-out;
   }
 
   .konseling-body {
@@ -114,44 +142,12 @@ $riwayat = $stmt2->fetchAll();
       padding: 12px 25px;
       font-weight: 600;
       border-radius: 10px;
-      transition: background 0.25s ease, transform 0.25s ease;
   }
 
   .btn-konseling:hover {
       background: #0050BC;
       transform: translateY(-3px);
   }
-
-  @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes slideIn {
-      0% { opacity: 0; transform: translateX(-15px); }
-      100% { opacity: 1; transform: translateX(0); }
-  }
-
-/* ===================== MODAL CUSTOM HEIGHT ===================== */
-#modalAjukan .modal-dialog {
-    max-width: 450px;   /* Lebar modal lebih kecil */
-    max-height: 80vh;   /* Tinggi maksimal 80% dari viewport */
-}
-
-#modalAjukan .modal-content {
-    border-radius: 15px;
-    height: 100%;       /* Gunakan tinggi penuh dialog */
-}
-
-#modalAjukan .modal-body {
-    max-height: calc(80vh - 150px); /* Kurangi header/footer agar body scrollable */
-    overflow-y: auto;    /* Scroll vertikal jika isinya terlalu panjang */
-    padding: 15px;
-}
-
-#modalAjukan .modal-footer {
-    padding: 10px 15px;
-}
 
 </style>
 </head>
@@ -160,7 +156,7 @@ $riwayat = $stmt2->fetchAll();
 
 <div class="container py-4">
 
-  <!-- =================== JADWAL AKTIF =================== -->
+  <!-- JADWAL AKTIF -->
   <div class="schedule-wrapper">
     <div class="section-title">Jadwal Konseling</div>
 
@@ -189,12 +185,12 @@ $riwayat = $stmt2->fetchAll();
     </div>
   </div>
 
-  <!-- =================== RIWAYAT =================== -->
+  <!-- RIWAYAT -->
   <div class="schedule-wrapper">
     <div class="section-title">Riwayat Konseling</div>
 
-    <?php if (count($riwayat) > 0): ?>
-      <?php foreach ($riwayat as $r): ?>
+    <?php if (count($riwayat_tampil) > 0): ?>
+      <?php foreach ($riwayat_tampil as $r): ?>
         <div class="konseling-card">
           <div class="konseling-header">
             Konseling Selesai
@@ -203,7 +199,7 @@ $riwayat = $stmt2->fetchAll();
           <div class="konseling-body">
             <p class="mb-1 fw-semibold"><?= date("l, d F Y", strtotime($r['tanggal'])) ?></p>
             <p><?= $r['jam'] ?> WIB</p>
-            <p><strong>Guru BK:</strong> <?= $r['nama_guru'] ?? '-' ?></p>
+            <p><strong>Guru BK:</strong> <?= $r['nama_guru'] ?></p>
           </div>
         </div>
       <?php endforeach; ?>
@@ -211,15 +207,15 @@ $riwayat = $stmt2->fetchAll();
       <p class="text-center">Belum ada riwayat.</p>
     <?php endif; ?>
 
-    <?php if (count($riwayat) > 0): ?>
+    <?php if (!isset($_GET['all']) && count($riwayat) > 3): ?>
       <div class="text-start mt-3">
-        <a href="riwayat_konseling.php" class="btn btn-konseling">Lihat Semua Riwayat Konseling</a>
+        <a href="?all=1" class="btn btn-konseling">Lihat Semua Riwayat Konseling</a>
       </div>
     <?php endif; ?>
   </div>
 </div>
 
-<!-- ===================== MODAL ===================== -->
+<!-- MODAL AJUKAN -->
 <div class="modal fade" id="modalAjukan" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -289,15 +285,6 @@ $riwayat = $stmt2->fetchAll();
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Navbar shrink effect -->
-<script>
-  window.addEventListener("scroll", function () {
-    const nav = document.querySelector(".navbar");
-    if (window.scrollY > 10) nav.classList.add("scrolled");
-    else nav.classList.remove("scrolled");
-  });
-</script>
 
 </body>
 </html>
