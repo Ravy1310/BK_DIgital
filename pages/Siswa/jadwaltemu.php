@@ -142,6 +142,8 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
         background-size: cover;
       font-family: 'Poppins', sans-serif;
   }
+
+  /* ===================== CARD KONSELING ===================== */
   .schedule-wrapper {
       background: #ffffff;
       border-radius: 20px;
