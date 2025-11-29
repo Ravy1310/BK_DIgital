@@ -1,46 +1,17 @@
 <?php
-session_start();
-require_once __DIR__ . "/../../includes/db_connection.php"; // memuat $pdo
+require_once __DIR__ . "/../../includes/siswa_control/verification_handler.php";
+include 'header.php';
 
-// Default pesan error
-$message = "";
 
-// Ambil error message dari session jika ada
+
+$error = processVerification('jadwal');
+
+// Jika ada notifikasi sukses dari pengaduan.php
+$success = isset($_GET["success"]) ? true : false;
+// Handle error dari session (jika ada)
 if (isset($_SESSION['error_id'])) {
-    $message = $_SESSION['error_id'];
-    unset($_SESSION['error_id']); // hapus setelah ditampilkan
-}
-
-// PROSES KETIKA TOMBOL SUBMIT DIKLIK
-if (isset($_POST['cek_id'])) {
-
-    if (!$pdo) {
-        die("Koneksi database gagal.");
-    }
-
-    $id = trim($_POST['id_siswa']);
-
-    // Query PDO benar
-    $stmt = $pdo->prepare("SELECT id_siswa, nama FROM siswa WHERE id_siswa = ?");
-    $stmt->execute([$id]);
-
-    $data = $stmt->fetch();
-
-    if ($data) {
-        // Set session siswa
-        $_SESSION['siswa_logged_in'] = true;
-        $_SESSION['siswa_id'] = $data['id_siswa'];
-        $_SESSION['siswa_nama'] = $data['nama'];
-
-        header("Location: jadwaltemu.php");
-        exit;
-
-    } else {
-
-        $_SESSION['error_id'] = "❌ ID Siswa tidak ditemukan. Periksa kembali.";
-        header("Location: verifikasi_jadwal.php");
-        exit;
-    }
+    $error = $_SESSION['error_id'];
+    unset($_SESSION['error_id']);
 }
 ?>
 
@@ -158,9 +129,9 @@ if (isset($_POST['cek_id'])) {
         <div class="col-md-6 slide-right">
             <div class="card-custom fade-in">
 
-                <?php if (!empty($message)): ?>
+                <?php if (!empty($error)): ?>
                 <div class="error-box">
-                    <?= $message ?>
+                    <?= $error ?>
                 </div>
                 <?php endif; ?>
 

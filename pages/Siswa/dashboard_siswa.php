@@ -23,7 +23,9 @@ include 'header.php';
     overflow-x: hidden;
     color: #333;
   }
-
+ a {
+  text-decoration: none;
+ }
   /* Hero */
   .hero-section {
     height: 80vh;

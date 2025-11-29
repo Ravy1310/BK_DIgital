@@ -1,37 +1,11 @@
 <?php
-session_start();
-require_once __DIR__ . "/../../includes/db_connection.php"; // koneksi DB
+include 'header.php';
+require_once __DIR__ . "/../../includes/siswa_control/verification_handler.php";
 
-// ================== PROSES SUBMIT ID SISWA ==================
-if (isset($_POST['cek_id'])) {
-
-    if (!$pdo) {
-        die("Koneksi database gagal.");
-    }
-
-    $id_siswa = trim($_POST['id_siswa']);
-
-    $stmt = $pdo->prepare("SELECT id_siswa, nama FROM siswa WHERE id_siswa = ?");
-    $stmt->execute([$id_siswa]);
-    $data = $stmt->fetch();
-
-    if ($data) {
-
-        // simpan session
-        $_SESSION['id_valid'] = true;
-        $_SESSION['id_siswa'] = $data["id_siswa"];
-        $_SESSION['siswa_nama'] = $data["nama"];
-
-        // langsung masuk ke halaman tes
-        header("Location: tesbk.php");
-        exit;
-
-    } else {
-        $error = "❌ ID Siswa tidak ditemukan. Periksa kembali.";
-    }
-}
-
+// Proses verifikasi
+$error = processVerification('tes');
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -77,6 +51,15 @@ if (isset($_POST['cek_id'])) {
         }
         .btn-custom:hover {
             background-color: #002d73;
+        }
+        .error-box {
+            background: #ffe1e1;
+            color: #b10000;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-align: center;
         }
     </style>
 </head>
