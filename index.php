@@ -1,5 +1,5 @@
 <?php 
-include 'header.php'; 
+include 'pages/Siswa/header.php'; 
 ?>
 
 <!DOCTYPE html>
@@ -10,8 +10,8 @@ include 'header.php';
   <title>BK Digital - Dashboard Siswa</title>
 
   <!-- LOCAL ASSETS -->
-  <link href="../../assets/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="../../assets/css/all.min.css" rel="stylesheet"/>
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="assets/css/all.min.css" rel="stylesheet"/>
 
   <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
@@ -30,7 +30,7 @@ include 'header.php';
   .hero-section {
     height: 80vh;
     background: linear-gradient(rgba(0,80,188,0.25), rgba(0,80,188,0.25)),
-                url("../../assets/image/SekolahYapalis.jpeg") center/cover no-repeat;
+                url("assets/image/SekolahYapalis.jpeg") center/cover no-repeat;
     display: flex; align-items: center; justify-content: center;
     text-align: center; color: white;
   }
@@ -236,7 +236,7 @@ include 'header.php';
           <div class="feature-card">
             <i class="fas fa-comments"></i>
 
-            <a href="verifikasi_jadwal.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
+            <a href="pages/Siswa/verifikasi_jadwal.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
               Konseling Pribadi & Akademik
             </a>
 
@@ -251,7 +251,7 @@ include 'header.php';
           <div class="feature-card">
             <i class="fas fa-bullhorn"></i>
 
-            <a href="verifikasi_pengaduan.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
+            <a href="pages/Siswa/verifikasi_pengaduan.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
               Pengaduan Siswa
             </a>
 
@@ -266,7 +266,7 @@ include 'header.php';
           <div class="feature-card">
             <i class="fas fa-file-alt"></i>
 
-            <a href="verifikasi_tes.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
+            <a href="pages/Siswa/verifikasi_tes.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
               Tes dan Evaluasi
             </a>
 
@@ -296,7 +296,7 @@ include 'header.php';
     <p>© 2025 BK Digital — SMA Al Islam Krian</p>
   </footer>
 
-  <script src="../../assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
 
   <script>
     const observer = new IntersectionObserver(entries => {

@@ -100,7 +100,7 @@ $ASSETS_URL = $BASE_URL . "assets/";
   <div class="container">
     
     <!-- LOGO -->
-    <a class="navbar-brand" href="dashboard_siswa.php">BK Digital</a>
+    <a class="navbar-brand" href="../../index.php">BK Digital</a>
 
     <!-- UNCOMMENT INI - Tombol toggle untuk mobile -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">

@@ -1,141 +1,137 @@
-<?php 
-require_once __DIR__ . "/../../includes/db_connection.php";
+<?php
+session_start();
 
-$id_tes   = $_POST['id_tes'] ?? 0;
-$id_siswa = $_POST['id_siswa'] ?? 0;
-$jawaban  = $_POST['jawaban'] ?? "";
+// Aktifkan error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Ambil detail tes
-$stmt = $pdo->prepare("SELECT * FROM tes WHERE id_tes = ?");
-$stmt->execute([$id_tes]);
-$tes = $stmt->fetch();
+// ✅ HAPUS LOGGING KE FILE:
+// file_put_contents('submit_debug.log', "\n=== " . date('Y-m-d H:i:s') . " ==========\n", FILE_APPEND);
+// file_put_contents('submit_debug.log', "POST Data: " . print_r($_POST, true) . "\n", FILE_APPEND);
+// file_put_contents('submit_debug.log', "SESSION Data: " . print_r($_SESSION, true) . "\n", FILE_APPEND);
 
-if (!$tes) {
-    die("Tes tidak ditemukan.");
+// Validasi session
+require_once __DIR__ . "/../../includes/siswa_control/verification_handler.php";
+
+if (!isVerifiedFor('tes')) {
+    $_SESSION['error'] = "Session tidak valid. Silakan login ulang.";
+    header("Location: verifikasi_tes.php");
+    exit;
 }
 
-// Simpan jawaban ke database
-$save = $pdo->prepare("
-    INSERT INTO hasil_tes (id_tes, id_siswa, jawaban, tanggal_submit) 
-    VALUES (?, ?, ?, NOW())
-");
-$save->execute([$id_tes, $id_siswa, $jawaban]);
+// Dapatkan data siswa
+$siswa_data = getCurrentStudent();
+if (!$siswa_data || !isset($siswa_data['id_siswa'])) {
+    $_SESSION['error'] = "Data siswa tidak ditemukan.";
+    header("Location: verifikasi_tes.php");
+    exit;
+}
 
-// Nilai dummy (70–100)
-$nilai_dummy = rand(70, 100);
+$id_siswa = $siswa_data['id_siswa'];
+$nama_siswa = $siswa_data['nama'];
+
+// ✅ HAPUS:
+// file_put_contents('submit_debug.log', "Siswa: $id_siswa - $nama_siswa\n", FILE_APPEND);
+
+// Include controller
+require_once __DIR__ . "/../../includes/db_connection.php";
+require_once __DIR__ . "/../../includes/siswa_control/tes_controller.php";
+
+// Ambil data dari POST
+$id_tes = isset($_POST['id_tes']) ? (int)$_POST['id_tes'] : 0;
+$jawaban = $_POST['jawaban'] ?? [];
+
+// ✅ HAPUS:
+// file_put_contents('submit_debug.log', "ID Tes: $id_tes, Jawaban count: " . count($jawaban) . "\n", FILE_APPEND);
+
+// Validasi input
+if ($id_tes <= 0) {
+    $_SESSION['error'] = "ID Tes tidak valid";
+    header("Location: tesbk.php");
+    exit;
+}
+
+if (empty($jawaban)) {
+    $_SESSION['error'] = "Tidak ada jawaban yang dikirim. Silakan lengkapi semua soal.";
+    header("Location: form_tes.php?id=" . $id_tes);
+    exit;
+}
+
+// Proses submit tes
+$result = submitTes($id_siswa, $id_tes, $jawaban);
+
+// ✅ HAPUS:
+// file_put_contents('submit_debug.log', "Submit Result: " . print_r($result, true) . "\n", FILE_APPEND);
+
+// Handle hasil submit
+if (isset($result['success']) && $result['success'] === true) {
+    // ✅ Coba beberapa metode untuk mendapatkan ID hasil yang benar
+    $id_hasil_redirect = 0;
+    
+    // 1. Gunakan id_hasil dari result jika ada
+    if (isset($result['id_hasil']) && $result['id_hasil'] > 0) {
+        $id_hasil_redirect = $result['id_hasil'];
+        // ✅ HAPUS: file_put_contents('submit_debug.log', "Menggunakan id_hasil dari result: $id_hasil_redirect\n", FILE_APPEND);
+    }
+    
+    // 2. Jika masih 0, cari di database
+    if ($id_hasil_redirect <= 0) {
+        try {
+            $stmt = $pdo->prepare("
+                SELECT id_hasil 
+                FROM hasil_tes 
+                WHERE id_siswa = ? AND id_tes = ? 
+                ORDER BY tanggal_submit DESC 
+                LIMIT 1
+            ");
+            $stmt->execute([$id_siswa, $id_tes]);
+            $id_hasil_redirect = $stmt->fetchColumn();
+            
+            // ✅ HAPUS: file_put_contents('submit_debug.log', "Menggunakan id_hash dari database: $id_hasil_redirect\n", FILE_APPEND);
+        } catch (Exception $e) {
+            // ✅ HAPUS: file_put_contents('submit_debug.log', "Error mencari id_hash: " . $e->getMessage() . "\n", FILE_APPEND);
+        }
+    }
+    
+    // 3. Jika masih 0, cari ID terbaru untuk siswa ini
+    if ($id_hasil_redirect <= 0) {
+        try {
+            $stmt = $pdo->prepare("
+                SELECT id_hasil 
+                FROM hasil_tes 
+                WHERE id_siswa = ? 
+                ORDER BY tanggal_submit DESC 
+                LIMIT 1
+            ");
+            $stmt->execute([$id_siswa]);
+            $id_hasil_redirect = $stmt->fetchColumn();
+            
+            // ✅ HAPUS: file_put_contents('submit_debug.log', "Menggunakan id_hash terbaru: $id_hasil_redirect\n", FILE_APPEND);
+        } catch (Exception $e) {
+            // ✅ HAPUS: file_put_contents('submit_debug.log', "Error mencari id_hash terbaru: " . $e->getMessage() . "\n", FILE_APPEND);
+        }
+    }
+    
+    // Set session success
+    $_SESSION['success'] = "Tes berhasil disubmit! Nilai: " . ($result['nilai'] ?? 0);
+    
+    // Jika mendapatkan ID, redirect ke halaman hasil
+    if ($id_hasil_redirect > 0) {
+        // ✅ HAPUS: file_put_contents('submit_debug.log', "Redirect ke: hasil_tes.php?id=$id_hasil_redirect\n", FILE_APPEND);
+        header("Location: hasil_tes.php?id=" . $id_hasil_redirect);
+        exit;
+    } else {
+        // Fallback ke tesbk.php
+        // ✅ HAPUS: file_put_contents('submit_debug.log', "Tidak dapat menemukan ID hasil, redirect ke tesbk.php\n", FILE_APPEND);
+        header("Location: tesbk.php");
+        exit;
+    }
+    
+} else {
+    // Jika gagal
+    $errorMsg = $result['message'] ?? "Terjadi kesalahan yang tidak diketahui";
+    $_SESSION['error'] = "Gagal menyimpan tes: " . $errorMsg;
+    header("Location: form_tes.php?id=" . $id_tes);
+    exit;
+}
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Tes Tersubmit</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            background: #e9f0fa;
-            font-family: 'Poppins', sans-serif;
-            padding: 40px 20px;
-        }
-        .page-title {
-            background: #003893;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .page-title h2 {
-            margin: 0;
-            font-weight: 700;
-        }
-        .section-box {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-        }
-
-        /* ===== SCORE BOX (KIRI & KECIL) ===== */
-        .score-box {
-            background: #003893;
-            color: white;
-            padding: 10px 14px;
-            border-radius: 6px;
-            text-align: left;
-            width: 200px;              /* ukuran kecil */
-            margin: 10px 0 20px 0;     /* berada di kiri */
-        }
-        .score-box h3 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .btn-primary-custom {
-            background-color: #003893;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 7px;
-            font-weight: 600;
-            color: white; 
-        }
-        .btn-primary-custom:hover {
-            background-color: #002d73;
-        }
-        ul li strong {
-            color: #003893;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-
-    <div class="page-title">
-        <h2>Tes Berhasil Dikirim</h2>
-        <p style="margin-top:5px; font-size:14px;">Terima kasih telah mengerjakan tes ini</p>
-    </div>
-
-    <div class="section-box">
-
-        <h4 class="mb-3">Detail Pengisian Kamu</h4>
-
-        <ul class="list-group mb-4">
-            <li class="list-group-item">
-                <strong>Kategori Tes:</strong> <?= htmlspecialchars($tes['kategori_tes']) ?>
-            </li>
-
-            <li class="list-group-item">
-                <strong>Deskripsi:</strong> <?= htmlspecialchars($tes['deskripsi_tes']) ?>
-            </li>
-
-            <li class="list-group-item">
-                <strong>ID Siswa:</strong> <?= htmlspecialchars($id_siswa) ?>
-            </li>
-
-            <li class="list-group-item">
-                <strong>Jawaban:</strong><br>
-                <?= nl2br(htmlspecialchars($jawaban)) ?>
-            </li>
-        </ul>
-
-        <!-- SCORE BOX KECIL DAN DI KIRI -->
-        <div class="score-box">
-            <h3>Nilai Kamu: <?= $nilai_dummy ?></h3>
-        </div>
-
-        <div class="text-center mt-3">
-            <a href="tesbk.php" class="btn btn-primary-custom">
-                Kembali ke Daftar Tes
-            </a>
-        </div>
-
-    </div>
-
-</div>
-
-</body>
-</html>

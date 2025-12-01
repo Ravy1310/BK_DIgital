@@ -1,18 +1,40 @@
 <?php
-require_once __DIR__ . "/../../includes/siswa_control/verification_handler.php";
+session_start();
+
+// Handle logout request - HARUS DIPASANG DI AWAL SEBELUM APAPUN
+if (isset($_GET['logout']) && $_GET['logout'] == '1') {
+    // Hapus session verifikasi siswa
+    unset($_SESSION['verification_siswa']);
+    unset($_SESSION['siswa_data']);
+    
+    // Hapus session untuk pengaduan jika ada
+    unset($_SESSION['popup_type']);
+    unset($_SESSION['popup_message']);
+    
+    // Regenerate session ID untuk mencegah session fixation
+    session_regenerate_id(true);
+    session_destroy();
+    // Set header untuk mencegah caching
+    header("Cache-Control: no-cache, no-store, must-revalidate");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    
+    // Redirect dengan parameter logout_success untuk notifikasi
+    header("Location: verifikasi_jadwal.php?logout_success=1");
+    exit();
+}
+
+// SET HEADER NO-CACHE UNTUK SEMUA HALAMAN VERIFIKASI
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 include 'header.php';
+require_once __DIR__ . "/../../includes/siswa_control/verification_handler.php";
 
-
-
+// Proses verifikasi
 $error = processVerification('jadwal');
 
-// Jika ada notifikasi sukses dari pengaduan.php
-$success = isset($_GET["success"]) ? true : false;
-// Handle error dari session (jika ada)
-if (isset($_SESSION['error_id'])) {
-    $error = $_SESSION['error_id'];
-    unset($_SESSION['error_id']);
-}
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +73,7 @@ if (isset($_SESSION['error_id'])) {
         }
         .btn-custom:hover {
             background-color: #002d73;
+            color: white;
         }
         .error-box {
             background: #ffe1e1;
@@ -155,6 +178,8 @@ if (isset($_SESSION['error_id'])) {
 
     </div>
 </div>
-
+<?php
+include 'footer.php';
+?>
 </body>
 </html>

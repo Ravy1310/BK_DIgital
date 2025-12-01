@@ -1,8 +1,15 @@
 <?php 
+session_start();
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 require_once __DIR__ . "/../../includes/siswa_control/verification_handler.php";
 validateAndRedirect('jadwal');
-
-include 'header.php';
+$siswa_data = getCurrentStudent();
+$id_siswa = $siswa_data['id_siswa'];
+$nama_siswa = $siswa_data['nama'];
+$kelas_siswa = $siswa_data['kelas'];
 // ======================
 // CEK PATH DATABASE CONNECTION
 // ======================
@@ -134,6 +141,7 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
 <title>Jadwal Konseling</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
   body {
@@ -160,7 +168,7 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
   .carousel-container {
       position: relative;
       overflow: hidden;
-      padding: 20px 0;
+      padding: 5px 0;
       margin: 0 -10px;
   }
   .carousel-wrapper {
@@ -181,6 +189,7 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
       transition: all 0.3s ease;
   }
   .konseling-card:hover {
+  
       transform: translateY(-8px) scale(1.02);
       box-shadow: 0 12px 25px rgba(0,0,0,0.15);
   }
@@ -206,6 +215,7 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
   }
   .btn-konseling:hover {
       background: #0050BC;
+      color: #fff;
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(13, 71, 161, 0.3);
   }
@@ -221,6 +231,7 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
   }
   .btn-reschedule:hover {
       background: #e8590c;
+      color: #fff;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3);
   }
@@ -322,47 +333,50 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
       font-size: 0.85rem;
       color: #6c757d;
   }
+  .user-info {
+      background-color: #cedaefff;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 40px;
+      border-left: 5px solid #004AAD;
+    }
+
+    .user-info h5 {
+      color: #004AAD;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 1.4rem;
+    }
 </style>
 </head>
 
 <body>
 
 <div class="container py-4">
+  
 
-  <!-- TOAST NOTIFICATION -->
-  <div class="toast-container">
-    <?php if (isset($_SESSION['toast_success'])): ?>
-      <div class="toast toast-success show" role="alert" data-bs-autohide="true" data-bs-delay="3000">
-        <div class="toast-header">
-          <i class="bi bi-check-circle text-success me-2"></i>
-          <strong class="me-auto">Sukses</strong>
-          <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-body">
-          <?= $_SESSION['toast_success'] ?>
-        </div>
-      </div>
-      <?php unset($_SESSION['toast_success']); ?>
-    <?php endif; ?>
-
-    <?php if (isset($_SESSION['toast_error'])): ?>
-      <div class="toast toast-error show" role="alert" data-bs-autohide="true" data-bs-delay="4000">
-        <div class="toast-header">
-          <i class="bi bi-exclamation-circle text-danger me-2"></i>
-          <strong class="me-auto">Error</strong>
-          <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-body">
-          <?= $_SESSION['toast_error'] ?>
-        </div>
-      </div>
-      <?php unset($_SESSION['toast_error']); ?>
-    <?php endif; ?>
-  </div>
+ 
 
   <!-- JADWAL AKTIF -->
+
   <div class="schedule-wrapper">
     <div class="section-title">Jadwal Konseling Aktif</div>
+     <!-- Info Siswa -->
+        <div class="user-info">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h5><i class="fas fa-user-graduate me-2"></i><?= htmlspecialchars($nama_siswa) ?></h5>
+            <div class="d-flex flex-wrap gap-4 text-muted mt-2">
+              <span><i class="fas fa-id-card me-1"></i> ID: <?= htmlspecialchars($id_siswa) ?></span>
+              <span><i class="fas fa-users me-1"></i> Kelas: <?= htmlspecialchars($kelas_siswa) ?></span>
+              <span><i class="fas fa-calendar-alt me-1"></i> <?= date('d M Y') ?></span>
+            </div>
+          </div>
+          <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            
+          </div>
+        </div>
+      </div>
 
     <?php if (count($jadwal_aktif) > 0): ?>
       <div class="carousel-container">
@@ -476,6 +490,10 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
     <?php else: ?>
       <p class="text-center">Belum ada riwayat konseling.</p>
     <?php endif; ?>
+     <!-- Tombol Kembali -->
+        <a href="verifikasi_jadwal.php?logout=1" class="btn btn-outline-danger mt-4">
+            <i class="bi bi-box-arrow-right"></i> Kembali
+        </a>
   </div>
 
 </div>
@@ -607,7 +625,9 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </div>
 </div>
-
+<?php
+include 'footer.php';
+?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>

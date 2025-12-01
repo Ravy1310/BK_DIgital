@@ -123,19 +123,7 @@
       border-left: 4px solid #0dcaf0;
     }
 
-    /* Custom alert */
-    .custom-alert {
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      z-index: 1050;
-      min-width: 350px;
-      max-width: 500px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      border-radius: 10px;
-      border: none;
-      animation: slideInRight 0.3s ease;
-    }
+    
 
     @keyframes slideInRight {
       from {
@@ -193,6 +181,30 @@
 .btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+/* Toast Custom Styling */
+.toast-custom-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.toast-custom-error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.toast-custom-warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+.toast-custom-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
 }
   </style>
 </head>
@@ -259,6 +271,17 @@
     </div>
   </div>
 
-
+<!-- Toast Notification Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 99999;">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i id="toastIcon" class="fas me-2"></i>
+            <strong id="toastTitle" class="me-auto"></strong>
+            <small id="toastTime"></small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div id="toastBody" class="toast-body"></div>
+    </div>
+</div>
 </body>
 </html>

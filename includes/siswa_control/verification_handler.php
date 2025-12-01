@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 require_once __DIR__ . "/../../includes/db_connection.php";
 
@@ -7,7 +6,7 @@ class VerificationHandler {
     private $pdo;
     private $redirect_urls = [
         'jadwal' => 'jadwaltemu.php',
-        'pengaduan' => 'riwayat_aduan.php',
+        'pengaduan' => 'pengaduan.php',
         'tes' => 'tesbk.php'
     ];
     

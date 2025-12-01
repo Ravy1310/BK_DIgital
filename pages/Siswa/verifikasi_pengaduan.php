@@ -1,16 +1,46 @@
 <?php
+session_start();
+
+// Handle logout request - HARUS DIPASANG DI AWAL SEBELUM APAPUN
+if (isset($_GET['logout']) && $_GET['logout'] == '1') {
+    // Hapus session verifikasi siswa
+    unset($_SESSION['verification_siswa']);
+    unset($_SESSION['siswa_data']);
+    
+    // Hapus session untuk pengaduan jika ada
+    unset($_SESSION['popup_type']);
+    unset($_SESSION['popup_message']);
+    
+    // Regenerate session ID untuk mencegah session fixation
+    session_regenerate_id(true);
+    session_destroy();
+    // Set header untuk mencegah caching
+    header("Cache-Control: no-cache, no-store, must-revalidate");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    
+    // Redirect dengan parameter logout_success untuk notifikasi
+    header("Location: verifikasi_pengaduan.php?logout_success=1");
+    exit();
+}
+
+// SET HEADER NO-CACHE UNTUK SEMUA HALAMAN VERIFIKASI
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 include 'header.php';
 require_once __DIR__ . "/../../includes/siswa_control/verification_handler.php";
-
-
 
 // Proses verifikasi
 $error = processVerification('pengaduan');
 
 // Jika ada notifikasi sukses dari pengaduan.php
 $success = isset($_GET["success"]) ? true : false;
-?>
 
+// Jika ada notifikasi logout sukses
+$logout_success = isset($_GET["logout_success"]) ? true : false;
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -54,9 +84,13 @@ $success = isset($_GET["success"]) ? true : false;
             color: white;
             padding: 10px 25px;
             border-radius: 6px;
+            transition: 0.3s;
         }
         .btn-custom:hover {
             background-color: #002d73;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
     </style>
 </head>
@@ -65,13 +99,8 @@ $success = isset($_GET["success"]) ? true : false;
 
 <div class="container py-5">
 
-    <!-- NOTIFIKASI SUKSES -->
-    <?php if ($success): ?>
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            <strong>Berhasil!</strong> Pengaduan Anda telah terkirim dan dicatat.
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
+    
+  
 
     <div class="row justify-content-center align-items-center">
 
@@ -94,7 +123,7 @@ $success = isset($_GET["success"]) ? true : false;
                 <h2 class="text-center">MASUKKAN<br>ID Siswa Anda</h2>
 
                 <p class="text-center mt-2 mb-4">
-                    ID diperlukan untuk menyimpan data aduan anda agar tercatat dengan benar
+                    ID digunakan untuk memvalidasi data sebelum melakukan pengaduan.
                 </p>
 
                 <!-- ERROR -->
@@ -111,18 +140,15 @@ $success = isset($_GET["success"]) ? true : false;
                     </div>
                 </form>
 
-                <!-- TOMBOL PENGADUAN ANONIM -->
-                <div class="text-center mt-3">
-                    <a href="verifikasi_pengaduan.php?anonim=1" class="btn btn-outline-secondary btn-sm">
-                        Buat Pengaduan Anonim
-                    </a>
-                </div>
-
+               
             </div>
         </div>
 
     </div>
 </div>
+<?php
+include 'footer.php';
+?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 

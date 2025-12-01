@@ -1,7 +1,5 @@
-
 // Global base URL
 const BASE_URL = window.location.origin + '/BK_DIGITAL';
-
 
 class LogAktivitas {
     constructor() {
@@ -206,6 +204,7 @@ class LogAktivitas {
     getLogItemHTML(log) {
         const timeAgo = this.getTimeAgo(log.created_at);
         const badgeClass = this.getBadgeClass(log.action);
+        const badgeText = this.getBadgeText(log.action);
         
         // Parse meta data dengan error handling
         let meta = null;
@@ -214,95 +213,131 @@ class LogAktivitas {
         if (log.meta) {
             try {
                 meta = typeof log.meta === 'string' ? JSON.parse(log.meta) : log.meta;
-                metaDisplay = this.formatMeta(meta);
+                metaDisplay = this.formatMetaForDisplay(meta);
             } catch (error) {
                 console.error('Error parsing meta:', error);
-                metaDisplay = 'Invalid metadata format';
+                metaDisplay = '';
             }
         }
         
+        // Potong teks jika terlalu panjang untuk mencegah meluber
+        const maxDescriptionLength = 80;
+        let description = log.description || '';
+        if (description.length > maxDescriptionLength) {
+            description = description.substring(0, maxDescriptionLength) + '...';
+        }
+        
         return `
-            <div class="card log-item mb-3 border-${badgeClass}-subtle" data-action="${log.action}">
-                <div class="card-body bg-${badgeClass}-subtle rounded">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <div class="d-flex align-items-center mb-1">
-                                <strong class="me-2">${log.admin_name}</strong>
-                                <span class="badge bg-${badgeClass} badge-action">${log.action.toUpperCase()}</span>
-                            </div>
-                            <p class="mb-1">${log.description}</p>
-                            ${metaDisplay ? `
-                                <div class="mt-2 p-2 bg-white rounded border">
-                                    <small class="text-muted">
-                                        <i class="fas fa-info-circle me-1"></i>
-                                        <strong>Detail:</strong> ${metaDisplay}
-                                    </small>
-                                </div>
-                                <br>
-                            ` : ''}
-                            <small class="text-muted">
-                                <i class="fas fa-clock me-1"></i>
-                                ${timeAgo} • ${this.formatDateTime(log.created_at)}
-                            </small>
+            <div class="log-item" data-action="${log.action.toLowerCase()}">
+                <div class="log-content">
+                    <div class="log-header">
+                        <div class="log-title">
+                            <span><i class="${this.getActionIcon(log.action)} me-2"></i>${this.escapeHtml(description)}</span>
                         </div>
+                        <span class="badge ${badgeClass} badge-action">
+                            ${badgeText}
+                        </span>
+                    </div>
+                    ${metaDisplay ? `
+                    <div class="log-details" title="Gulir untuk melihat detail lengkap">
+                        ${metaDisplay}
+                        <span class="scroll-indicator">
+                            <i class="fas fa-arrows-alt-h"></i>
+                        </span>
+                    </div>
+                    ` : ''}
+                    <div class="log-meta">
+                        <span class="log-user">
+                            <i class="fas fa-user me-1"></i>${this.escapeHtml(log.admin_name || 'System')}
+                        </span>
+                        <span class="log-timestamp">
+                            <i class="far fa-clock me-1"></i>${timeAgo} • ${this.formatDateTime(log.created_at)}
+                        </span>
                     </div>
                 </div>
             </div>
         `;
     }
 
-    formatMeta(meta) {
+    formatMetaForDisplay(meta) {
         try {
             // Jika meta sudah string, coba parse dulu
             if (typeof meta === 'string') {
                 try {
                     meta = JSON.parse(meta);
                 } catch (e) {
-                    // Jika bukan JSON, return langsung
-                    return meta;
+                    // Jika bukan JSON, format sebagai teks biasa
+                    return this.formatPlainText(meta);
                 }
             }
             
-            // Jika meta adalah objek
+            // Jika meta adalah objek, format sebagai JSON yang di-highlight
             if (typeof meta === 'object' && meta !== null) {
-                const formatted = [];
+                const formattedObject = {};
                 
-                // Format data_baru dan data_lama khusus dengan JSON.stringify
+                // Ambil field-field penting
                 if (meta.data_baru) {
-                    if (typeof meta.data_baru === 'object') {
-                        formatted.push(`data_baru: ${JSON.stringify(meta.data_baru)}`);
-                    } else {
-                        formatted.push(`data_baru: ${meta.data_baru}`);
-                    }
+                    formattedObject['data_baru'] = meta.data_baru;
                 }
                 
                 if (meta.data_lama) {
-                    if (typeof meta.data_lama === 'object') {
-                        formatted.push(`data_lama: ${JSON.stringify(meta.data_lama)}`);
-                    } else {
-                        formatted.push(`data_lama: ${meta.data_lama}`);
-                    }
+                    formattedObject['data_lama'] = meta.data_lama;
                 }
                 
-                // Format field lainnya
+                // Tambahkan field lainnya (kecuali yang tidak perlu)
                 Object.entries(meta).forEach(([key, value]) => {
-                    if (key !== 'data_baru' && key !== 'data_lama') {
-                        if (typeof value === 'object' && value !== null) {
-                            formatted.push(`${key}: ${JSON.stringify(value)}`);
-                        } else {
-                            formatted.push(`${key}: ${value}`);
-                        }
+                    if (!['data_baru', 'data_lama', 'admin_name'].includes(key) && 
+                        !key.startsWith('password') && !key.includes('pass')) {
+                        formattedObject[key] = value;
                     }
                 });
                 
-                return formatted.join(', ');
+                // Format sebagai JSON yang di-highlight
+                return this.formatJSONForDisplay(formattedObject);
             }
             
-            return String(meta);
+            return this.formatPlainText(String(meta));
         } catch (error) {
             console.error('Error formatting meta:', error);
-            return 'Error parsing metadata';
+            return `<div class="text-danger">Error parsing metadata</div>`;
         }
+    }
+
+    formatJSONForDisplay(obj) {
+        try {
+            const jsonString = JSON.stringify(obj, null, 2);
+            // Highlight syntax JSON
+            return this.highlightJSON(jsonString);
+        } catch (error) {
+            console.error('Error formatting JSON:', error);
+            return `<pre>${this.escapeHtml(JSON.stringify(obj, null, 2))}</pre>`;
+        }
+    }
+
+    highlightJSON(json) {
+        // Simple JSON syntax highlighting
+        let highlighted = json
+            // Highlight keys
+            .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+            // Highlight strings (excluding keys)
+            .replace(/:\s*"([^"]+)"/g, ': <span class="json-string">"$1"</span>')
+            // Highlight numbers
+            .replace(/:\s*(\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
+            // Highlight booleans
+            .replace(/: (true|false)/g, ': <span class="json-boolean">$1</span>')
+            // Highlight null
+            .replace(/: null/g, ': <span class="json-null">null</span>');
+        
+        return `<pre class="json-content">${highlighted}</pre>`;
+    }
+
+    formatPlainText(text) {
+        // Format teks biasa dengan line breaks
+        const formattedText = this.escapeHtml(text)
+            .replace(/\n/g, '<br>')
+            .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+        
+        return formattedText;
     }
 
     getEmptyState() {
@@ -366,8 +401,22 @@ class LogAktivitas {
                     meta: JSON.stringify({
                         admin_id: 1,
                         id_admin: 5,
-                        data_baru: { name: 'zahra updated', role: 'admin', email: 'zahra@email.com' },
-                        data_lama: { name: 'zahra', role: 'user', email: 'zahra@email.com' },
+                        data_baru: { 
+                            name: 'zahra updated', 
+                            role: 'admin', 
+                            email: 'zahra@email.com',
+                            alamat: 'Jl. Merdeka No. 123',
+                            telepon: '081234567890',
+                            status: 'Aktif'
+                        },
+                        data_lama: { 
+                            name: 'zahra', 
+                            role: 'user', 
+                            email: 'zahra@email.com',
+                            alamat: 'Jl. Merdeka No. 123',
+                            telepon: '081234567890',
+                            status: 'Aktif'
+                        },
                         admin_name: 'superadmin'
                     })
                 },
@@ -380,8 +429,24 @@ class LogAktivitas {
                     meta: JSON.stringify({
                         id_guru: 7,
                         admin_id: 4,
-                        data_baru: { nama: 'Siti Rahayu', mapel: 'Matematika', nip: '1987654321' },
-                        data_lama: { nama: 'Siti Rahayu', mapel: 'Fisika', nip: '1987654321' },
+                        data_baru: { 
+                            nama: 'Siti Rahayu', 
+                            mapel: 'Matematika', 
+                            nip: '1987654321',
+                            email: 'siti.rahayu@sekolah.sch.id',
+                            alamat: 'Jl. Pendidikan No. 45',
+                            telepon: '087654321098',
+                            status: 'Aktif'
+                        },
+                        data_lama: { 
+                            nama: 'Siti Rahayu', 
+                            mapel: 'Fisika', 
+                            nip: '1987654321',
+                            email: 'siti.rahayu@sekolah.sch.id',
+                            alamat: 'Jl. Pendidikan No. 45',
+                            telepon: '087654321098',
+                            status: 'Aktif'
+                        },
                         admin_name: 'Rafi Isnanto Syahlefi'
                     })
                 },
@@ -389,11 +454,19 @@ class LogAktivitas {
                     id: 3,
                     admin_name: 'Developer',
                     action: 'CREATE_USER',
-                    description: 'Membuat user baru: Budi Santoso',
+                    description: 'Membuat user baru: Budi Santoso dengan data lengkap',
                     created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
                     meta: JSON.stringify({
                         user_id: 15,
-                        data_baru: { username: 'budi.santoso', role: 'teacher', status: 'active' },
+                        data_baru: { 
+                            username: 'budi.santoso', 
+                            role: 'teacher', 
+                            status: 'active',
+                            email: 'budi.santoso@sekolah.sch.id',
+                            full_name: 'Budi Santoso S.Pd',
+                            phone_number: '081122334455',
+                            address: 'Jl. Jenderal Sudirman No. 78'
+                        },
                         admin_name: 'Developer'
                     })
                 },
@@ -401,11 +474,19 @@ class LogAktivitas {
                     id: 4,
                     admin_name: 'Admin Sekolah',
                     action: 'DELETE_SISWA',
-                    description: 'Menghapus data siswa: Andi Pratama',
+                    description: 'Menghapus data siswa: Andi Pratama dengan alasan pindah sekolah',
                     created_at: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
                     meta: JSON.stringify({
                         siswa_id: 23,
-                        data_lama: { nama: 'Andi Pratama', kelas: '12 IPA 1', nis: '123456' },
+                        data_lama: { 
+                            nama: 'Andi Pratama', 
+                            kelas: '12 IPA 1', 
+                            nis: '123456',
+                            alamat: 'Jl. Kemerdekaan No. 12',
+                            telepon_ortu: '081987654321',
+                            tanggal_lahir: '2007-05-15'
+                        },
+                        reason: 'Pindah sekolah',
                         admin_name: 'Admin Sekolah'
                     })
                 },
@@ -417,7 +498,9 @@ class LogAktivitas {
                     created_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
                     meta: JSON.stringify({
                         type: 'demo_data',
-                        timestamp: new Date().toISOString()
+                        timestamp: new Date().toISOString(),
+                        note: 'Sistem akan otomatis kembali ke data asli ketika API sudah diperbaiki',
+                        version: '1.0.0'
                     })
                 }
             ],
@@ -437,25 +520,83 @@ class LogAktivitas {
         if (actionLower.includes('tambah') || actionLower.includes('buat') || 
             actionLower.includes('create') || actionLower.includes('insert') || 
             actionLower.includes('add')) {
-            return 'success';
+            return 'bg-success';
         }
         
         if (actionLower.includes('edit') || actionLower.includes('update') || 
             actionLower.includes('ubah') || actionLower.includes('modify') || 
             actionLower.includes('change')) {
-            return 'warning';
+            return 'bg-warning';
         }
         
         if (actionLower.includes('hapus') || actionLower.includes('delete') || 
             actionLower.includes('remove') || actionLower.includes('destroy')) {
-            return 'danger';
+            return 'bg-danger';
         }
         
         if (actionLower.includes('login') || actionLower.includes('logout')) {
-            return 'info';
+            return 'bg-info';
         }
         
-        return 'primary';
+        return 'bg-primary';
+    }
+
+    getBadgeText(action) {
+        const actionLower = action.toLowerCase();
+        
+        if (actionLower.includes('tambah') || actionLower.includes('buat') || 
+            actionLower.includes('create') || actionLower.includes('insert') || 
+            actionLower.includes('add')) {
+            return 'TAMBAH';
+        }
+        
+        if (actionLower.includes('edit') || actionLower.includes('update') || 
+            actionLower.includes('ubah') || actionLower.includes('modify') || 
+            actionLower.includes('change')) {
+            return 'EDIT';
+        }
+        
+        if (actionLower.includes('hapus') || actionLower.includes('delete') || 
+            actionLower.includes('remove') || actionLower.includes('destroy')) {
+            return 'HAPUS';
+        }
+        
+        if (actionLower.includes('login') || actionLower.includes('logout')) {
+            return 'LOGIN';
+        }
+        
+        return 'INFO';
+    }
+
+    getActionIcon(action) {
+        const actionLower = action.toLowerCase();
+        
+        if (actionLower.includes('tambah') || actionLower.includes('buat') || 
+            actionLower.includes('create') || actionLower.includes('insert') || 
+            actionLower.includes('add')) {
+            return 'fas fa-plus';
+        }
+        
+        if (actionLower.includes('edit') || actionLower.includes('update') || 
+            actionLower.includes('ubah') || actionLower.includes('modify') || 
+            actionLower.includes('change')) {
+            return 'fas fa-edit';
+        }
+        
+        if (actionLower.includes('hapus') || actionLower.includes('delete') || 
+            actionLower.includes('remove') || actionLower.includes('destroy')) {
+            return 'fas fa-trash';
+        }
+        
+        if (actionLower.includes('login')) {
+            return 'fas fa-sign-in-alt';
+        }
+        
+        if (actionLower.includes('logout')) {
+            return 'fas fa-sign-out-alt';
+        }
+        
+        return 'fas fa-info-circle';
     }
 
     getTimeAgo(timestamp) {
@@ -477,6 +618,12 @@ class LogAktivitas {
             hour: '2-digit',
             minute: '2-digit'
         });
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text || '';
+        return div.innerHTML;
     }
 
     updateLogCount(count) {
@@ -550,6 +697,7 @@ class LogAktivitas {
 
 // Global instance
 let logAktivitasInstance = null;
+
 function getLogAktivitasInstance() {
     if (!logAktivitasInstance) {
         logAktivitasInstance = new LogAktivitas();
