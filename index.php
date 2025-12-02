@@ -1,5 +1,5 @@
 <?php 
-include 'pages/Siswa/header.php'; 
+include __DIR__ . '/pages/Siswa/header.php';
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +21,7 @@ include 'pages/Siswa/header.php';
     font-family: 'Poppins', sans-serif;
     background-color: #ffffff;
     overflow-x: hidden;
-    color: #333;
+    color: #ffff;
   }
  a {
   text-decoration: none;
@@ -237,7 +237,7 @@ include 'pages/Siswa/header.php';
             <i class="fas fa-comments"></i>
 
             <a href="pages/Siswa/verifikasi_jadwal.php" class="btn btn-utama w-75 mt-3 mx-auto d-block text-center">
-              Konseling Pribadi & Akademik
+              Layanan Konseling
             </a>
 
             <p class="mt-3 text-muted">

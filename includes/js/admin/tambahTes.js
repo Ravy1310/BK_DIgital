@@ -1,9 +1,9 @@
 // includes/js/admin/tambahTes.js - VERSI BARU TANPA showAlert
-
+let isSubmitting = false;
 
 function initTambahTes() {
     console.log('✅ Tambah Tes initialized');
-let isSubmitting = false;
+
     
     const form = document.getElementById('formTambahTes');
     const downloadBtn = document.getElementById('downloadTemplateBtn');
