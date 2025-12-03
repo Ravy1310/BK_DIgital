@@ -256,7 +256,7 @@ include __DIR__ . '/pages/Siswa/header.php';
             </a>
 
             <p class="mt-3 text-muted">
-              Tempat aman dan rahasia untuk menyampaikan masalah atau kekhawatiran di lingkungan sekolah.
+              Tempat aman dan rahasia untuk menyampaikan masalah atau kekhawatiran di sekolah.
             </p>
           </div>
         </div>

@@ -117,13 +117,13 @@ body {
           </li>
           <li>
             <a class="dropdown-item"
-               href="<?= $BASE_URL ?>pages/Siswa/verifikasi_jadwaltemu.php">
+               href="<?= $BASE_URL ?>pages/Siswa/verifikasi_jadwal.php">
               Jadwal Konseling
             </a>
           </li>
           <li>
             <a class="dropdown-item"
-               href="<?= $BASE_URL ?>pages/Siswa/verifikasi_tesbk.php">
+               href="<?= $BASE_URL ?>pages/Siswa/verifikasi_tes.php">
               Tes BK
             </a>
           </li>
