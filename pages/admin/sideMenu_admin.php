@@ -552,106 +552,106 @@ else if (file.includes('tambahtes.php')) {
     }, 300);
 }
 // sideMenu_admin.php - PERBAIKAN FUNGSI showAlert
-// window.showAlert = function(type, message) {
-//     console.log('=== SHOW ALERT CALLED ===');
-//     console.log('Type:', type);
-//     console.log('Message:', message);
-//     console.log('========================');
+ window.showAlert = function(type, message) {
+    console.log('=== SHOW ALERT CALLED ===');
+    console.log('Type:', type);
+    console.log('Message:', message);
+    console.log('========================');
     
-//     // Hapus alert sebelumnya jika ada
-//     const existingAlert = document.querySelector('.custom-alert');
-//     if (existingAlert) {
-//         existingAlert.remove();
-//     }
+    // Hapus alert sebelumnya jika ada
+    const existingAlert = document.querySelector('.custom-alert');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
     
-//     // Normalize type - VERSI PERBAIKAN
-//     let normalizedType = '';
+    // Normalize type - VERSI PERBAIKAN
+    let normalizedType = '';
     
-//     if (typeof type === 'string') {
-//         normalizedType = type.toLowerCase().trim();
-//     } else if (type === true || type === 1) {
-//         normalizedType = 'success';
-//     } else {
-//         normalizedType = 'info'; // default
-//     }
+    if (typeof type === 'string') {
+        normalizedType = type.toLowerCase().trim();
+    } else if (type === true || type === 1) {
+        normalizedType = 'success';
+    } else {
+        normalizedType = 'info'; // default
+    }
     
-//     console.log('Normalized type:', normalizedType);
+    console.log('Normalized type:', normalizedType);
     
-//     // Tentukan kelas dan icon - VERSI LEBIH TELITI
-//     let alertClass, icon;
+    // Tentukan kelas dan icon - VERSI LEBIH TELITI
+    let alertClass, icon;
     
-//     // Cek success dengan berbagai variasi
-//     if (normalizedType === 'success' || 
-//         normalizedType === 'sukses' || 
-//         normalizedType === 'berhasil' ||
-//         message.includes('✅') ||
-//         message.toLowerCase().includes('berhasil') ||
-//         message.toLowerCase().includes('sukses')) {
-//         alertClass = 'alert-success';
-//         icon = 'fa-check-circle';
-//     }
-//     // Cek error/danger
-//     else if (normalizedType === 'danger' || 
-//              normalizedType === 'error' || 
-//              normalizedType === 'gagal' ||
-//              normalizedType === 'failed' ||
-//              message.includes('❌') ||
-//              message.toLowerCase().includes('gagal') ||
-//              message.toLowerCase().includes('error')) {
-//         alertClass = 'alert-danger';
-//         icon = 'fa-exclamation-triangle';
-//     }
-//     // Cek warning
-//     else if (normalizedType === 'warning' || 
-//              normalizedType === 'peringatan' ||
-//              message.includes('⚠️') ||
-//              message.toLowerCase().includes('peringatan')) {
-//         alertClass = 'alert-warning';
-//         icon = 'fa-exclamation-circle';
-//     }
-//     // Default ke info
-//     else {
-//         alertClass = 'alert-info';
-//         icon = 'fa-info-circle';
-//     }
+    // Cek success dengan berbagai variasi
+    if (normalizedType === 'success' || 
+        normalizedType === 'sukses' || 
+        normalizedType === 'berhasil' ||
+        message.includes('✅') ||
+        message.toLowerCase().includes('berhasil') ||
+        message.toLowerCase().includes('sukses')) {
+        alertClass = 'alert-success';
+        icon = 'fa-check-circle';
+    }
+    // Cek error/danger
+    else if (normalizedType === 'danger' || 
+             normalizedType === 'error' || 
+             normalizedType === 'gagal' ||
+             normalizedType === 'failed' ||
+             message.includes('❌') ||
+             message.toLowerCase().includes('gagal') ||
+             message.toLowerCase().includes('error')) {
+        alertClass = 'alert-danger';
+        icon = 'fa-exclamation-triangle';
+    }
+    // Cek warning
+    else if (normalizedType === 'warning' || 
+             normalizedType === 'peringatan' ||
+             message.includes('⚠️') ||
+             message.toLowerCase().includes('peringatan')) {
+        alertClass = 'alert-warning';
+        icon = 'fa-exclamation-circle';
+    }
+    // Default ke info
+    else {
+        alertClass = 'alert-info';
+        icon = 'fa-info-circle';
+    }
     
-//     console.log('Using alert class:', alertClass);
+    console.log('Using alert class:', alertClass);
     
-//     // Buat alert element
-//     const alertDiv = document.createElement('div');
-//     alertDiv.className = `custom-alert alert ${alertClass} alert-dismissible fade show`;
-//     alertDiv.style.cssText = `
-//         position: fixed;
-//         top: 100px;
-//         right: 20px;
-//         z-index: 99999;
-//         min-width: 350px;
-//         max-width: 500px;
-//         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-//         border-radius: 10px;
-//         border: none;
-//         animation: slideInRight 0.3s ease;
-//     `;
+    // Buat alert element
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `custom-alert alert ${alertClass} alert-dismissible fade show`;
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        z-index: 99999;
+        min-width: 350px;
+        max-width: 500px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-radius: 10px;
+        border: none;
+        animation: slideInRight 0.3s ease;
+    `;
     
-//     alertDiv.innerHTML = `
-//         <i class="fas ${icon} me-2"></i>
-//         ${message}
-//         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-//     `;
+    alertDiv.innerHTML = `
+        <i class="fas ${icon} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
     
-//     document.body.appendChild(alertDiv);
+    document.body.appendChild(alertDiv);
     
-//     // Auto remove setelah 5 detik untuk success
-//     if (alertClass === 'alert-success') {
-//         setTimeout(() => {
-//             if (alertDiv.parentNode) {
-//                 alertDiv.remove();
-//             }
-//         }, 5000);
-//     }
+    // Auto remove setelah 5 detik untuk success
+    if (alertClass === 'alert-success') {
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
     
-//     return alertDiv;
-// };
+    return alertDiv;
+};
 
 // Fallback function untuk toggle status - PASTIKAN INI DI GLOBAL SCOPE
 function fallbackToggleStatusTes(id, action, btn) {

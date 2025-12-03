@@ -4,22 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Pengaduan</title>
-    <!-- Memuat Bootstrap 5 -->
+    
+    <!-- HANYA CSS saja, TIDAK perlu Bootstrap JS di sini -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Memuat Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
+    
     <style>
-        /* Font modern */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        
+        /* CSS tetap sama seperti sebelumnya */
         body {
             background: url('../../assets/image/background.jpg');
-        background-size: cover;
-        font-family: 'Poppins', sans-serif;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
         }
         
-        /* Kontainer Utama - Menghilangkan margin negatif yang rumit */
         .main-card {
             background-color: #fff;
             border-radius: 12px;
@@ -28,14 +25,12 @@
             margin: 40px -20px 0 -30px;
         }
 
-        /* Judul */
         h4 {
             font-weight: 700;
             color: #1f2937;
             margin-bottom: 20px;
         }
 
-        /* Search Bar */
         .search-bar {
             border: 1px solid #e5e7eb;
             border-radius: 8px;
@@ -54,7 +49,6 @@
             font-size: 0.95rem;
         }
         
-        /* Gaya Tabel */
         .table-responsive {
             border-radius: 8px;
             overflow: hidden;
@@ -66,18 +60,16 @@
             width: 100%;
         }
         
-        /* Header Tabel */
         .table thead th {
             font-weight: 600;
             color: #4b5563;
             background-color: #f9fafb;
             font-size: 0.85rem;
-            padding: 12px 10px; /* Padding seragam */
+            padding: 12px 10px;
         }
         
-        /* Isi Tabel */
         .table tbody td {
-            padding: 12px 10px; /* Padding seragam */
+            padding: 12px 10px;
             font-size: 0.9rem;
             color: #374151;
         }
@@ -86,9 +78,8 @@
             background-color: #f3f4f6;
         }
 
-        /* Tombol Status */
         .status-btn {
-            border-radius: 9999px; /* Bentuk pil */
+            border-radius: 9999px;
             padding: 4px 12px;
             font-size: 0.75rem;
             font-weight: 600;
@@ -97,21 +88,20 @@
         }
 
         .status-process {
-            background-color: #dbeafe; /* Biru muda */
-            color: #1e40af; /* Biru tua */
+            background-color: #dbeafe;
+            color: #1e40af;
         }
         .status-new {
-            background-color: #fef3c7; /* Kuning muda */
-            color: #92400e; /* Cokelat tua */
+            background-color: #fef3c7;
+            color: #92400e;
         }
         .status-done {
-            background-color: #d1fae5; /* Hijau muda */
-            color: #065f46; /* Hijau tua */
+            background-color: #d1fae5;
+            color: #065f46;
         }
 
-        /* Link Aksi */
         .action-link {
-            color: #3b82f6; /* Biru aksi */
+            color: #3b82f6;
             text-decoration: none;
             font-weight: 600;
             display: inline-flex;
@@ -125,7 +115,6 @@
             color: #1d4ed8;
         }
         
-        /* Modal Detail */
         #detailModal .modal-content {
             border-radius: 12px;
         }
@@ -133,14 +122,65 @@
         .detail-info i {
             font-size: 1.1rem;
         }
-
-        /* Responsif */
+        
         @media (min-width: 992px) {
             .main-card {
-                /* Gunakan container Bootstrap, tidak perlu margin negatif */
                 padding: 30px; 
             }
         }
+        /* Tambahkan di manajemenpengaduan.php atau di CSS global */
+.loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-rotate .75s linear infinite;
+}
+
+@keyframes spinner-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* Di file CSS manajemenpengaduan.php atau global.css */
+.status-new {
+    background-color: #ffedd5 !important;  /* Orange muda untuk Menunggu */
+    color: #9a3412 !important;
+    border: 1px solid #fdba74;
+}
+
+.status-process {
+    background-color: #dbeafe !important;  /* Biru muda untuk Diproses */
+    color: #1e40af !important;
+    border: 1px solid #93c5fd;
+}
+
+.status-done {
+    background-color: #d1fae5 !important;  /* Hijau muda untuk Selesai */
+    color: #065f46 !important;
+    border: 1px solid #6ee7b7;
+}
+
+/* Tombol aksi cepat */
+.action-quick {
+    color: #198754 !important; /* Hijau untuk Selesai */
+    text-decoration: none;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.action-quick:hover {
+    text-decoration: underline;
+    color: #146c43 !important;
+}
     </style>
 </head>
 <body>
@@ -153,9 +193,8 @@
             <div class="row">
                 <div class="col-12 col-md-6 mb-3">
                     <div class="search-bar">
-                        <!-- Ikon Bootstrap untuk pencarian -->
                         <i class="bi bi-search text-muted me-2"></i>
-                        <input type="text" id="searchInput" placeholder="Cari berdasarkan Subjek, Nama...">
+                        <input type="text" id="searchInput" placeholder="Cari berdasarkan Subjek, Nama, Deskripsi...">
                     </div>
                 </div>
             </div>
@@ -173,55 +212,16 @@
                         </tr>
                     </thead>
                     <tbody id="complaintTable">
-                        <tr>
-                            <td class="fw-medium text-start">Kesulitan dalam mengerjakan tugas kelompok</td>
-                            <td class="text-center">Budi Santoso</td>
-                            <td class="text-center">4 Oktober 2025 pukul 11:23</td>
-                            <td class="text-center"><span class="status-btn status-process">Diproses</span></td>
-                            <td class="text-center">
-                                <a class="action-link" data-bs-toggle="modal" data-bs-target="#detailModal" 
-                                   data-subject="Kesulitan dalam mengerjakan tugas kelompok" 
-                                   data-reporter="Budi Santoso" 
-                                   data-date="4 Oktober 2025 pukul 11:23" 
-                                   data-status="Diproses"
-                                   data-message="Saya merasa sulit bergaul dengan anggota kelompok saya.">
-                                    <i class="bi bi-eye"></i> Lihat
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="fw-medium text-start">Masalah penyesuaian di lingkungan sekolah baru</td>
-                            <td class="text-center">Rina W.</td>
-                            <td class="text-center">4 Oktober 2025 pukul 14:00</td>
-                            <td class="text-center"><span class="status-btn status-new">Baru</span></td>
-                            <td class="text-center">
-                                <a class="action-link" data-bs-toggle="modal" data-bs-target="#detailModal" 
-                                   data-subject="Masalah penyesuaian di lingkungan sekolah baru" 
-                                   data-reporter="Rina W." 
-                                   data-date="4 Oktober 2025 pukul 14:00" 
-                                   data-status="Baru"
-                                   data-message="Saya sering merasa sendirian dan kesulitan memulai percakapan dengan teman baru.">
-                                    <i class="bi bi-eye"></i> Lihat
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="fw-medium text-start">Tekanan belajar untuk masuk universitas favorit</td>
-                            <td class="text-center">Anonim</td>
-                            <td class="text-center">3 Oktober 2025 pukul 09:00</td>
-                            <td class="text-center"><span class="status-btn status-done">Selesai</span></td>
-                            <td class="text-center">
-                                <a class="action-link" data-bs-toggle="modal" data-bs-target="#detailModal" 
-                                   data-subject="Tekanan belajar untuk masuk universitas favorit" 
-                                   data-reporter="Anonim" 
-                                   data-date="3 Oktober 2025 pukul 09:00" 
-                                   data-status="Selesai"
-                                   data-message="Saya kesulitan tidur dan fokus karena merasa harus selalu belajar.">
-                                    <i class="bi bi-eye"></i> Lihat
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- Baris placeholder dihapus karena sudah ada data -->
+                        <?php
+                        require_once '../../includes/guru_control/PengaduanController.php';
+                        
+                        try {
+                            $controller = new PengaduanController();
+                            echo $controller->initManajemenPengaduan();
+                        } catch (Exception $e) {
+                            echo '<tr><td colspan="5" class="text-center py-4 text-danger">Error: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -229,105 +229,86 @@
     </div>
 
     <!-- Modal Detail -->
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="detailModalLabel">Detail Pengaduan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- Modal Detail -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="detailModalLabel">Detail Pengaduan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6 id="subjectText" class="fw-bold mb-3"></h6>
+                
+                <div class="mb-3">
+                    <span class="badge bg-secondary" id="jenisKejadianBadge"></span>
                 </div>
-                <div class="modal-body">
-                    <h6 id="subjectText" class="fw-bold mb-3"></h6>
 
-                    <div class="d-flex flex-column gap-2 text-muted detail-info">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-person-circle text-secondary"></i>
-                            <span id="reporterText" class="small"></span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-calendar-event text-secondary"></i>
-                            <span id="dateText" class="small"></span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <i class="bi bi-info-circle text-secondary"></i>
-                            <span class="small me-2">Status: </span>
-                            <span id="statusBadge" class="status-btn"></span>
-                        </div>
+                <div class="d-flex flex-column gap-2 text-muted detail-info">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-person-circle text-secondary"></i>
+                        <span id="reporterText" class="small"></span>
                     </div>
-
-                    <p class="fw-semibold mb-2">Pesan:</p>
-                    <div class="border rounded p-3 mt-2 bg-light">
-                        <p id="messageText" class="mb-0 small text-dark"></p>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar-event text-secondary"></i>
+                        <span id="dateText" class="small"></span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-info-circle text-secondary"></i>
+                        <span class="small me-2">Status: </span>
+                        <span id="statusBadge" class="status-btn"></span>
                     </div>
                 </div>
 
-                <div class="modal-footer">
-                    <!-- Tombol berubah berdasarkan status -->
-                    <button id="actionButton" class="btn btn-primary"></button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <p class="fw-semibold mb-2">Deskripsi:</p>
+                <div class="border rounded p-3 mt-2 bg-light">
+                    <p id="messageText" class="mb-0 small text-dark"></p>
                 </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="actionButton" class="btn btn-primary" data-id-pengaduan="">Ubah Status</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- HAPUS Bootstrap JS dari sini -->
+    
+    <!-- Script sederhana untuk handle modal -->
     <script>
-        // Fitur pencarian
-        document.getElementById("searchInput").addEventListener("keyup", function() {
-            let input = this.value.toLowerCase();
-            let rows = document.querySelectorAll("#complaintTable tr");
-            rows.forEach(row => {
-                // Periksa di semua kolom selisih 
-                let text = Array.from(row.querySelectorAll('td')).slice(0, 4).map(td => td.innerText).join(' ').toLowerCase();
-                row.style.display = text.includes(input) ? "" : "none";
-            });
-        });
-
-        // Logika Pengisian Modal
-        const detailModal = document.getElementById('detailModal');
-        detailModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const subject = button.getAttribute('data-subject');
-            const reporter = button.getAttribute('data-reporter');
-            const date = button.getAttribute('data-date');
-            const message = button.getAttribute('data-message');
-            const status = button.getAttribute('data-status');
-            
-            // Isi data
-            document.getElementById('subjectText').innerText = subject;
-            document.getElementById('reporterText').innerText = "Pelapor: " + reporter;
-            document.getElementById('dateText').innerText = date;
-            document.getElementById('messageText').innerText = message;
-            
-            // Isi status badge
-            const statusBadge = document.getElementById('statusBadge');
-            statusBadge.innerText = status;
-            statusBadge.className = 'status-btn'; // Reset kelas
-            
-            const actionButton = document.getElementById('actionButton');
-            
-            // Logika Status dan Tombol Aksi
-            if (status === 'Baru' || status === 'Diproses') {
-                statusBadge.classList.add('status-process');
-                actionButton.innerText = "Ubah ke Selesai";
-                actionButton.className = 'btn btn-success';
-                actionButton.onclick = function() {
-                    alert('Logika untuk mengubah status ke Selesai akan ditambahkan di sini.');
-                    // Tambahkan logika untuk update status di sini
-                    // Anda bisa memanggil fungsi di sini
-                };
-
-            } else if (status === 'Selesai') {
-                statusBadge.classList.add('status-done');
-                actionButton.innerText = "Lihat Riwayat";
-                actionButton.className = 'btn btn-info text-white';
-                actionButton.onclick = function() {
-                    alert('Logika untuk melihat riwayat akan ditambahkan di sini.');
-                };
+        console.log('manajemenpengaduan.php dimuat');
+        
+        // Fungsi untuk test modal (debugging)
+        window.testModal = function() {
+            const modalElement = document.getElementById('detailModal');
+            if (modalElement && typeof bootstrap !== 'undefined') {
+                const modal = new bootstrap.Modal(modalElement);
+                
+                // Isi data dummy
+                document.getElementById('subjectText').textContent = 'TEST: Pengaduan Bullying';
+                document.getElementById('reporterText').textContent = 'Andi Pratama (XII IPA 1)';
+                document.getElementById('dateText').textContent = '15 Desember 2024 pukul 14:30';
+                document.getElementById('messageText').textContent = 'Ini adalah deskripsi pengaduan untuk testing.';
+                document.getElementById('statusBadge').textContent = 'Baru';
+                document.getElementById('statusBadge').className = 'status-btn status-new';
+                document.getElementById('jenisKejadianBadge').textContent = 'Bullying';
+                document.getElementById('jenisKejadianBadge').className = 'badge bg-secondary';
+                
+                modal.show();
+                console.log('Modal test ditampilkan');
+            } else {
+                console.error('Bootstrap tidak tersedia atau modal tidak ditemukan');
             }
-        });
+        };
+        
+        // Cek jika Bootstrap tersedia
+        if (typeof bootstrap !== 'undefined') {
+            console.log('Bootstrap tersedia di manajemenpengaduan');
+        } else {
+            console.error('Bootstrap TIDAK tersedia di manajemenpengaduan!');
+        }
     </script>
-
 </body>
 </html>

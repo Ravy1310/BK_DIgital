@@ -1,5 +1,32 @@
 <?php
 
+// File: SideMenu.php
+
+
+session_start();
+
+// CEK APAKAH USER SUDAH LOGIN (menggunakan admin_logged_in)
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+// CEK APAKAH USER ADALAH GURU (role 'user')
+if ($_SESSION['admin_role'] !== 'user') {
+    header("Location: ../../login.php");
+    exit;
+}
+
+// CEK APAKAH USER ADALAH GURU YANG VALID
+if (!isset($_SESSION['is_guru']) || $_SESSION['is_guru'] !== true) {
+    header("Location: ../../login.php");
+    exit;
+}
+// CEGAH CACHING
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 
 // CEGAH CACHING
 header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -198,9 +225,9 @@ async function loadContent(file) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Init sistem yang sesuai
-        if (file.includes('manajemen_account.php')) {
-            if (typeof initManajemenAccount === 'function') {
-                initManajemenAccount();
+        if (file.includes('manajemenpengaduan.php')) {
+            if (typeof initManajemenPengaduan === 'function') {
+                initManajemenPengaduan();
             }
         }
         else if (file.includes('log_aktivitas.php')) {
@@ -235,9 +262,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Hapus fungsi loadPage() yang tidak terpakai
 </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="../../includes/js/developer/log_aktivitas.js"></script>
-<script src="../../includes/js/developer/manajemen_account.js"></script>
+<script src="../../includes/js/guru/pengaduan.js"></script>
+<script src="../../includes/js/guru/manajemen_account.js"></script>
 
 </body>
 </html>

@@ -112,8 +112,7 @@ if (isset($result['success']) && $result['success'] === true) {
         }
     }
     
-    // Set session success
-    $_SESSION['success'] = "Tes berhasil disubmit! Nilai: " . ($result['nilai'] ?? 0);
+   
     
     // Jika mendapatkan ID, redirect ke halaman hasil
     if ($id_hasil_redirect > 0) {
