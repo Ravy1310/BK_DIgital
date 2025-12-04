@@ -1,63 +1,175 @@
-// JadwalKonseling.js - Versi dengan Status "Disetujui"
+// JadwalKonseling.js - Versi Sederhana dan Pasti Berjalan
 function initManajemenJadwalKonseling() {
-    console.log('Initializing Jadwal Konseling Management...');
+    console.log('🚀 Initializing Jadwal Konseling Management...');
     
     // ==============================
     // KONFIGURASI
     // ==============================
-    const CONTROLLER_PATH = '../../includes/guru_control/JadwalController.php'; // Sesuaikan!
+    const CONTROLLER_PATH = '../../includes/guru_control/JadwalController.php';
     
     // ==============================
-    // SETUP MODAL
+    // INISIALISASI MODAL - PASTIKAN BERHASIL
     // ==============================
-    const rescheduleModal = new bootstrap.Modal(document.getElementById('rescheduleModal'));
-    const detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+    let detailModal = null;
+    let rescheduleModal = null;
     
-    // ==============================
-    // EVENT HANDLERS
-    // ==============================
-    
-    // 1. Tombol Setujui
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('setujui-btn') || e.target.closest('.setujui-btn')) {
-            e.preventDefault();
-            const button = e.target.classList.contains('setujui-btn') ? 
-                          e.target : e.target.closest('.setujui-btn');
-            handleSetujui(button);
+    try {
+        const detailModalEl = document.getElementById('detailModal');
+        const rescheduleModalEl = document.getElementById('rescheduleModal');
+        
+        if (detailModalEl && bootstrap) {
+            detailModal = new bootstrap.Modal(detailModalEl);
+            console.log('✅ Detail modal initialized');
+        } else {
+            console.error('❌ Detail modal element or Bootstrap not found');
         }
         
-        // Tombol Jadwalkan Ulang
-        if (e.target.classList.contains('reschedule-btn') || e.target.closest('.reschedule-btn')) {
+        if (rescheduleModalEl && bootstrap) {
+            rescheduleModal = new bootstrap.Modal(rescheduleModalEl);
+            console.log('✅ Reschedule modal initialized');
+        }
+    } catch (error) {
+        console.error('❌ Error initializing modals:', error);
+    }
+    
+    // ==============================
+    // DIRECT EVENT LISTENERS - TANPA DELEGATION
+    // ==============================
+    
+    // 1. Setup semua tombol detail yang sudah ada
+    setupDetailButtons();
+    
+    // 2. Setup tombol setujui dan reschedule
+    setupActionButtons();
+    
+    // 3. Setup form reschedule
+    const rescheduleForm = document.getElementById('rescheduleForm');
+    if (rescheduleForm) {
+        rescheduleForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const button = e.target.classList.contains('reschedule-btn') ? 
-                          e.target : e.target.closest('.reschedule-btn');
-            handleReschedule(button);
+            confirmReschedule();
+        });
+    }
+    
+    // 4. Setup search
+    setupSearch();
+    
+    // ==============================
+    // FUNGSI SETUP BUTTONS
+    // ==============================
+    
+    function setupDetailButtons() {
+        console.log('🔍 Setting up detail buttons...');
+        
+        // Cari semua tombol detail
+        const detailButtons = document.querySelectorAll('.detail-btn');
+        console.log(`Found ${detailButtons.length} detail buttons`);
+        
+        // Hapus event listener lama (jika ada)
+        detailButtons.forEach(btn => {
+            btn.replaceWith(btn.cloneNode(true));
+        });
+        
+        // Ambil ulang setelah clone
+        const freshDetailButtons = document.querySelectorAll('.detail-btn');
+        
+        // Tambahkan event listener baru
+        freshDetailButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Detail button clicked:', this);
+                handleDetailClick(this);
+            });
+            
+            // Debug: tandai button yang sudah di-setup
+            button.setAttribute('data-setup', 'true');
+        });
+        
+        console.log(`✅ ${freshDetailButtons.length} detail buttons setup complete`);
+    }
+    
+    function setupActionButtons() {
+        console.log('🔧 Setting up action buttons...');
+        
+        // Tombol Setujui
+        const setujuiButtons = document.querySelectorAll('.setujui-btn');
+        setujuiButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleSetujui(this);
+            });
+        });
+        
+        // Tombol Reschedule
+        const rescheduleButtons = document.querySelectorAll('.reschedule-btn');
+        rescheduleButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleReschedule(this);
+            });
+        });
+        
+        console.log(`✅ Action buttons setup complete: ${setujuiButtons.length} setujui, ${rescheduleButtons.length} reschedule`);
+    }
+    
+    // ==============================
+    // FUNGSI HANDLER
+    // ==============================
+    
+    function handleDetailClick(button) {
+        console.log('📋 Handling detail click...');
+        
+        const id = button.getAttribute('data-id');
+        console.log('Detail ID:', id);
+        
+        if (!id) {
+            console.error('❌ No data-id found on detail button');
+            alert('Error: ID tidak ditemukan');
+            return;
         }
         
-        // Tombol Detail
-        if (e.target.classList.contains('detail-btn') || e.target.closest('.detail-btn')) {
-            e.preventDefault();
-            const button = e.target.classList.contains('detail-btn') ? 
-                          e.target : e.target.closest('.detail-btn');
-            handleDetail(button);
+        // Tampilkan loading di modal
+        document.getElementById('detailContent').innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+                <p class="mt-3">Memuat detail jadwal...</p>
+            </div>
+        `;
+        
+        // Tampilkan modal
+        if (detailModal) {
+            console.log('Showing detail modal...');
+            detailModal.show();
+        } else {
+            console.error('❌ Detail modal not initialized');
+            // Fallback: coba inisialisasi ulang
+            try {
+                const modalEl = document.getElementById('detailModal');
+                if (modalEl && bootstrap) {
+                    detailModal = new bootstrap.Modal(modalEl);
+                    detailModal.show();
+                } else {
+                    alert('Modal tidak dapat dimuat. Silakan refresh halaman.');
+                    return;
+                }
+            } catch (error) {
+                console.error('Failed to initialize modal:', error);
+                alert('Terjadi kesalahan. Silakan refresh halaman.');
+                return;
+            }
         }
-    });
-    
-    // 2. Form Reschedule
-    document.getElementById('rescheduleForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        confirmReschedule();
-    });
-    
-    // ==============================
-    // FUNGSI UTAMA
-    // ==============================
+        
+        // Load data detail
+        loadDetail(id);
+    }
     
     function handleSetujui(button) {
         const id = button.getAttribute('data-id');
         const name = button.getAttribute('data-name');
         
-        if (confirm(`Apakah Anda yakin ingin menyetujui jadwal konseling dari ${name}?`)) {
+        console.log('Setujui clicked:', { id, name });
+        
+        if (confirm(`Setujui jadwal dari ${name}?`)) {
             updateStatus(id, 'setujui', name);
         }
     }
@@ -66,42 +178,37 @@ function initManajemenJadwalKonseling() {
         const id = button.getAttribute('data-id');
         const name = button.getAttribute('data-name');
         
+        console.log('Reschedule clicked:', { id, name });
+        
         document.getElementById('rescheduleId').value = id;
         document.getElementById('studentName').textContent = name;
-        rescheduleModal.show();
+        
+        if (rescheduleModal) {
+            rescheduleModal.show();
+        }
     }
     
     function confirmReschedule() {
         const id = document.getElementById('rescheduleId').value;
         const name = document.getElementById('studentName').textContent;
         
-        rescheduleModal.hide();
+        if (rescheduleModal) {
+            rescheduleModal.hide();
+        }
         
-        if (confirm(`Ubah status jadwal konseling dari ${name} menjadi "Jadwalkan Ulang"?`)) {
+        if (confirm(`Ubah status jadwal ${name} menjadi "Jadwalkan Ulang"?`)) {
             updateStatus(id, 'jadwalkan_ulang', name);
-        } else {
-            rescheduleModal.show();
+        } else if (rescheduleModal) {
+            setTimeout(() => rescheduleModal.show(), 300);
         }
     }
     
-    function handleDetail(button) {
-        const id = button.getAttribute('data-id');
-        
-        document.getElementById('detailContent').innerHTML = `
-            <div class="text-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2">Memuat detail...</p>
-            </div>
-        `;
-        
-        detailModal.show();
-        loadDetail(id);
-    }
+    // ==============================
+    // FUNGSI LOAD DETAIL
+    // ==============================
     
     function loadDetail(id) {
-        console.log('Loading detail for ID:', id);
+        console.log('📡 Loading detail for ID:', id);
         
         $.ajax({
             url: CONTROLLER_PATH,
@@ -117,42 +224,27 @@ function initManajemenJadwalKonseling() {
                 if (response.success && response.data) {
                     displayDetail(response.data);
                 } else {
-                    document.getElementById('detailContent').innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            ${response.message || 'Gagal memuat detail data.'}
-                        </div>
-                    `;
+                    showErrorInModal(response.message || 'Gagal memuat detail');
                 }
             },
             error: function(xhr, status, error) {
                 console.error('AJAX Error:', error);
-                console.error('Status:', xhr.status);
-                console.error('Response:', xhr.responseText);
                 
+                let errorMsg = 'Terjadi kesalahan saat memuat detail.';
                 if (xhr.status === 401) {
-                    document.getElementById('detailContent').innerHTML = `
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            Sesi Anda telah berakhir. Silakan <a href="../../login.php">login kembali</a>.
-                        </div>
-                    `;
-                } else {
-                    document.getElementById('detailContent').innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            Terjadi kesalahan saat memuat detail.<br>
-                            <small>Error: ${error}</small>
-                        </div>
-                    `;
+                    errorMsg = 'Sesi Anda telah berakhir. Silakan login kembali.';
                 }
+                
+                showErrorInModal(errorMsg);
             }
         });
     }
     
     function displayDetail(data) {
-        // Format tanggal
-        const formatDate = (dateString) => {
+        console.log('Displaying detail:', data);
+        
+        // Helper functions
+        function formatDate(dateString) {
             if (!dateString || dateString === '0000-00-00' || dateString === '0000-00-00 00:00:00') {
                 return '-';
             }
@@ -160,7 +252,6 @@ function initManajemenJadwalKonseling() {
             try {
                 const date = new Date(dateString);
                 return date.toLocaleDateString('id-ID', {
-                    weekday: 'long',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -168,20 +259,29 @@ function initManajemenJadwalKonseling() {
             } catch (e) {
                 return dateString;
             }
-        };
+        }
         
-        // Format waktu
-        const formatTime = (timeString) => {
+        function formatTime(timeString) {
             if (!timeString || timeString === '00:00:00') return '-';
             return timeString.substring(0, 5);
-        };
+        }
         
-        // Escape HTML untuk keamanan
-        const escapeHtml = (text) => {
+        function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
-        };
+        }
+        
+        function getStatusClass(status) {
+            if (!status) return 'status-menunggu';
+            status = status.toLowerCase().trim();
+            
+            if (status === 'menunggu') return 'status-menunggu';
+            if (status === 'disetujui') return 'status-disetujui';
+            if (status.includes('jadwalkan') || status.includes('ulang')) return 'status-jadwalkan-ulang';
+            return 'status-menunggu';
+        }
         
         const statusClass = getStatusClass(data.Status);
         const statusText = data.Status || 'Menunggu';
@@ -253,6 +353,18 @@ function initManajemenJadwalKonseling() {
         document.getElementById('detailContent').innerHTML = html;
     }
     
+    function showErrorInModal(message) {
+        document.getElementById('detailContent').innerHTML = `
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                ${message}
+                <button class="btn btn-sm btn-outline-danger mt-2" onclick="retryLoadDetail()">
+                    Coba Lagi
+                </button>
+            </div>
+        `;
+    }
+    
     // ==============================
     // FUNGSI UPDATE STATUS
     // ==============================
@@ -260,18 +372,9 @@ function initManajemenJadwalKonseling() {
     function updateStatus(id, action, name) {
         console.log(`Updating status: ${action} for ID: ${id}`);
         
-        // Tampilkan loading
-        const loadingDiv = document.createElement('div');
-        loadingDiv.id = 'loadingOverlay';
-        loadingDiv.innerHTML = `
-            <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;justify-content:center;align-items:center;">
-                <div style="background:white;padding:20px;border-radius:10px;text-align:center;">
-                    <div class="spinner-border text-primary"></div>
-                    <p class="mt-2">Memproses...</p>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(loadingDiv);
+        // Tampilkan loading sederhana
+        const originalText = document.title;
+        document.title = 'Memproses...';
         
         $.ajax({
             url: CONTROLLER_PATH,
@@ -282,65 +385,37 @@ function initManajemenJadwalKonseling() {
             },
             dataType: 'json',
             success: function(response) {
-                // Hapus loading
-                document.getElementById('loadingOverlay')?.remove();
-                
-                console.log('Update response:', response);
+                document.title = originalText;
                 
                 if (response.success) {
-                    // Tentukan status yang akan ditampilkan di UI
-                    let newStatus = 'Menunggu';
-                    if (action === 'setujui') {
-                        newStatus = 'Disetujui'; // INI YANG DIUBAH
-                    } else if (action === 'jadwalkan_ulang') {
-                        newStatus = 'Jadwalkan Ulang';
-                    }
-                    
-                    // Update UI
+                    const newStatus = action === 'setujui' ? 'Disetujui' : 'Jadwalkan Ulang';
                     updateRowStatus(id, newStatus);
                     updateActionButtons(id);
                     
-                    // Tampilkan pesan sukses
                     alert(`✅ ${response.message}`);
                 } else {
                     alert(`❌ ${response.message}`);
                 }
             },
             error: function(xhr, status, error) {
-                // Hapus loading
-                document.getElementById('loadingOverlay')?.remove();
-                
-                console.error('Update Error:', error);
+                document.title = originalText;
                 
                 if (xhr.status === 401) {
-                    if (confirm('Sesi Anda telah berakhir. Ingin login kembali?')) {
+                    if (confirm('Sesi berakhir. Login kembali?')) {
                         window.location.href = '../../login.php';
                     }
                 } else {
-                    alert(`❌ Error: Terjadi kesalahan pada server.\n${error}`);
+                    alert(`❌ Error: ${error}`);
                 }
             }
         });
     }
     
-    // ==============================
-    // FUNGSI HELPER UI
-    // ==============================
-    
     function updateRowStatus(id, newStatus) {
         const statusElement = document.getElementById(`status-${id}`);
-        const rowElement = document.querySelector(`tr[data-id="${id}"]`);
-        
-        if (statusElement && rowElement) {
-            // Update teks status (gunakan "Disetujui" bukan "Setujui")
+        if (statusElement) {
             statusElement.textContent = newStatus;
-            
-            // Update class status
-            const statusClass = getStatusClass(newStatus);
-            statusElement.className = `status-badge ${statusClass}`;
-            
-            // Update data-status pada row
-            rowElement.setAttribute('data-status', newStatus);
+            statusElement.className = `status-badge ${getStatusClass(newStatus)}`;
         }
     }
     
@@ -349,7 +424,6 @@ function initManajemenJadwalKonseling() {
         if (row) {
             const dropdownMenu = row.querySelector('.dropdown-menu');
             if (dropdownMenu) {
-                // Hanya tampilkan tombol Detail setelah status berubah
                 dropdownMenu.innerHTML = `
                     <li>
                         <a class="dropdown-item text-info detail-btn" href="#" data-id="${id}">
@@ -357,46 +431,124 @@ function initManajemenJadwalKonseling() {
                         </a>
                     </li>
                 `;
+                
+                // Setup ulang tombol detail yang baru
+                const newDetailBtn = dropdownMenu.querySelector('.detail-btn');
+                if (newDetailBtn) {
+                    newDetailBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        handleDetailClick(this);
+                    });
+                }
             }
         }
     }
     
     function getStatusClass(status) {
         if (!status) return 'status-menunggu';
-        
         status = status.toLowerCase().trim();
         
-        if (status === 'menunggu') {
-            return 'status-menunggu';
-        } else if (status === 'disetujui') { // INI YANG DIUBAH
-            return 'status-disetujui';
-        } else if (status.includes('jadwalkan') || status.includes('ulang')) {
-            return 'status-jadwalkan-ulang';
-        } else {
-            return 'status-menunggu';
-        }
+        if (status === 'menunggu') return 'status-menunggu';
+        if (status === 'disetujui') return 'status-disetujui';
+        if (status.includes('jadwalkan') || status.includes('ulang')) return 'status-jadwalkan-ulang';
+        return 'status-menunggu';
     }
     
     // ==============================
     // FUNGSI PENCARIAN
     // ==============================
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
+    
+    function setupSearch() {
+        const searchInput = document.getElementById('searchInput');
+        if (!searchInput) return;
+        
+        let timeout;
         searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#dataTable tr[data-id]');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                const term = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#dataTable tr[data-id]');
+                
+                rows.forEach(row => {
+                    row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+                });
+            }, 300);
         });
     }
     
-    console.log('✅ Jadwal Konseling Management initialized successfully!');
+    // ==============================
+    // GLOBAL FUNCTIONS UNTUK RETRY
+    // ==============================
+    
+    window.retryLoadDetail = function() {
+        const button = document.querySelector('.detail-btn[data-setup="true"]');
+        if (button) {
+            handleDetailClick(button);
+        }
+    };
+    
+    // ==============================
+    // DEBUG INFORMATION
+    // ==============================
+    
+    console.log('🔍 Debug Info:');
+    console.log('Detail buttons found:', document.querySelectorAll('.detail-btn').length);
+    console.log('Detail modal element:', document.getElementById('detailModal'));
+    console.log('Bootstrap available:', typeof bootstrap);
+    console.log('jQuery available:', typeof $);
+    
+    // Test: coba klik tombol detail secara programmatic
+    setTimeout(() => {
+        const testButton = document.querySelector('.detail-btn');
+        if (testButton) {
+            console.log('Test button available:', testButton);
+            // Optional: test dengan kode ini untuk debug
+            // testButton.click();
+        }
+    }, 1000);
+    
+    console.log('✅ Jadwal Konseling initialized!');
 }
 
-// Ekspor untuk penggunaan global
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { initManajemenJadwalKonseling };
-}
+// ==============================
+// AUTO-INIT SEDERHANA
+// ==============================
+(function() {
+    console.log('🔧 Loading Jadwal Konseling System...');
+    
+    function initialize() {
+        if (typeof initManajemenJadwalKonseling === 'function') {
+            console.log('🚀 Calling init function...');
+            initManajemenJadwalKonseling();
+        } else {
+            console.error('❌ initManajemenJadwalKonseling not found');
+            
+            // Coba load ulang script
+            const scripts = document.getElementsByTagName('script');
+            for (let script of scripts) {
+                if (script.src.includes('JadwalKonseling.js')) {
+                    console.log('Found script, reloading...');
+                    const newScript = document.createElement('script');
+                    newScript.src = script.src + '?t=' + Date.now();
+                    newScript.onload = function() {
+                        if (typeof initManajemenJadwalKonseling === 'function') {
+                            initManajemenJadwalKonseling();
+                        }
+                    };
+                    document.head.appendChild(newScript);
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Tunggu sampai DOM siap
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+        initialize();
+    }
+    
+    // Fallback
+    setTimeout(initialize, 2000);
+})();

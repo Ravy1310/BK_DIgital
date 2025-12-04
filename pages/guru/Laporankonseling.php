@@ -45,7 +45,7 @@ $id_guru = $_SESSION['guru_id'] ?? null;
             background: url('../../assets/image/background.jpg');
             background-size: cover;
             background-attachment: fixed;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           font-family: 'Poppins', sans-serif;
             min-height: 100vh;
             padding: 20px;
         }
@@ -56,9 +56,10 @@ $id_guru = $_SESSION['guru_id'] ?? null;
             border-radius: 15px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
             padding: 30px;
-            margin: 20px auto;
-            max-width: 1400px;
-            width: 100%;
+            margin: 20px ;
+            margin-left: -50px;
+            max-width: 110%; /* DIUBAH: dari 100% menjadi 95% */
+            width: 110%; /* DIUBAH: tambahkan width 95% */
         }
 
         /* Header */
