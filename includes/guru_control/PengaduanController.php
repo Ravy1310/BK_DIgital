@@ -24,10 +24,10 @@ class PengaduanController {
                         p.deskripsi,
                         p.status,
                         DATE_FORMAT(p.tanggal_pengaduan, '%d %M %Y pukul %H:%i') as tanggal_format,
-                        p.nama_siswa,  -- AMBIL LANGSUNG DARI TABEL PENGADUAN
-                        p.kelas_siswa  -- AMBIL LANGSUNG DARI TABEL PENGADUAN
+                        s.nama,
+                        s.kelas
                       FROM pengaduan p
-                      WHERE p.status != 'Selesai'  -- HANYA TAMPILKAN YANG BELUM SELESAI
+                      LEFT JOIN siswa s ON p.id_siswa = s.id_siswa
                       ORDER BY p.tanggal_pengaduan DESC";
             
             $stmt = $this->conn->prepare($query);
@@ -49,13 +49,12 @@ class PengaduanController {
         $html = '';
         
         if (empty($pengaduans)) {
-            $html = '<tr><td colspan="5" class="text-center py-4">Tidak ada pengaduan yang perlu ditangani</td></tr>';
+            $html = '<tr><td colspan="5" class="text-center py-4">Tidak ada pengaduan ditemukan</td></tr>';
             return $html;
         }
         
         foreach ($pengaduans as $pengaduan) {
-            // Jika id_siswa null, berarti anonim
-            $nama_pelapor = ($pengaduan['id_siswa'] === null) ? 'Anonim' : $pengaduan['nama_siswa'];
+            $nama_pelapor = ($pengaduan['id_siswa'] === null) ? 'Anonim' : $pengaduan['nama'];
             $kelas = ($pengaduan['id_siswa'] !== null && !empty($pengaduan['kelas_siswa'])) ? 
                      ' (' . $pengaduan['kelas_siswa'] . ')' : '';
             
@@ -133,7 +132,7 @@ class PengaduanController {
     }
     
     /**
-     * Handle AJAX request
+     * Handle AJAX request - INI YANG PERLU DITAMBAHKAN
      */
     public function handleAjaxRequest() {
         // Set header JSON untuk semua response AJAX

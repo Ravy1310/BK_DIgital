@@ -263,13 +263,11 @@ function ubahStatusKeDiproses(idPengaduan) {
             if (data.success) {
                 alert('✅ Status berhasil diubah menjadi Diproses!');
                 
+                // Tutup modal
+                closeModal();
+                
                 // Update tampilan tanpa reload
                 updateTableStatus(idPengaduan, 'Diproses');
-                
-                // Tutup modal
-                setTimeout(() => {
-                    closeModal();
-                }, 500);
                 
             } else {
                 alert('❌ Gagal: ' + (data.message || 'Terjadi kesalahan'));
@@ -345,13 +343,11 @@ function ubahStatusKeSelesai(idPengaduan) {
             if (data.success) {
                 alert('✅ Status berhasil diubah menjadi Selesai!');
                 
-                // Hapus baris dari tabel (karena status selesai tidak ditampilkan)
-                removeRowFromTable(idPengaduan);
-                
                 // Tutup modal
-                setTimeout(() => {
-                    closeModal();
-                }, 300);
+                closeModal();
+                
+                // Update tampilan tanpa reload
+                updateTableStatus(idPengaduan, 'Selesai');
                 
             } else {
                 alert('❌ Gagal: ' + (data.message || 'Terjadi kesalahan'));
@@ -370,47 +366,7 @@ function ubahStatusKeSelesai(idPengaduan) {
     });
 }
 
-// Fungsi untuk menghapus baris dari tabel (ketika status menjadi Selesai)
-function removeRowFromTable(pengaduanId) {
-    console.log('🗑️ Menghapus baris untuk ID:', pengaduanId);
-    
-    // Cari baris yang sesuai dengan ID pengaduan
-    const rows = document.querySelectorAll('#complaintTable tr');
-    let targetRow = null;
-    
-    rows.forEach(row => {
-        const link = row.querySelector('.action-link');
-        if (link && link.getAttribute('data-id') == pengaduanId) {
-            targetRow = row;
-        }
-    });
-    
-    if (targetRow) {
-        // Tambahkan animasi fade out
-        targetRow.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        targetRow.style.opacity = '0';
-        targetRow.style.transform = 'translateX(-20px)';
-        
-        // Hapus baris setelah animasi selesai
-        setTimeout(() => {
-            targetRow.remove();
-            console.log('✅ Baris pengaduan dihapus dari tabel karena status Selesai');
-            
-            // Cek jika tabel kosong
-            const remainingRows = document.querySelectorAll('#complaintTable tr');
-            if (remainingRows.length === 0) {
-                // Tampilkan pesan tabel kosong
-                const tableBody = document.getElementById('complaintTable');
-                tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Tidak ada pengaduan yang perlu ditangani</td></tr>';
-            }
-        }, 300);
-    }
-    
-    // Reset tombol loading
-    resetButton();
-}
-
-// Fungsi untuk update tampilan tabel tanpa reload (untuk status Diproses)
+// Fungsi untuk update tampilan tabel tanpa reload
 function updateTableStatus(pengaduanId, newStatus) {
     console.log('🔄 Update tampilan untuk ID:', pengaduanId, 'Status baru:', newStatus);
     
@@ -475,14 +431,21 @@ function updateTableStatus(pengaduanId, newStatus) {
                 console.log('🚀 Tombol "Ubah ke Selesai" diklik');
                 ubahStatusKeSelesai(pengaduanId);
             };
+        } else if (normalizedStatus === 'selesai') {
+            actionButton.style.display = 'none';
+        }
+        
+        // Update status badge di modal
+        const modalStatusBadge = document.getElementById('statusBadge');
+        if (modalStatusBadge) {
+            modalStatusBadge.textContent = newStatus;
+            modalStatusBadge.className = 'status-btn';
+            modalStatusBadge.classList.remove('status-new', 'status-process', 'status-done');
             
-            // Update status badge di modal
-            const modalStatusBadge = document.getElementById('statusBadge');
-            if (modalStatusBadge) {
-                modalStatusBadge.textContent = newStatus;
-                modalStatusBadge.className = 'status-btn';
-                modalStatusBadge.classList.remove('status-new', 'status-process', 'status-done');
+            if (normalizedStatus === 'diproses') {
                 modalStatusBadge.classList.add('status-process');
+            } else if (normalizedStatus === 'selesai') {
+                modalStatusBadge.classList.add('status-done');
             }
         }
     }
@@ -537,6 +500,24 @@ function testEndpointDirectly() {
         })
         .then(text => {
             console.log('GET Test - Response (first 500 chars):', text ? text.substring(0, 500) : 'EMPTY');
+            
+            // Test POST request
+            const formData = new FormData();
+            formData.append('id_pengaduan', '1');
+            formData.append('status', 'Diproses');
+            
+            return fetch('../../includes/guru_control/PengaduanController.php?action=update_status', {
+                method: 'POST',
+                body: formData
+            });
+        })
+        .then(response => {
+            console.log('POST Test - Status:', response.status, response.statusText);
+            return response.text();
+        })
+        .then(text => {
+            console.log('POST Test - Full Response:', text);
+            console.log('POST Test - Response length:', text ? text.length : 0);
         })
         .catch(error => {
             console.error('Test Error:', error);
@@ -584,6 +565,12 @@ function checkButton() {
     }
 }
 
+// Fungsi untuk test update tampilan tanpa reload
+function testUpdateView() {
+    console.log('🧪 Testing update view...');
+    updateTableStatus(currentPengaduanId || '1', 'Diproses');
+}
+
 // Inisialisasi otomatis saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 DOM siap, menjalankan initManajemenPengaduan...');
@@ -599,6 +586,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Tambahkan fungsi helper ke global
         window.checkButton = checkButton;
         window.testEndpointDirectly = testEndpointDirectly;
+        window.testUpdateView = testUpdateView;
     }, 100);
 });
 
@@ -613,3 +601,4 @@ window.currentPengaduanId = null;
 window.currentPengaduanStatus = null;
 window.checkButton = checkButton;
 window.testEndpointDirectly = testEndpointDirectly;
+window.testUpdateView = testUpdateView;

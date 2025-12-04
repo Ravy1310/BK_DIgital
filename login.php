@@ -43,10 +43,7 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] !== true
 }
 
 // Tampilkan pesan logout jika ada
-$logout_message = '';
-if (isset($_GET['logout']) && $_GET['logout'] === 'success') {
-    $logout_message = 'Anda telah berhasil logout.';
-}
+
 ?>
 <!doctype html>
 <html lang="id">

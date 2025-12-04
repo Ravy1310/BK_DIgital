@@ -45,7 +45,11 @@ header("Expires: 0");
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/sidebar.css">
-
+ <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
     /* Additional styles for profile dropdown */
     .profile-dropdown {
@@ -230,12 +234,13 @@ async function loadContent(file) {
                 initManajemenPengaduan();
             }
         }
-        else if (file.includes('log_aktivitas.php')) {
+        else if (file.includes('manajemen jadwal konseling.php')) {
+      
+
             // Gunakan singleton instance
-            setTimeout(() => {
-                window.logSystem = getLogAktivitasInstance();
-                window.logSystem.init();
-            }, 200);
+            if (typeof initManajemenJadwalKonseling === 'function') {
+                initManajemenJadwalKonseling();
+            }
         }
 
     } catch (error) {
@@ -265,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="../../includes/js/guru/pengaduan.js"></script>
-<script src="../../includes/js/guru/manajemen_account.js"></script>
+<script src="../../includes/js/guru/JadwalKonseling.js"></script>
 
 </body>
 </html>
