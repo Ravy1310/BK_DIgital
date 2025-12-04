@@ -369,6 +369,11 @@ $riwayatSlide = array_chunk($riwayat, 2);
 <div class="container-main">
   <div class="main-container">
     <div class="content-wrapper">
+      <!-- Tombol Kembali -->
+      
+        <a href="verifikasi_tes.php?logout=1" class="btn btn-outline-danger mt-4">
+          <i class="bi bi-box-arrow-right me-2"></i> Kembali
+        </a>
       <h2 class="judul-section">Tes BK</h2>
       
       <!-- User Info -->
@@ -536,11 +541,7 @@ $riwayatSlide = array_chunk($riwayat, 2);
 
       <?php endif; ?>
       
-      <!-- Tombol Kembali -->
       
-        <a href="verifikasi_tes.php?logout=1" class="btn btn-outline-danger mt-4">
-          <i class="bi bi-box-arrow-right me-2"></i> Kembali
-        </a>
     </div>
 
     <div class="main-footer">

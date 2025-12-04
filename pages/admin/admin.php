@@ -43,7 +43,7 @@ try {
     $result_tes = $stmt_tes->fetch(PDO::FETCH_ASSOC);
     $jumlah_tes = $result_tes['total'] ?? 0;
 
-    // Tes Terpopuler (berdasarkan jumlah pengerjaan)
+    // Tes Terpopuler - HANYA 6 YANG PALING BANYAK DIKERJAKAN
     // Cek apakah tabel hasil_tes ada
     $query_check_hasil_tes = "SHOW TABLES LIKE 'hasil_tes'";
     $stmt_check = $pdo->prepare($query_check_hasil_tes);
@@ -51,19 +51,41 @@ try {
     $hasil_tes_exists = $stmt_check->rowCount() > 0;
 
     if ($hasil_tes_exists) {
-        $query_populer = "
-            SELECT t.kategori_tes, COUNT(ht.id_hasil) as jumlah_pengerjaan 
-            FROM tes t 
-            LEFT JOIN hasil_tes ht ON t.id_tes = ht.id_tes 
-            GROUP BY t.id_tes, t.kategori_tes 
-            ORDER BY jumlah_pengerjaan DESC 
-            LIMIT 6
-        ";
+        // Cek apakah ada data pengerjaan tes
+        $query_check_data = "SELECT COUNT(DISTINCT id_tes) as total_tes FROM hasil_tes";
+        $stmt_check_data = $pdo->prepare($query_check_data);
+        $stmt_check_data->execute();
+        $hasil_data = $stmt_check_data->fetch(PDO::FETCH_ASSOC);
+        $jumlah_tes_dikerjakan = $hasil_data['total_tes'] ?? 0;
+        
+        if ($jumlah_tes_dikerjakan > 0) {
+            // Ambil 6 tes dengan jumlah pengerjaan TERBANYAK
+            $query_populer = "
+                SELECT 
+                    t.kategori_tes,
+                    COUNT(ht.id_hasil) as jumlah_pengerjaan
+                FROM tes t 
+                INNER JOIN hasil_tes ht ON t.id_tes = ht.id_tes 
+                GROUP BY t.id_tes, t.kategori_tes 
+                ORDER BY jumlah_pengerjaan DESC 
+                LIMIT 6
+            ";
+        } else {
+            // Jika belum ada yang dikerjakan, ambil 6 tes acak untuk placeholder
+            $query_populer = "
+                SELECT 
+                    kategori_tes,
+                    0 as jumlah_pengerjaan
+                FROM tes 
+                LIMIT 6
+            ";
+        }
+        
         $stmt_populer = $pdo->prepare($query_populer);
         $stmt_populer->execute();
         $tes_terpopuler = $stmt_populer->fetchAll(PDO::FETCH_ASSOC);
     } else {
-        // Jika tabel hasil_tes tidak ada, ambil semua tes
+        // Jika tabel hasil_tes tidak ada, ambil semua tes (maks 6)
         $query_all_tes = "SELECT kategori_tes FROM tes LIMIT 6";
         $stmt_all_tes = $pdo->prepare($query_all_tes);
         $stmt_all_tes->execute();
@@ -86,7 +108,7 @@ try {
     $tes_terpopuler = [];
 }
 
-// Jika tidak ada data tes terpopuler, buat data dummy
+// Jika tidak ada data tes terpopuler sama sekali, buat data dummy
 if (empty($tes_terpopuler)) {
     $tes_terpopuler = [
         ['kategori_tes' => 'Tes Minat Belajar', 'jumlah_pengerjaan' => 0],
@@ -96,6 +118,11 @@ if (empty($tes_terpopuler)) {
         ['kategori_tes' => 'Tes Kedisiplinan', 'jumlah_pengerjaan' => 0],
         ['kategori_tes' => 'Tes Konsentrasi', 'jumlah_pengerjaan' => 0]
     ];
+}
+
+// Pastikan hanya menampilkan maksimal 6 tes
+if (count($tes_terpopuler) > 6) {
+    $tes_terpopuler = array_slice($tes_terpopuler, 0, 6);
 }
 ?>
 
@@ -224,8 +251,17 @@ if (empty($tes_terpopuler)) {
     <p class="text-muted">Tes paling banyak yang dikerjakan siswa</p>
 
     <div class="row g-3">
-      <?php foreach ($tes_terpopuler as $tes): ?>
-        <div class="col-md-4">
+      <?php 
+      // Hitung berapa kolom yang dibutuhkan (maks 6, dalam 3 kolom per baris)
+      $col_class = 'col-md-4'; // Default 3 per baris
+      if (count($tes_terpopuler) <= 3) {
+          $col_class = 'col-md-4'; // 3 per baris
+      } else {
+          $col_class = 'col-md-4'; // 3 per baris, akan ada 2 baris
+      }
+      
+      foreach ($tes_terpopuler as $tes): ?>
+        <div class="<?php echo $col_class; ?>">
           <div class="card-test">
             <span class="fw-bold"><?php echo htmlspecialchars($tes['kategori_tes']); ?></span><br>
             <small class="text-muted">

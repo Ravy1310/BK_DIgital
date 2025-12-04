@@ -122,7 +122,7 @@ header("Expires: 0");
     </button>
     <ul class="sidebar-menu">
         <li>
-            <a href="#" class="active fw-bolder my-2" data-file="Dashboard.php" data-js="">
+            <a href="#" class="active fw-bolder my-2" data-file="Dashboard.php" data-js="Dashboard">
                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pie-chart-fill" viewBox="0 0 16 16">
                     <path d="M15.985 8.5H8.207l-5.5 5.5a8 8 0 0 0 13.277-5.5zM2 13.292A8 8 0 0 1 7.5.015v7.778zM8.5.015V7.5h7.485A8 8 0 0 0 8.5.015"/>
                 </svg>
@@ -507,6 +507,73 @@ async function loadContent(file, jsType) {
         `;
     }
 }
+// ========== FUNGSI UNTUK HANDLE NAVIGASI DARI DASHBOARD ==========
+
+// Fungsi untuk mengaktifkan menu berdasarkan ID
+function setActiveMenu(menuId) {
+    console.log(`Setting active menu: ${menuId}`);
+    
+    // Hapus active class dari semua menu
+    menuLinks.forEach(link => {
+        link.classList.remove('active');
+        link.classList.remove('loading');
+    });
+    
+    // Cari dan aktifkan menu target
+    const targetLink = document.querySelector(`a[data-js="${menuId}"]`);
+    if (targetLink) {
+        targetLink.classList.add('active');
+        console.log(`Menu ${menuId} activated successfully`);
+        return true;
+    } else {
+        console.warn(`Menu with data-js="${menuId}" not found`);
+        
+        // Coba cari dengan cara lain
+        const allLinks = document.querySelectorAll('.sidebar-menu a');
+        for (let link of allLinks) {
+            if (link.dataset.js && link.dataset.js.toLowerCase() === menuId.toLowerCase()) {
+                link.classList.add('active');
+                console.log(`Menu found with case-insensitive match`);
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+// Fungsi untuk handle navigasi dari dashboard
+window.handleDashboardNavigation = function(page, menuId) {
+    console.log(`Dashboard navigation requested: ${page}, ${menuId}`);
+    
+    // 1. Aktifkan menu yang sesuai
+    const menuActivated = setActiveMenu(menuId);
+    
+    // 2. Load konten
+    if (menuActivated) {
+        const targetLink = document.querySelector(`a[data-js="${menuId}"]`);
+        const jsType = targetLink ? targetLink.dataset.js : '';
+        loadContent(page, jsType);
+    } else {
+        // Jika menu tidak ditemukan, load content tanpa mengubah menu
+        loadContent(page, '');
+    }
+};
+
+// Event listener untuk custom event dari dashboard
+document.addEventListener('dashboardNavigation', function(e) {
+    const { page, menuId } = e.detail;
+    console.log('Received dashboardNavigation event:', e.detail);
+    window.handleDashboardNavigation(page, menuId);
+});
+
+// Buat fungsi ini accessible dari child iframes/windows
+window.enableDashboardNavigation = true;
+
+// Debug function
+window.showCurrentMenu = function() {
+    const activeMenu = document.querySelector('.sidebar-menu a.active');
+    console.log('Current active menu:', activeMenu ? activeMenu.dataset.js : 'None');
+};
 
 // Debounce function untuk mencegah multiple clicks
 function debounce(func, wait) {

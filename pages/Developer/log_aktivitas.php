@@ -7,25 +7,37 @@ require_once $base_dir . 'includes/logAktivitas.php';
 
 // AMBIL DATA TOTAL GURU DARI DATABASE
 $total_guru = 0;
+$total_Siswa = 0;
+$total_kasus_terbaru = 0;
 
 try {
+    // Total Guru
     $query_guru = "SELECT COUNT(*) as total FROM guru";
     $stmt_guru = $pdo->prepare($query_guru);
     $stmt_guru->execute();
     $result_guru = $stmt_guru->fetch(PDO::FETCH_ASSOC);
     $total_guru = $result_guru['total'] ?? 0;
-} catch (Exception $e) {
-    $total_guru = 0;
-}
-$total_Siswa = 0;
-try {
+
+    // Total Siswa
     $query_siswa = "SELECT COUNT(*) as total FROM siswa";
     $stmt_siswa = $pdo->prepare($query_siswa);
     $stmt_siswa->execute();
     $result_siswa = $stmt_siswa->fetch(PDO::FETCH_ASSOC);
     $total_Siswa = $result_siswa['total'] ?? 0;
+
+    // Total Kasus Terbaru (dari tabel pengaduan)
+    // Anda bisa menyesuaikan filter status sesuai kebutuhan
+    // Misalnya: status 'Menunggu' atau 'Diproses' untuk kasus baru
+    $query_kasus = "SELECT COUNT(*) as total FROM pengaduan WHERE status IN ('Menunggu', 'Diproses')";
+    $stmt_kasus = $pdo->prepare($query_kasus);
+    $stmt_kasus->execute();
+    $result_kasus = $stmt_kasus->fetch(PDO::FETCH_ASSOC);
+    $total_kasus_terbaru = $result_kasus['total'] ?? 0;
+
 } catch (Exception $e) {
+    $total_guru = 0;
     $total_Siswa = 0;
+    $total_kasus_terbaru = 0;
 }
 ?>
 <style>
@@ -51,15 +63,58 @@ try {
         padding: 15px !important;
     }
 
-    /* Styling untuk log item dengan scroll horizontal */
-    .log-item {
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        transition: transform 0.2s;
-        margin-bottom: 10px;
+    /* Styling untuk log item dengan scroll vertical untuk konten JSON yang panjang */
+    .log-item .log-details {
+        color: #6c757d;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-bottom: 5px;
+        padding: 8px 10px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
         border: 1px solid #e9ecef;
-        background: white;
-        overflow: hidden;
+        overflow-x: auto;
+        overflow-y: auto; /* Diubah dari hidden ke auto untuk scroll vertikal */
+        white-space: pre-wrap;
+        max-height: 200px; /* Tinggi maksimal untuk konten JSON */
+        position: relative;
+        word-break: break-word;
+    }
+
+    /* Custom scrollbar untuk log details */
+    .log-item .log-details::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+    }
+    
+    .log-item .log-details::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    .log-item .log-details::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+        border: 2px solid #f1f1f1;
+    }
+    
+    .log-item .log-details::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    /* Untuk Firefox */
+    .log-item .log-details {
+        scrollbar-width: thin;
+        scrollbar-color: #888 #f1f1f1;
+    }
+
+    .log-item .log-details pre {
+        margin: 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.8rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+        min-width: min-content;
     }
 
     .log-item .log-content {
@@ -95,51 +150,6 @@ try {
         white-space: nowrap;
     }
 
-    .log-item .log-details {
-        color: #6c757d;
-        font-size: 0.85rem;
-        line-height: 1.4;
-        margin-bottom: 5px;
-        padding: 8px 10px;
-        background-color: #f8f9fa;
-        border-radius: 6px;
-        border: 1px solid #e9ecef;
-        overflow-x: auto;
-        overflow-y: hidden;
-        white-space: pre-wrap;
-        max-height: 120px;
-        position: relative;
-    }
-
-    /* Custom scrollbar untuk log details */
-    .log-item .log-details::-webkit-scrollbar {
-        height: 6px;
-        width: 6px;
-    }
-    
-    .log-item .log-details::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
-    
-    .log-item .log-details::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-    }
-    
-    .log-item .log-details::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-
-    .log-item .log-details pre {
-        margin: 0;
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 0.8rem;
-        white-space: pre-wrap;
-        word-break: break-word;
-        min-width: min-content;
-    }
-
     .log-item .log-meta {
         display: flex;
         justify-content: space-between;
@@ -163,6 +173,11 @@ try {
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
         font-size: 0.8rem;
         line-height: 1.3;
+        max-height: none;
+        overflow: visible;
+        white-space: pre-wrap;
+        word-break: break-all;
+        overflow-wrap: break-word;
     }
 
     .json-key {
@@ -186,21 +201,35 @@ try {
         color: #6f42c1;
     }
 
-    /* Indikator scroll horizontal */
-    .scroll-indicator {
+    /* Indikator scroll */
+    .scroll-indicator-horizontal {
         position: absolute;
         right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #6c757d;
-        font-size: 0.7rem;
-        background: rgba(255, 255, 255, 0.8);
+        top: 10px;
+        background: rgba(0, 0, 0, 0.1);
         padding: 2px 6px;
         border-radius: 4px;
+        font-size: 0.7rem;
+        color: #666;
         display: none;
+        z-index: 10;
     }
 
-    .log-details:hover .scroll-indicator {
+    .scroll-indicator-vertical {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        background: rgba(0, 0, 0, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        color: #666;
+        display: none;
+        z-index: 10;
+    }
+
+    .log-details:hover .scroll-indicator-horizontal,
+    .log-details:hover .scroll-indicator-vertical {
         display: block;
     }
 
@@ -327,6 +356,15 @@ try {
         font-size: 1.3rem;
     }
 
+    .log-timestamp {
+        font-family: 'Courier New', monospace;
+        background: #f8f9fa;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .content {
@@ -377,14 +415,15 @@ try {
         
         .log-item .log-details {
             font-size: 0.82rem;
-            max-height: 100px;
+            max-height: 150px;
         }
         
         .log-item .log-details pre {
             font-size: 0.78rem;
         }
         
-        .scroll-indicator {
+        .scroll-indicator-horizontal,
+        .scroll-indicator-vertical {
             font-size: 0.65rem;
             padding: 1px 4px;
         }
@@ -444,7 +483,7 @@ try {
         }
         
         .log-item .log-details {
-            max-height: 90px;
+            max-height: 120px;
             font-size: 0.8rem;
         }
         
@@ -494,34 +533,16 @@ try {
         white-space: nowrap;
     }
 
-    .log-timestamp {
-        font-family: 'Courier New', monospace;
-        background: #f8f9fa;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        flex-shrink: 0;
-    }
-
-    /* Hover effect untuk log details */
+    /* Efek hover untuk log details */
     .log-details:hover {
         background-color: #f1f3f5;
         transition: background-color 0.2s;
     }
 
-    /* Tooltip untuk log details yang panjang */
-    .log-details[title] {
-        cursor: help;
-    }
-
-    /* Hover effect untuk scroll indicator */
-    .log-details:hover .scroll-indicator {
-        animation: bounce 1s infinite;
-    }
-
-    @keyframes bounce {
-        0%, 100% { transform: translateY(-50%) translateX(0); }
-        50% { transform: translateY(-50%) translateX(3px); }
+    
+    /* Tombol scrollbar (jika ada) */
+    .log-details::-webkit-scrollbar-button {
+        display: none;
     }
 </style>
 <div class="d-flex pt-4 fade-container">
@@ -569,7 +590,7 @@ try {
                             <path d="M3 4h10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4z"/>
                         </svg>
                         <h6 class="card-title">Kasus Terbaru</h6>
-                        <h5 class="card-value text-warning">3</h5>
+                        <h5 class="card-value text-warning"><?php echo $total_kasus_terbaru; ?></h5>
                     </div>
                 </div>
             </div>
@@ -635,5 +656,5 @@ try {
     </div>
 </div>
 
-<!-- Load JavaScript -->
+<!-- Load JavaScript --> 
 <script src="../../includes/js/developer/log_aktivitas.js"></script>

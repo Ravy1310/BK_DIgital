@@ -360,6 +360,10 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
   <!-- JADWAL AKTIF -->
 
   <div class="schedule-wrapper">
+    <!-- Tombol Kembali -->
+        <a href="verifikasi_jadwal.php?logout=1" class="btn btn-outline-danger mt-4">
+            <i class="bi bi-box-arrow-right"></i> Kembali
+        </a>
     <div class="section-title">Jadwal Konseling Aktif</div>
      <!-- Info Siswa -->
         <div class="user-info">
@@ -490,10 +494,7 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
     <?php else: ?>
       <p class="text-center">Belum ada riwayat konseling.</p>
     <?php endif; ?>
-     <!-- Tombol Kembali -->
-        <a href="verifikasi_jadwal.php?logout=1" class="btn btn-outline-danger mt-4">
-            <i class="bi bi-box-arrow-right"></i> Kembali
-        </a>
+     
   </div>
 
 </div>
