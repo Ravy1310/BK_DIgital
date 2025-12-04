@@ -361,7 +361,7 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
 
   <div class="schedule-wrapper">
     <!-- Tombol Kembali -->
-        <a href="verifikasi_jadwal.php?logout=1" class="btn btn-outline-danger mt-4">
+        <a href="verifikasi_jadwal.php?logout=1" class="btn btn-outline-danger mb-4">
             <i class="bi bi-box-arrow-right"></i> Kembali
         </a>
     <div class="section-title">Jadwal Konseling Aktif</div>

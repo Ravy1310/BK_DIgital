@@ -17,8 +17,8 @@ if ($_SESSION['admin_role'] !== 'admin' && $_SESSION['admin_role'] !== 'superadm
 $id_tes = isset($_GET['id_tes']) ? intval($_GET['id_tes']) : 0;
 if ($id_tes <= 0) die("<h1 style='color:red'>ERROR: id_tes tidak dikirim</h1>");
 
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
-require_once $base_dir . 'includes/db_connection.php';
+require_once __DIR__ . '/../../includes/db_connection.php';
+
 
 // Ambil data tes
 $stmt_tes = $pdo->prepare("SELECT kategori_tes FROM tes WHERE id_tes = ?");

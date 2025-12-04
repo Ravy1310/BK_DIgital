@@ -24,7 +24,8 @@ if ($_SESSION['admin_role'] !== 'user' || !isset($_SESSION['is_guru']) || $_SESS
 // Pastikan guru_id ada di session
 if (!isset($_SESSION['guru_id']) || empty($_SESSION['guru_id'])) {
     // Coba ambil dari database berdasarkan user_id
-    require_once $base_dir . 'includes/db_connection.php';
+   require_once __DIR__ . '/../../includes/db_connection.php';
+;
     
     if (isset($_SESSION['admin_id'])) {
         $query = "SELECT id_guru FROM guru WHERE user_id = :user_id";
@@ -45,9 +46,8 @@ if (!isset($_SESSION['guru_id']) || empty($_SESSION['guru_id'])) {
 
 
 // Include database connection
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
+require_once __DIR__ . '/../../includes/db_connection.php';
 
-require_once $base_dir . 'includes/db_connection.php';
 
 // Inisialisasi variabel
 $jadwalData = [];

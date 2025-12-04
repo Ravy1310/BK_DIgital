@@ -2,9 +2,9 @@
 // File: includes/db_connection.php
 
 $host = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'bk_digital';
+$username = 'u804549048_Kelompok_4';
+$password = 'Kelompok4$';
+$dbname = 'u804549048_bk_digital';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);

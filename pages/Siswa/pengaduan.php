@@ -446,7 +446,7 @@ body {
 <div class="container">
     <div class="main-wrapper">
  <!-- Tombol Kembali -->
-        <a href="verifikasi_pengaduan.php?logout=1" class="btn btn-outline-danger mt-4">
+        <a href="verifikasi_pengaduan.php?logout=1" class="btn btn-outline-danger mb-4">
             <i class="fas fa-arrow-left me-2"></i> Kembali
         </a>
         <h2 class="judul-section mb-4">Riwayat Pengaduan</h2>

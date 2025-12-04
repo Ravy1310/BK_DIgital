@@ -1,5 +1,6 @@
 <?php
-$BASE_URL = "/BK_Digital/";
+$BASE_URL = "/pages/";
+$BASE_HOME = "/../";
 ?>
 
 <!-- BOOTSTRAP CSS -->
@@ -87,7 +88,7 @@ body {
 <nav class="navbar navbar-expand-lg fixed-top">
 <div class="container">
 
-  <a class="navbar-brand" href="<?= $BASE_URL ?>index.php">BK Digital</a>
+  <a class="navbar-brand" href="<?= $BASE_HOME ?>index.php">BK Digital</a>
 
   <button class="navbar-toggler" type="button"
           data-bs-toggle="collapse"
@@ -99,7 +100,7 @@ body {
     <ul class="navbar-nav ms-auto">
 
       <li class="nav-item">
-        <a class="nav-link" href="<?= $BASE_URL ?>index.php">Home</a>
+        <a class="nav-link" href="<?= $BASE_HOME ?>index.php">Home</a>
       </li>
 
       <li class="nav-item dropdown">
@@ -111,19 +112,19 @@ body {
         <ul class="dropdown-menu dropdown-menu-end shadow">
           <li>
             <a class="dropdown-item"
-               href="<?= $BASE_URL ?>pages/Siswa/verifikasi_pengaduan.php">
+               href="<?= $BASE_URL ?>Siswa/verifikasi_pengaduan.php">
               Pengaduan Siswa
             </a>
           </li>
           <li>
             <a class="dropdown-item"
-               href="<?= $BASE_URL ?>pages/Siswa/verifikasi_jadwal.php">
+               href="<?= $BASE_URL ?>Siswa/verifikasi_jadwal.php">
               Jadwal Konseling
             </a>
           </li>
           <li>
             <a class="dropdown-item"
-               href="<?= $BASE_URL ?>pages/Siswa/verifikasi_tes.php">
+               href="<?= $BASE_URL ?>Siswa/verifikasi_tes.php">
               Tes BK
             </a>
           </li>

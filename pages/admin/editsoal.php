@@ -16,8 +16,8 @@ if ($_SESSION['admin_role'] !== 'admin' && $_SESSION['admin_role'] !== 'superadm
 // GET PARAMETER
 $id_tes = isset($_GET['id_tes']) ? intval($_GET['id_tes']) : 0;
 
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
-require_once $base_dir . 'includes/db_connection.php';
+require_once __DIR__ . '/../../includes/db_connection.php';
+
 
 // CEK TES ADA
 $stmt_tes = $pdo->prepare("SELECT kategori_tes, deskripsi_tes FROM tes WHERE id_tes = ?");

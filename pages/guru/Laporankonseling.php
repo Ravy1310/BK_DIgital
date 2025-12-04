@@ -18,8 +18,7 @@ if ($_SESSION['admin_role'] !== 'user' || !isset($_SESSION['is_guru']) || $_SESS
 }
 
 // Include database connection
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
-require_once $base_dir . 'includes/db_connection.php';
+require_once __DIR__ . '/../../includes/db_connection.php';
 
 // Ambil ID guru dari session
 $id_guru = $_SESSION['guru_id'] ?? null;
