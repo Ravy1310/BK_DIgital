@@ -675,40 +675,9 @@ body {
   </div>
 </div>
 
-<script>
-// Toggle password visibility
-document.addEventListener('DOMContentLoaded', function() {
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            
-            const icon = this.querySelector('i');
-            if (icon.classList.contains('fa-eye-slash')) {
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            } else {
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            }
-        });
-    }
-    
-    // Handle forgot password
-    window.handleForgotPassword = function(event) {
-        event.preventDefault();
-        alert('Silakan hubungi administrator untuk reset password.');
-    };
-    
-    // Prevent zoom on iOS when focusing inputs
-    document.addEventListener('touchstart', function() {}, {passive: true});
-});
-</script>
 
-<script src="includes/js/login.js"></script>
+
+<script src="includes/js/login.js"></scri>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
