@@ -1,5 +1,4 @@
 // File: pengaduan.js
-
 // Variabel global untuk menyimpan data pengaduan saat ini
 let currentPengaduanId = null;
 let currentPengaduanStatus = null;

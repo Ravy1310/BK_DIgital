@@ -41,6 +41,10 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] !== true) {
     session_destroy();
 }
+// CEGAH CACHING
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 
 // Tampilkan pesan logout jika ada
 
