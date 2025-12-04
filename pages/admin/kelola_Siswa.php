@@ -12,198 +12,559 @@
 
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: url('../../assets/image/background.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      padding-top : 40px;
+        font-family: 'Poppins', sans-serif;
+        background: url('../../assets/image/background.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        padding-top: 40px;
     }
 
     h4 {
-      font-weight: 700;
-      color: #004AAD;
+        font-weight: 700;
+        color: #004AAD;
+    }
+
+    h6 {
+        font-size: 0.9rem;
     }
 
     .card-info {
-      border-radius: 12px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      padding: 20px;
-      background: white;
-      text-align: center;
-      transition: transform 0.2s ease;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        padding: 20px;
+        background: white;
+        text-align: center;
+        transition: transform 0.2s ease;
+        height: 100%;
+        min-height: 160px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
-    .card-info:hover { transform: scale(1.03); }
-    .icon-card { width: 50px; height: 50px; object-fit: contain; }
+    
+    .card-info:hover { 
+        transform: scale(1.03); 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .icon-card { 
+        width: 50px; 
+        height: 50px; 
+        object-fit: contain; 
+    }
 
     .table-container {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-top: 20px;
     }
 
     /* === ANIMASI BUTTON IMPORT === */
     .btn-import {
-      background-color: #38A169;
-      color: white;
-      border: none;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 6px;
-      transition: all 0.2s ease;
+        background-color: #38A169;
+        color: white;
+        border: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
     }
+    
     .btn-import:hover { 
-      background-color: #2F855A;
-      transform: translateY(-1px);
-      color: white !important;
+        background-color: #2F855A;
+        transform: translateY(-1px);
+        color: white !important;
     }
 
     /* === ANIMASI BUTTON TAMBAH === */
     .btn-tambah {
-      background-color: #0050BC;
-      color: white;
-      border: none;
-      font-weight: 500;
-      border-radius: 6px;
-      padding: 6px 12px;
-      transition: all 0.2s ease;
+        background-color: #0050BC;
+        color: white;
+        border: none;
+        font-weight: 500;
+        border-radius: 6px;
+        padding: 6px 12px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
     }
+    
     .btn-tambah:hover { 
-      background-color: #003580;
-      transform: translateY(-1px);
-      color : white !important;
+        background-color: #003580;
+        transform: translateY(-1px);
+        color: white !important;
     }
 
     /* === ANIMASI BUTTON CARI === */
     .btn-cari {
-      background-color: #38A169; 
-      border: none; 
-      border-radius: 50px;
-      width: 42px; 
-      height: 32px; 
-      display: flex; 
-      align-items: center;
-      justify-content: center; 
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      transition: all 0.2s ease;
-      cursor: pointer;
+        background-color: #38A169; 
+        border: none; 
+        border-radius: 50px;
+        width: 42px; 
+        height: 32px; 
+        display: flex; 
+        align-items: center;
+        justify-content: center; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+        cursor: pointer;
+        flex-shrink: 0;
     }
+    
     .btn-cari:hover { 
-      background-color: #2F855A;
-      transform: scale(1.05);
+        background-color: #2F855A;
+        transform: scale(1.05);
     }
 
     /* === ANIMASI BUTTON EDIT === */
     .edit-btn {
-      transition: all 0.2s ease;
-      border-radius: 4px;
-      padding: 4px 8px !important;
+        transition: all 0.2s ease;
+        border-radius: 4px;
+        padding: 4px 8px !important;
     }
+    
     .edit-btn:hover {
-      background-color: rgba(0, 123, 255, 0.1) !important;
-      transform: scale(1.1);
+        background-color: rgba(0, 123, 255, 0.1) !important;
+        transform: scale(1.1);
     }
 
     /* === ANIMASI BUTTON DELETE === */
     .delete-btn {
-      transition: all 0.2s ease;
-      border-radius: 4px;
-      padding: 4px 8px !important;
+        transition: all 0.2s ease;
+        border-radius: 4px;
+        padding: 4px 8px !important;
     }
+    
     .delete-btn:hover {
-      background-color: rgba(220, 53, 69, 0.1) !important;
-      transform: scale(1.1);
+        background-color: rgba(220, 53, 69, 0.1) !important;
+        transform: scale(1.1);
     }
 
     /* === ANIMASI BUTTON SIMPAN === */
     .btn-primary {
-      background-color: #004AAD;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 20px;
-      transition: all 0.2s ease;
+        background-color: #004AAD;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 20px;
+        transition: all 0.2s ease;
     }
+    
     .btn-primary:hover { 
-      background-color: #003580;
-      transform: translateY(-1px);
+        background-color: #003580;
+        transform: translateY(-1px);
     }
 
     /* === ANIMASI BUTTON CLOSE MODAL === */
     .btn-close-custom {
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: #333;
-      transition: all 0.2s ease;
-      border-radius: 4px;
-      padding: 4px 8px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #333;
+        transition: all 0.2s ease;
+        border-radius: 4px;
+        padding: 4px 8px;
     }
+    
     .btn-close-custom:hover { 
-      color: #d11a2a;
-      background-color: rgba(209, 26, 42, 0.1);
+        color: #d11a2a;
+        background-color: rgba(209, 26, 42, 0.1);
     }
 
-    .icon-btn { width: 18px; height: 18px; object-fit: contain; }
+    .icon-btn { 
+        width: 18px; 
+        height: 18px; 
+        object-fit: contain; 
+    }
 
-    .search-container { display: flex; align-items: center; gap: 8px; }
+    .search-container { 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+        flex: 1;
+        max-width: 300px;
+    }
+    
     .search-box {
-      width: 250px; background: white; border-radius: 50px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-      border: 1px solid #ccc; padding: 6px 16px; font-size: 14px;
-      outline: none; transition: 0.2s;
+        width: 100%; 
+        background: white; 
+        border-radius: 50px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        border: 1px solid #ccc; 
+        padding: 8px 16px; 
+        font-size: 14px;
+        outline: none; 
+        transition: 0.2s;
     }
+    
     .search-box:focus {
-      border-color: #38A169;
-      box-shadow: 0 0 4px rgba(56,161,105,0.6);
+        border-color: #38A169;
+        box-shadow: 0 0 4px rgba(56,161,105,0.6);
     }
 
-    table { font-size: 0.9rem; }
+    table { 
+        font-size: 0.85rem; 
+    }
 
     .modal-content {
-      border-radius: 10px;
-      font-family: 'Poppins', sans-serif;
+        border-radius: 10px;
+        font-family: 'Poppins', sans-serif;
     }
 
     .modal-header-custom {
-      background: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #eee;
-      padding: 16px 20px;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
+        background: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #eee;
+        padding: 16px 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
     }
 
     .modal-title-custom {
-      font-weight: 600;
-      color: #004AAD;
-      margin: 0;
+        font-weight: 600;
+        color: #004AAD;
+        margin: 0;
+        font-size: 1.1rem;
     }
 
     .file-upload-area {
-      border: 2px dashed #dee2e6;
-      border-radius: 8px;
-      padding: 2rem;
-      text-align: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
 
     .file-upload-area:hover {
-      border-color: #38A169;
-      background-color: #f8f9fa;
+        border-color: #38A169;
+        background-color: #f8f9fa;
     }
 
     .file-upload-area.dragover {
-      border-color: #38A169;
-      background-color: #e8f5e8;
+        border-color: #38A169;
+        background-color: #e8f5e8;
     }
-  </style>
+
+    /* === RESPONSIVE DESIGN === */
+
+    /* Tablet dan Desktop - tetap seperti semula */
+    @media (min-width: 768px) {
+        .header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .search-container {
+            max-width: 250px;
+        }
+        
+        .btn-import, .btn-tambah {
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Mobile Devices (≤ 767px) */
+    @media (max-width: 767.98px) {
+        body {
+            padding-top: 20px;
+            background-attachment: scroll;
+            background-size: cover;
+        }
+        
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        /* Kartu statistik responsif */
+        .row.g-4 {
+            margin-left: -8px;
+            margin-right: -8px;
+        }
+        
+        .row.g-4 > [class*="col-"] {
+            padding-left: 8px;
+            padding-right: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .card-info {
+            padding: 15px 10px;
+            min-height: 140px;
+        }
+        
+        .card-info h6 {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .card-info h4 {
+            font-size: 1.2rem;
+        }
+        
+        .rounded-rectangle {
+            width: 45px !important;
+            height: 45px !important;
+        }
+        
+        .rounded-rectangle svg {
+            width: 25px !important;
+            height: 25px !important;
+        }
+        
+        /* Table container */
+        .table-container {
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        /* Header dengan judul dan tombol */
+        .table-container > .d-flex {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: 15px;
+        }
+        
+        .table-container h6 {
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        
+        /* Kontainer aksi (search dan tombol) */
+        .header-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .search-container {
+            order: 1;
+            max-width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        .search-box {
+            padding: 10px 16px;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        .btn-cari {
+            width: 45px;
+            height: 45px;
+        }
+        
+        /* Tombol import dan tambah */
+        .header-actions .d-flex {
+            order: 2;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .btn-import, .btn-tambah {
+            flex: 1;
+            justify-content: center;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            min-width: 0;
+        }
+        
+        .btn-import svg, .btn-tambah i {
+            margin-right: 5px;
+        }
+        
+        /* Table responsif */
+        .table-responsive {
+            margin: 0 -15px;
+            padding: 0 15px;
+            overflow-x: auto;
+        }
+        
+        #tabelSiswa {
+            min-width: 600px;
+        }
+        
+        #tabelSiswa th,
+        #tabelSiswa td {
+            padding: 8px 6px;
+            font-size: 0.8rem;
+        }
+        
+        /* Modal responsif */
+        .modal-dialog {
+            margin: 10px;
+            max-width: calc(100% - 20px);
+        }
+        
+        .modal-header-custom {
+            padding: 12px 15px;
+        }
+        
+        .modal-title-custom {
+            font-size: 1rem;
+        }
+        
+        .modal-body {
+            padding: 15px;
+        }
+        
+        .form-control {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        
+        .form-label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .file-upload-area {
+            padding: 1.5rem 1rem;
+        }
+        
+        .file-upload-area p {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .file-upload-area small {
+            font-size: 0.8rem;
+        }
+        
+        .alert-info ul {
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .alert-info li {
+            font-size: 0.85rem;
+        }
+        
+        /* Tombol di modal */
+        .text-end .btn {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        .text-end .btn-secondary {
+            margin-right: 0 !important;
+        }
+    }
+
+    /* Very small mobile devices (≤ 375px) */
+    @media (max-width: 375px) {
+        .card-info {
+            padding: 12px 8px;
+            min-height: 130px;
+        }
+        
+        .card-info h6 {
+            font-size: 0.75rem;
+        }
+        
+        .card-info h4 {
+            font-size: 1rem;
+        }
+        
+        .rounded-rectangle {
+            width: 40px !important;
+            height: 40px !important;
+        }
+        
+        .rounded-rectangle svg {
+            width: 22px !important;
+            height: 22px !important;
+        }
+        
+        .table-container {
+            padding: 12px;
+        }
+        
+        .btn-import, .btn-tambah {
+            font-size: 0.8rem;
+            padding: 7px 10px;
+        }
+        
+        .btn-import svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .search-box {
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+        
+        #tabelSiswa th,
+        #tabelSiswa td {
+            padding: 6px 4px;
+            font-size: 0.75rem;
+        }
+        
+        .modal-dialog {
+            margin: 5px;
+            max-width: calc(100% - 10px);
+        }
+    }
+
+    /* Landscape mode untuk mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+        body {
+            padding-top: 10px;
+        }
+        
+        .container {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        
+        .row.g-4 {
+            margin-bottom: 10px;
+        }
+        
+        .row.g-4 > [class*="col-"] {
+            margin-bottom: 10px;
+        }
+        
+        .card-info {
+            padding: 10px 8px;
+            min-height: 120px;
+        }
+        
+        .table-container {
+            padding: 12px;
+            margin-top: 5px;
+        }
+        
+        .header-actions {
+            flex-direction: row;
+            align-items: center;
+        }
+        
+        .search-container {
+            flex: 1;
+            max-width: 200px;
+        }
+        
+        .header-actions .d-flex {
+            flex: 0 0 auto;
+        }
+    }
+</style>
 </head>
 
 <body>
@@ -257,26 +618,27 @@
  
     <!-- Kelola Data -->
     <div class="table-container">
-      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <h6 class="fw-bold mb-2">Kelola Data Siswa</h6>
-        <div class="d-flex flex-wrap align-items-center gap-2">
-          <div class="search-container">
-            <input type="text" id="searchBox" class="search-box" placeholder="Cari ID/Nama/Kelas siswa">
-            <button class="btn-cari" id="btnCari"><?xml version="1.0"?><svg id="Layer_1" style="enable-background:new 0 0 64 64;" version="1.1" viewBox="0 0 64 64" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><g><path d="M26.402,48.286C14.325,48.286,4.5,38.461,4.5,26.384S14.325,4.482,26.402,4.482    c12.077,0,21.902,9.825,21.902,21.902S38.479,48.286,26.402,48.286z M26.402,10.012c-9.028,0-16.372,7.345-16.372,16.372    s7.345,16.372,16.372,16.372s16.372-7.345,16.372-16.372S35.43,10.012,26.402,10.012z" style="fill:#ffffff;"/></g><g><path d="M36.36,29.149c-1.527,0-2.765-1.238-2.765-2.765c0-2.431-1.215-4.681-3.25-6.018    c-1.171-0.769-2.534-1.176-3.943-1.176c-1.527,0-2.765-1.238-2.765-2.765s1.238-2.765,2.765-2.765    c2.491,0,4.904,0.721,6.979,2.084c3.597,2.363,5.744,6.34,5.744,10.639C39.125,27.911,37.887,29.149,36.36,29.149z" style="fill:#ffffff;"/></g><g><path d="M51.018,59.518c-2.266,0-4.396-0.882-5.998-2.484L33.296,45.31    c-0.622-0.622-0.911-1.504-0.778-2.374c0.133-0.87,0.673-1.625,1.453-2.032c2.975-1.553,5.371-3.943,6.929-6.91    c0.409-0.778,1.163-1.316,2.032-1.448c0.869-0.132,1.749,0.157,2.371,0.778l11.713,11.712c1.602,1.602,2.484,3.732,2.484,5.998    s-0.882,4.396-2.484,5.998C55.414,58.636,53.283,59.518,51.018,59.518z M39.642,43.836l9.288,9.287    c0.558,0.558,1.299,0.865,2.088,0.865c0.789,0,1.53-0.307,2.088-0.865c1.151-1.151,1.151-3.025,0-4.176l-9.282-9.282    C42.625,41.24,41.221,42.641,39.642,43.836z" style="fill:#ffffff;"/></g></g></svg></button>
-          </div>
 
-          <button class="btn btn-import btn-sm" data-bs-toggle="modal" data-bs-target="#modalImport">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="18" height="18" style="fill:white;">
-              <polygon points="28 19 14.83 19 17.41 16.41 16 15 11 20 16 25 17.41 23.59 14.83 21 28 21 28 19"/>
-              <path d="M24,14V10a1,1,0,0,0-.29-.71l-7-7A1,1,0,0,0,16,2H6A2,2,0,0,0,4,4V28a2,2,0,0,0,2,2H22a2,2,0,0,0,2-2V26H22v2H6V4h8v6a2,2,0,0,0,2,2h6v2Zm-8-4V4.41L21.59,10Z"/>
-            </svg>
-            Import Data
-          </button>
-          <button class="btn btn-tambah btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
-            <i class="bi bi-plus-lg"></i> Tambah Data
-          </button>
+
+<!-- Menjadi: -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h6 class="fw-bold mb-2">Kelola Data Siswa</h6>
+    <div class="header-actions">
+        <div class="search-container">
+            <input type="text" id="searchBox" class="search-box" placeholder="Cari ID/Nama/Kelas siswa">
+            <button class="btn-cari" id="btnCari"><i class="bi bi-search"></i></button>
         </div>
-      </div>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <button class="btn btn-import btn-sm" data-bs-toggle="modal" data-bs-target="#modalImport">
+               <i class="bi bi-file-arrow-up"></i>
+                Import Data
+            </button>
+            <button class="btn btn-tambah btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                <i class="bi bi-plus-lg"></i> Tambah Data
+            </button>
+        </div>
+    </div>
+</div>
 
       <div class="table-responsive">
         <table class="table table-bordered align-middle" id="tabelSiswa">

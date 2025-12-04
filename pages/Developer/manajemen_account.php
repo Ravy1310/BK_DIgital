@@ -1,4 +1,3 @@
-
 <div class="container my-5 fade-container">
   <div class="mb-4">
     <h4 class="fw-bolder">Manajemen Akun</h4>
@@ -100,7 +99,9 @@
   </div>
 </div>
 
-  <table class="table table-bordered table-hover  table-striped border">
+<!-- Table responsive container -->
+<div class="table-responsive">
+  <table class="table table-bordered table-hover table-striped border">
     <thead class="custom-table-header text-center">
       <tr>
         <th>No</th>
@@ -109,45 +110,302 @@
         <th>Email</th>
         <th>Username</th>
         <th>Aksi</th>
-     
+      </tr>
     </thead>
     <tbody id="dataBody">
       <tr><td colspan="6" class="text-muted text-center">Belum ada data</td></tr>
     </tbody>
   </table>
 </div>
+</div>
 
 <style>
   body {
     background-image: url('../../assets/image/background.jpg');
-    /* background-color : #f5f5f5; */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
-table.table-bordered {
-  border-collapse: separate;  /* Ubah dari 'collapse' ke 'separate' */
-  border-spacing: 0;        /* Hilangkan jarak antar sel */
-  border-radius: 5px;      /* Terapkan radius ke tabel */
-  overflow: hidden;         /* Klip sudutnya */
-}
-  .table-bordered,
-.table-bordered th,
-.table-bordered td {
-  border-color: #373738ff !important;
   
-}
+  table.table-bordered {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 5px;
+    overflow: hidden;
+    min-width: 600px;
+  }
+  
+  .table-bordered,
+  .table-bordered th,
+  .table-bordered td {
+    border-color: #373738ff !important;
+  }
+  
   .table thead.custom-table-header th {
     background-color: #6D7AE0 !important;
     color: #ffffff;
-   
   }
-
+  
   @keyframes fadeUpSmooth {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  
   .fade-container {
     animation: fadeUpSmooth 0.8s ease-out;
   }
+  
+  /* Responsive adjustments untuk mobile dan tablet saja */
+  @media (max-width: 992px) {
+    .container {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    
+    .card {
+      padding: 1.5rem !important;
+    }
+    
+    h4 {
+      font-size: 1.5rem;
+    }
+    
+    h5 {
+      font-size: 1.25rem;
+    }
+    
+    .modal-dialog {
+      max-width: 95%;
+      margin: 0.5rem auto;
+    }
+    
+    /* Input search group */
+    .input-group {
+      flex-wrap: nowrap;
+    }
+    
+    .input-group input {
+      font-size: 16px; /* Mencegah zoom di iOS */
+    }
+    
+    .input-group .btn-light svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .card {
+      padding: 1rem !important;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .modal-content {
+      padding: 0.75rem;
+    }
+    
+    h4 {
+      font-size: 1.35rem;
+    }
+    
+    h5 {
+      font-size: 1.15rem;
+    }
+    
+    /* Tabel: sembunyikan kolom No. Telp dan Email pada layar kecil */
+    .table thead th:nth-child(3), /* No. Telp */
+    .table thead th:nth-child(4) { /* Email */
+      display: none;
+    }
+    
+    .table tbody td:nth-child(3), /* No. Telp */
+    .table tbody td:nth-child(4) { /* Email */
+      display: none;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    /* Table menjadi horizontal scroll pada mobile */
+    .table-responsive {
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+    }
+    
+    /* Tampilkan kembali header dan kolom pada desktop */
+    @media (min-width: 769px) {
+      .table thead th:nth-child(3),
+      .table thead th:nth-child(4),
+      .table tbody td:nth-child(3),
+      .table tbody td:nth-child(4) {
+        display: table-cell;
+      }
+    }
+    
+    /* Tombol responsif */
+    .text-end .btn {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    
+    /* Form inputs */
+    .form-control {
+      font-size: 16px; /* Mencegah zoom di iOS */
+    }
+    
+    /* Modal adjustments */
+    .modal-dialog {
+      margin: 0.25rem;
+    }
+    
+    .modal-body {
+      padding: 0.5rem;
+    }
+    
+    .modal-footer {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .modal-footer .btn {
+      width: 100%;
+      margin: 0;
+    }
+    
+    /* Search button icon */
+    .input-group .btn-light {
+      padding: 0.375rem 0.75rem;
+    }
+    
+    .input-group .btn-light svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  /* Untuk layar sangat kecil (smartphone portrait) */
+  @media (max-width: 360px) {
+    .container {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    
+    .card {
+      padding: 0.75rem !important;
+    }
+    
+    h4 {
+      font-size: 1.25rem;
+    }
+    
+    h5 {
+      font-size: 1.1rem;
+    }
+    
+    h6 {
+      font-size: 0.95rem;
+    }
+    
+    .input-group input {
+      font-size: 14px;
+    }
+    
+    .btn {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.85rem;
+    }
+  }
+  
+  /* Desktop tetap seperti semula - di atas 992px */
+  @media (min-width: 992px) {
+    .container {
+      max-width: 960px;
+    }
+    
+    /* Pastikan layout desktop tetap sama */
+    .card {
+      margin-bottom: 2rem;
+    }
+    
+    .table-responsive {
+      overflow-x: visible;
+    }
+    
+    table.table-bordered {
+      min-width: auto;
+      width: 100%;
+    }
+    
+    /* Pastikan semua kolom ditampilkan di desktop */
+    .table thead th,
+    .table tbody td {
+      display: table-cell !important;
+    }
+  }
+  
+  /* Pastikan semua kolom ditampilkan di layar medium ke atas */
+  @media (min-width: 769px) {
+    .table thead th,
+    .table tbody td {
+      display: table-cell !important;
+    }
+  }
 </style>
+
+<script>
+  // JavaScript untuk menangani tampilan tabel responsif
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fungsi untuk menyesuaikan tampilan tabel
+    function adjustTableDisplay() {
+      const table = document.querySelector('table');
+      if (!table) return;
+      
+      const headers = table.querySelectorAll('thead th');
+      const rows = table.querySelectorAll('tbody tr');
+      
+      // Reset semua display
+      headers.forEach(header => {
+        header.style.display = '';
+      });
+      
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach(cell => {
+          cell.style.display = '';
+        });
+      });
+      
+      // Pada layar kecil (≤768px), sembunyikan kolom 3 dan 4
+      if (window.innerWidth <= 768) {
+        // Kolom 3: No. Telp (indeks 2 karena mulai dari 0)
+        if (headers[2]) headers[2].style.display = 'none';
+        if (headers[3]) headers[3].style.display = 'none';
+        
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('td');
+          if (cells[2]) cells[2].style.display = 'none';
+          if (cells[3]) cells[3].style.display = 'none';
+        });
+      }
+    }
+    
+    // Jalankan saat load dan resize
+    adjustTableDisplay();
+    window.addEventListener('resize', adjustTableDisplay);
+    
+    // Prevent form zoom on iOS
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+      el.addEventListener('focus', function() {
+        if (window.innerWidth <= 768) {
+          setTimeout(() => {
+            this.style.fontSize = '16px';
+          }, 100);
+        }
+      });
+    });
+  });
+</script>

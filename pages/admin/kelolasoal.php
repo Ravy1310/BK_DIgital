@@ -110,6 +110,102 @@ require_once $base_dir . 'includes/db_connection.php';
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    /* RESPONSIVE STYLES */
+    @media (max-width: 768px) {
+      body {
+        padding-top: 15px;
+      }
+      
+      .card {
+        border-radius: 12px;
+        margin: 0 10px;
+      }
+
+      .kelola-card {
+        padding: 15px !important;
+      }
+
+      .kelola-card .d-flex {
+        flex-direction: column !important;
+        gap: 15px;
+      }
+
+      .kelola-card .d-flex > div:first-child {
+        width: 100%;
+      }
+
+      .kelola-card .d-flex .gap-2 {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: stretch;
+      }
+
+      .kelola-card .btn {
+        flex: 1;
+        min-width: 100px;
+        font-size: 0.875rem;
+        padding: 8px 12px;
+      }
+
+      h4 {
+        font-size: 1.25rem;
+      }
+
+      h5 {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .card {
+        padding: 20px !important;
+      }
+
+      .kelola-card {
+        padding: 12px !important;
+      }
+
+      .kelola-card .gap-2 {
+        gap: 8px !important;
+      }
+
+      .kelola-card .btn {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+        white-space: nowrap;
+      }
+
+      .kelola-card .btn i {
+        font-size: 0.875rem;
+      }
+
+      .status-badge {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+      }
+
+      h4 {
+        font-size: 1.1rem;
+      }
+
+      .text-muted {
+        font-size: 0.875rem;
+      }
+    }
+
+    /* Tombol stack vertikal pada mobile kecil */
+    @media (max-width: 420px) {
+      .kelola-card .gap-2 {
+        flex-direction: column;
+        gap: 8px !important;
+      }
+
+      .kelola-card .btn {
+        width: 100%;
+        min-width: unset;
+      }
+    }
   </style>
 </head>
 
