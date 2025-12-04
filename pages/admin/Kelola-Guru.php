@@ -68,6 +68,7 @@ if ($pdo) {
         background-attachment: fixed;
         margin-top: 50px !important;
         padding-bottom: 20px;
+        padding-top: 30px;
     }
 
     h4 {

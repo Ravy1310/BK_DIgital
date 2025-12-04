@@ -108,18 +108,6 @@ try {
     $tes_terpopuler = [];
 }
 
-// Jika tidak ada data tes terpopuler sama sekali, buat data dummy
-if (empty($tes_terpopuler)) {
-    $tes_terpopuler = [
-        ['kategori_tes' => 'Tes Minat Belajar', 'jumlah_pengerjaan' => 0],
-        ['kategori_tes' => 'Tes Kokologi', 'jumlah_pengerjaan' => 0],
-        ['kategori_tes' => 'Tes Sosialisasi', 'jumlah_pengerjaan' => 0],
-        ['kategori_tes' => 'Tes Percaya Diri', 'jumlah_pengerjaan' => 0],
-        ['kategori_tes' => 'Tes Kedisiplinan', 'jumlah_pengerjaan' => 0],
-        ['kategori_tes' => 'Tes Konsentrasi', 'jumlah_pengerjaan' => 0]
-    ];
-}
-
 // Pastikan hanya menampilkan maksimal 6 tes
 if (count($tes_terpopuler) > 6) {
     $tes_terpopuler = array_slice($tes_terpopuler, 0, 6);
