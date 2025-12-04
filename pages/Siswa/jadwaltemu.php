@@ -106,7 +106,7 @@ $stmt_jadwal = $pdo->prepare("
     SELECT jk.*, g.nama AS nama_guru
     FROM jadwal_konseling jk
     LEFT JOIN guru g ON jk.id_guru = g.id_guru
-    WHERE jk.id_siswa = ? AND jk.Status IN ('Menunggu', 'Disetujui', 'Jadwalkan Ulang')
+    WHERE jk.id_siswa = ? AND jk.Status IN ('Menunggu', 'Jadwalkan Ulang')
     ORDER BY 
         CASE 
             WHEN jk.Status = 'Jadwalkan Ulang' THEN 1
@@ -125,7 +125,7 @@ $stmt_riwayat = $pdo->prepare("
     SELECT jk.*, g.nama AS nama_guru
     FROM jadwal_konseling jk
     LEFT JOIN guru g ON jk.id_guru = g.id_guru
-    WHERE jk.id_siswa = ? AND jk.Status IN ('Ditolak', 'Selesai')
+    WHERE jk.id_siswa = ? AND jk.Status IN ('Ditolak', 'Selesai','Disetujui')
     ORDER BY jk.Tanggal_Konseling DESC
 ");
 $stmt_riwayat->execute([$id_siswa]);

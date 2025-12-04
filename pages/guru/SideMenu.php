@@ -242,6 +242,14 @@ async function loadContent(file) {
                 initManajemenJadwalKonseling();
             }
         }
+        else if (file.includes('Laporankonseling.php')) {
+      
+
+            // Gunakan singleton instance
+            if (typeof initManajemenLaporanKonseling === 'function') {
+                initManajemenLaporanKonseling();
+            }
+        }
 
     } catch (error) {
         console.error('Error loading content:', error);
@@ -271,6 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script src="../../includes/js/guru/pengaduan.js"></script>
 <script src="../../includes/js/guru/JadwalKonseling.js"></script>
-
+<script src="../../includes/js/guru/LaporanKonseling.js"></script>
 </body>
 </html>

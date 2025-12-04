@@ -1,30 +1,64 @@
+<?php
+// File: Laporankonseling.php
+session_start();
+
+// Cek apakah user sudah login
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: ../../login.php');
+    exit;
+}
+
+// Cek apakah user adalah guru
+if ($_SESSION['admin_role'] !== 'user' || !isset($_SESSION['is_guru']) || $_SESSION['is_guru'] !== true) {
+    echo "<script>
+        alert('Akses ditolak. Hanya guru yang bisa mengakses halaman ini.');
+        window.location.href = '../../dashboard.php';
+    </script>";
+    exit;
+}
+
+// Include database connection
+$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
+require_once $base_dir . 'includes/db_connection.php';
+
+// Ambil ID guru dari session
+$id_guru = $_SESSION['guru_id'] ?? null;
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Laporan Konseling</title>
-    <!-- Memuat Bootstrap 5 -->
+    
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Memuat Bootstrap Icons -->
+    
+    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
     <style>
-        /* Font modern */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        
         body {
             background: url('../../assets/image/background.jpg');
-        background-size: cover;
-        font-family: 'Poppins', sans-serif;
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Kontainer Utama & Tabel Box */
+        /* Kontainer Utama */
         .main-card {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            padding: 24px;
-           margin: 40px -20px 0 -30px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1400px;
+            width: 100%;
         }
 
         /* Header */
@@ -32,170 +66,324 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
         }
 
         h4 {
             font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 0;
-            font-size: 1.75rem;
-        }
-
-        /* Tombol Utama Hijau */
-        .btn-green {
-            background-color: #10b981; /* Warna hijau yang lebih modern (Emerald) */
-            color: white;
-            font-weight: 600;
-            border-radius: 8px;
-            padding: 8px 16px;
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.8rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        h4 i {
+            color: #10b981;
+        }
+
+        /* Tombol Utama */
+        .btn-green {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             border: none;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
         .btn-green:hover {
-            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
             color: white;
         }
 
-        .btn-green i {
-            font-size: 1.2rem;
+        /* Search Box */
+        .search-box {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
         }
 
-        /* Gaya Tabel */
-        .table-responsive {
-            border-radius: 8px;
+        .search-box:focus-within {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 1rem;
+            background: transparent;
+            color: #4a5568;
+        }
+
+        .search-box i {
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+
+        /* Tabel */
+        .table-container {
+            border-radius: 10px;
             overflow: hidden;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e2e8f0;
+            margin-top: 20px;
+            background: white;
+        }
+
+        .table {
+            margin-bottom: 0;
         }
 
         .table thead th {
+            background-color: #f8fafc;
+            color: #4a5568;
             font-weight: 600;
-            color: #4b5563;
-            background-color: #f9fafb;
-            font-size: 0.85rem;
-            padding: 12px 10px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .table tbody td {
-            padding: 12px 10px;
+            padding: 16px 20px;
+            border-bottom: 2px solid #e2e8f0;
             font-size: 0.9rem;
-            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody td {
+            padding: 16px 20px;
+            color: #2d3748;
+            border-bottom: 1px solid #edf2f7;
             vertical-align: middle;
         }
 
-        .table-hover tbody tr:hover {
-            background-color: #f9fafb;
+        .table tbody tr:hover {
+            background-color: #f7fafc;
         }
 
-        /* Link Aksi */
-        .action-link {
-            color: #3b82f6; /* Biru aksi */
-            text-decoration: none;
-            font-weight: 600;
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 5px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-        .action-link:hover {
-            text-decoration: underline;
-            color: #1d4ed8;
+            transition: all 0.2s ease;
         }
 
-        .icon-eye {
-            width: 18px;
-            height: 18px;
-            color: #3b82f6;
+        .btn-view {
+            background-color: #ebf8ff;
+            color: #3182ce;
+            border: 1px solid #bee3f8;
         }
 
-        /* Modal styling */
+        .btn-view:hover {
+            background-color: #bee3f8;
+            color: #2c5282;
+        }
+
+        /* Modal Styling */
         .modal-content {
-            border-radius: 12px;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
             border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
-        .info-box {
-            background-color: #f0fdf4; /* Hijau sangat muda */
-            border: 1px solid #dcfce7;
-            color: #047857;
-            border-radius: 8px;
-            padding: 12px;
+        .modal-header {
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-title {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e2e8f0;
+            padding: 20px 30px;
+            border-radius: 0 0 15px 15px;
+        }
+
+        /* Jadwal Card in Modal */
+        .jadwal-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
             margin-bottom: 15px;
-            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .jadwal-card:hover {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+            transform: translateY(-2px);
+        }
+
+        .jadwal-card.active {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background-color: #f0fdf4;
+            border: 1px solid #d1fae5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
         .note-box {
-            background-color: #f3f4f6; /* Abu-abu muda */
-            border: 1px solid #e5e7eb;
-            color: #4b5563;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            padding: 12px;
-            font-size: 0.9rem;
+            padding: 15px;
         }
 
-        .modal-footer .btn {
-            border-radius: 8px;
+        /* Loading State */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* No Data Message */
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .no-data i {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 20px;
+        }
+
+        .no-data h5 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        /* Badge */
+        .badge-info {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-card {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header-section {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+            
+            .modal-dialog {
+                margin: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="main-card">
             <!-- Header -->
             <div class="header-section">
-                <h4>Riwayat Laporan Konseling</h4>
+                <h4>
+                    <i class="bi bi-file-earmark-text"></i>
+                    Riwayat Laporan Konseling
+                </h4>
                 <button class="btn btn-green" id="openLaporanBtn">
-                    <!-- Menggunakan Bootstrap Icon untuk konsistensi -->
-                    <i class="bi bi-file-earmark-plus"></i>
+                    <i class="bi bi-plus-circle"></i>
                     Buat Laporan Baru
                 </button>
             </div>
 
-            <!-- Box tabel -->
-            <div class="table-box">
+            <!-- Search Box -->
+            <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" placeholder="Cari berdasarkan nama siswa, kelas, atau topik...">
+            </div>
+
+            <!-- Info -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge-info" id="totalInfo">Memuat data...</span>
+            </div>
+
+            <!-- Tabel -->
+            <div class="table-container">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="text-center">
-                            <tr>
-                                <th scope="col" class="text-start">Nama Siswa</th>
-                                <th scope="col">Tanggal Sesi</th>
-                                <th scope="col" class="text-start">Topik</th>
-                                <th scope="col" style="width: 100px;">Aksi</th>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr class="text-center">
+                                <th class="text-start">Nama Siswa</th>
+                                <th>Kelas</th>
+                                <th>Tanggal Sesi</th>
+                                <th class="text-start">Topik</th>
+                                <th style="width: 120px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="laporanTableBody">
-                            <!-- Baris pertama berisi data statis untuk contoh -->
-                            <tr data-nama="Selvi Fitra" 
-                                data-tanggal="2 Oktober 2025 pukul 11.34"
-                                data-topik="Orientasi karir dan pilihan studi"
-                                data-hasil="Setelah berdiskusi, Selvi menunjukkan minat yang kuat di bidang desain grafis dan setuju untuk mengikuti tes minat bakat online. Kami menyusun rencana untuk mencari beasiswa seni."
-                                data-catatan="Tindak lanjut: Jadwal pertemuan tripartit dengan orang tua minggu depan untuk membahas langkah selanjutnya.">
-                                <td class="text-start">Selvi Fitra</td>
-                                <td>2 Oktober 2025 pukul 11.34</td>
-                                <td class="text-start">Orientasi karir dan pilihan studi</td>
-                                <td>
-                                    <a class="action-link" data-bs-toggle="modal" data-bs-target="#detailModal" onclick="prepareDetail(this)">
-                                        <i class="bi bi-eye icon-eye"></i>
-                                        Detail
-                                    </a>
+                            <!-- Data akan diisi oleh JavaScript -->
+                            <tr id="loadingRow">
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="text-center">
+                                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p class="mt-3 text-muted">Memuat data laporan...</p>
+                                    </div>
                                 </td>
                             </tr>
-
-                            <!-- Baris Kosong (menggunakan kelas Bootstrap untuk tinggi) -->
-                            <tr class="text-center text-muted"><td colspan="4" style="height: 30px;">-</td></tr>
-                            <tr class="text-center text-muted"><td colspan="4" style="height: 30px;">-</td></tr>
-                            <tr class="text-center text-muted"><td colspan="4" style="height: 30px;">-</td></tr>
-                            <tr class="text-center text-muted"><td colspan="4" style="height: 30px;">-</td></tr>
-                            <tr class="text-center text-muted"><td colspan="4" style="height: 30px;">-</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -203,149 +391,184 @@
         </div>
     </div>
 
-
-    <!-- Modal Buat Laporan -->
-    <div class="modal fade" id="laporanModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- Modal Pilih Jadwal -->
+    <div class="modal fade" id="selectJadwalModal" tabindex="-1" aria-labelledby="selectJadwalModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-center w-100 fw-bold">Buat Laporan Konseling</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="selectJadwalModalLabel">
+                        <i class="bi bi-calendar-check me-2"></i>
+                        Pilih Jadwal Konseling
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
-                    <form id="formLaporanBaru">
-                        <div class="mb-3">
-                            <label for="namaSiswa" class="form-label fw-semibold">Nama Siswa</label>
-                            <input type="text" class="form-control" id="namaSiswa" placeholder="Masukkan nama siswa" required>
+                    <div class="mb-3">
+                        <div class="search-box">
+                            <i class="bi bi-search"></i>
+                            <input type="text" id="searchJadwalInput" placeholder="Cari nama siswa atau kelas...">
                         </div>
-                        <div class="mb-3">
-                            <label for="tanggalSesi" class="form-label fw-semibold">Tanggal Sesi</label>
-                            <input type="datetime-local" class="form-control" id="tanggalSesi" required>
+                    </div>
+                    
+                    <div id="jadwalListContainer">
+                        <div id="jadwalList" style="max-height: 400px; overflow-y: auto;">
+                            <!-- Daftar jadwal akan diisi di sini -->
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Memuat daftar jadwal...</p>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="topik" class="form-label fw-semibold">Topik</label>
-                            <input type="text" class="form-control" id="topik" placeholder="Masukkan topik pembahasan" required>
+                        
+                        <div id="noJadwalMessage" class="text-center py-5" style="display: none;">
+                            <i class="bi bi-calendar-x" style="font-size: 4rem; color: #cbd5e0;"></i>
+                            <h5 class="mt-3 text-muted">Tidak ada jadwal tersedia</h5>
+                            <p class="text-muted">Semua jadwal yang sudah disetujui telah memiliki laporan.</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="hasilPertemuan" class="form-label fw-semibold">Hasil Pertemuan & Solusi</label>
-                            <textarea class="form-control" id="hasilPertemuan" rows="3" placeholder="Tuliskan hasil dan solusi..." required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="catatanTambahan" class="form-label fw-semibold">Catatan Tambahan</label>
-                            <textarea class="form-control" id="catatanTambahan" rows="2" placeholder="Catatan tambahan jika ada..."></textarea>
-                        </div>
-                        <div class="modal-footer justify-content-center border-top-0">
-                            <button type="submit" class="btn btn-green px-4">Simpan Laporan</button>
-                        </div>
-                    </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Detail Laporan -->
-    <div class="modal fade" id="detailModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- Modal Buat Laporan -->
+    <div class="modal fade" id="laporanModal" tabindex="-1" aria-labelledby="laporanModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title text-center w-100 fw-bold">Laporan Konseling</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="laporanModalLabel">
+                        <i class="bi bi-file-earmark-plus me-2"></i>
+                        Buat Laporan Konseling
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <form id="formLaporanBaru">
+                    <div class="modal-body">
+                        <input type="hidden" id="selectedJadwalId" name="id_jadwal">
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="info-box">
+                                    <h6 class="fw-bold mb-2">Informasi Jadwal</h6>
+                                    <p class="mb-1"><strong>Siswa:</strong> <span id="selectedSiswaInfo" class="text-primary">-</span></p>
+                                    <p class="mb-1"><strong>Kelas:</strong> <span id="selectedKelasInfo">-</span></p>
+                                    <p class="mb-1"><strong>Tanggal:</strong> <span id="selectedTanggalInfo">-</span></p>
+                                    <p class="mb-0"><strong>Topik:</strong> <span id="selectedTopikInfo">-</span></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="tanggalDibuat" class="form-label fw-semibold">Tanggal Pembuatan Laporan</label>
+                                    <input type="datetime-local" class="form-control" id="tanggalDibuat" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="hasilPertemuan" class="form-label fw-semibold">
+                                <i class="bi bi-chat-left-text me-1"></i>
+                                Hasil Pertemuan & Solusi
+                            </label>
+                            <textarea class="form-control" id="hasilPertemuan" rows="5" 
+                                      placeholder="Tuliskan hasil pertemuan, solusi yang diberikan, perkembangan siswa, dan hasil yang dicapai..."
+                                      required></textarea>
+                            <div class="form-text">Minimal 10 karakter. Jelaskan dengan detail dan jelas.</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="catatanTambahan" class="form-label fw-semibold">
+                                <i class="bi bi-sticky me-1"></i>
+                                Catatan Tambahan
+                            </label>
+                            <textarea class="form-control" id="catatanTambahan" rows="3" 
+                                      placeholder="Catatan khusus, rencana tindak lanjut, saran, atau hal penting lainnya..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-green px-4">
+                            <span id="submitBtnText">
+                                <i class="bi bi-save me-1"></i> Simpan Laporan
+                            </span>
+                            <span id="submitLoading" class="loading-spinner ms-2" style="display: none;"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                <div class="modal-body text-center">
-                    <h6 class="fw-bold text-primary" id="detailNama"></h6>
-                    <p class="mb-1 text-muted small" id="detailTanggal"></p>
-                    <p class="mb-3 text-muted small" id="detailTopik"></p>
-
-                    <h6 class="text-start fw-semibold small mb-2">Hasil Pertemuan & Solusi:</h6>
-                    <div class="info-box text-start" id="detailHasil"></div>
-
-                    <h6 class="text-start fw-semibold small mb-2">Catatan Tambahan:</h6>
-                    <div class="note-box text-start" id="detailCatatan"></div>
-
-                    <p class="text-muted small mt-3 text-end">Dicatat oleh : Guru BK</p>
+    <!-- Modal Detail Laporan -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">
+                        <i class="bi bi-eye me-2"></i>
+                        Detail Laporan Konseling
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
-                <div class="modal-footer justify-content-center border-top-0">
+                <div class="modal-body">
+                    <div id="detailLoading" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Memuat detail laporan...</p>
+                    </div>
+                    
+                    <div id="detailContent" style="display: none;">
+                        <div class="text-center mb-4">
+                            <h5 class="fw-bold text-primary" id="detailNama"></h5>
+                            <p class="mb-2">
+                                <span class="badge bg-light text-dark" id="detailKelas"></span>
+                            </p>
+                            <p class="text-muted small mb-0" id="detailTanggalSesi"></p>
+                            <p class="text-muted small" id="detailTopik"></p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-3 text-success">
+                                <i class="bi bi-check-circle me-1"></i> Hasil Pertemuan & Solusi
+                            </h6>
+                            <div class="info-box" id="detailHasil"></div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-3 text-info">
+                                <i class="bi bi-info-circle me-1"></i> Catatan Tambahan
+                            </h6>
+                            <div class="note-box" id="detailCatatan"></div>
+                        </div>
+                        
+                        <div class="row mt-4 pt-3 border-top">
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">Tanggal Pembuatan Laporan:</p>
+                                <p class="fw-semibold" id="detailTanggalLaporan"></p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <p class="text-muted small mb-1">Dilaporkan oleh:</p>
+                                <p class="fw-semibold" id="detailGuru"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> -->
-    <script>
-        // Membuka Modal Buat Laporan
-        document.getElementById("openLaporanBtn").addEventListener("click", function() {
-            const modal = new bootstrap.Modal(document.getElementById("laporanModal"));
-            modal.show();
-        });
-        
-        // Fungsi untuk mempersiapkan data ke Modal Detail
-        function prepareDetail(element) {
-            const row = element.closest('tr');
-            const nama = row.getAttribute('data-nama');
-            const tanggal = row.getAttribute('data-tanggal');
-            const topik = row.getAttribute('data-topik');
-            const hasil = row.getAttribute('data-hasil');
-            const catatan = row.getAttribute('data-catatan');
+    <!-- JavaScript Libraries
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 
-            document.getElementById("detailNama").innerText = nama;
-            document.getElementById("detailTanggal").innerText = "Tanggal Sesi: " + tanggal;
-            document.getElementById("detailTopik").innerText = "Topik: " + topik;
-            document.getElementById("detailHasil").innerText = hasil || "-";
-            document.getElementById("detailCatatan").innerText = catatan || "Tidak ada catatan tambahan.";
-        }
-
-
-        // Simpan laporan baru ke tabel (Logika Simulasi)
-        document.getElementById("formLaporanBaru").addEventListener("submit", function(e) {
-            e.preventDefault();
-
-            const nama = document.getElementById("namaSiswa").value;
-            const tanggalInput = document.getElementById("tanggalSesi").value;
-            
-            // Format tanggal Indonesia
-            const tanggalObj = new Date(tanggalInput);
-            const tanggal = tanggalObj.toLocaleString("id-ID", {
-                day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit"
-            });
-            
-            const topik = document.getElementById("topik").value;
-            const hasil = document.getElementById("hasilPertemuan").value;
-            const catatan = document.getElementById("catatanTambahan").value;
-            
-            // Membuat data untuk row baru
-            const newRowHtml = `
-                <td class="text-start">${nama}</td>
-                <td>${tanggal}</td>
-                <td class="text-start">${topik}</td>
-                <td>
-                    <a class="action-link" data-bs-toggle="modal" data-bs-target="#detailModal" onclick="prepareDetail(this)">
-                        <i class="bi bi-eye icon-eye"></i> Detail
-                    </a>
-                </td>
-            `;
-
-            const tbody = document.getElementById("laporanTableBody");
-            const newRow = tbody.insertRow(0); // Tambah di atas
-            newRow.innerHTML = newRowHtml;
-            
-            // Set atribut data untuk detail modal
-            newRow.setAttribute('data-nama', nama);
-            newRow.setAttribute('data-tanggal', tanggal);
-            newRow.setAttribute('data-topik', topik);
-            newRow.setAttribute('data-hasil', hasil);
-            newRow.setAttribute('data-catatan', catatan);
-
-            document.getElementById("formLaporanBaru").reset();
-            const modal = bootstrap.Modal.getInstance(document.getElementById("laporanModal"));
-            modal.hide();
-        });
-
-        // Mengatur fungsi prepareDetail agar bisa dipanggil langsung dari onclick pada baris yang sudah ada
-        document.querySelector('#laporanTableBody tr:first-child .action-link').setAttribute('onclick', 'prepareDetail(this)');
-    </script>
+  
 </body>
 </html>
