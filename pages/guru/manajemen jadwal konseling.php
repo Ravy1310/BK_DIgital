@@ -99,9 +99,6 @@ if (!$pdo) {
         $stmt->execute([':id_guru' => $id_guru]);
         $jadwalData = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        if (empty($jadwalData)) {
-            $errorMessage = "📭 Tidak ada data jadwal konseling untuk Anda.";
-        }
         
     } catch (Exception $e) {
         $errorMessage = "❌ Error: " . $e->getMessage();
