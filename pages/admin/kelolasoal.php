@@ -13,8 +13,8 @@ if ($_SESSION['admin_role'] !== 'admin' && $_SESSION['admin_role'] !== 'superadm
     exit;
 }
 
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
-require_once $base_dir . 'includes/db_connection.php';
+require_once __DIR__ . '/../../includes/db_connection.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="id">

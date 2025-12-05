@@ -1,5 +1,5 @@
 // Global base URL
-const BASE_URL = window.location.origin + '/BK_DIGITAL';
+
 
 class LogAktivitas {
     constructor() {
@@ -140,7 +140,7 @@ class LogAktivitas {
             console.log('Loading log data...');
             
             // PATH YANG BENAR
-            const apiUrl = BASE_URL + '/includes/developer_control/get_activity_logs.php?limit=50';
+            const apiUrl = '/includes/developer_control/get_activity_logs.php?limit=50';
             
             console.log('Trying API URL:', apiUrl);
             

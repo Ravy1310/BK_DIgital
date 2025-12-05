@@ -29,8 +29,8 @@ if (!$isGuru) {
 }
 
 // Include database connection
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
-require_once $base_dir . 'includes/db_connection.php';
+require_once __DIR__ . '/../../includes/db_connection.php';
+
 
 // Set header JSON - HARUS SEBELUM OUTPUT APAPUN
 header('Content-Type: application/json');
