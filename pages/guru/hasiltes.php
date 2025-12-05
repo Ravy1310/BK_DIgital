@@ -283,92 +283,248 @@ try {
    RESPONSIVE FIXES
    =========================== */
 
-/* Container padding lebih kecil di layar kecil */
-@media (max-width: 768px) {
-    .main-container {
-        padding: 20px;
-        margin: 10px;
+<style>
+    /* ===========================
+       BASE STYLE (ASLI)
+       =========================== */
+    body {
+        background: url('../../assets/image/background.jpg');
+        background-size: cover;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .main-card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 24px;
+        margin: 40px -20px 0 -30px;
     }
 
-    .page-title {
-        font-size: 1.6rem;
-        text-align: center;
+    h4 {
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 20px;
     }
 
-    .page-title::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-}
-
-/* Stats Card agar full width di mobile */
-@media (max-width: 576px) {
-    .stats-card {
-        text-align: center;
-    }
-    .stats-card .icon {
-        margin: 0 auto 10px auto;
-    }
-}
-
-/* Filter section responsif */
-@media (max-width: 768px) {
-    .filter-section .row > div {
-        width: 100%;
-    }
-}
-
-/* Result card styling mobile */
-@media (max-width: 600px) {
-    .result-card {
-        padding: 12px;
-    }
-
-    .student-info {
-        flex-direction: row;
+    .search-bar {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 8px 15px;
+        display: flex;
         align-items: center;
+        background-color: #fff;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
 
-    .student-avatar {
-        width: 40px;
-        height: 40px;
-        font-size: 14px;
-    }
-
-    .btn-detail {
+    .search-bar input {
+        border: none;
+        outline: none;
         width: 100%;
-        margin-top: 10px;
+        font-size: 0.95rem;
     }
-}
-
-/* Modal responsif */
-@media (max-width: 576px) {
-    .modal-dialog {
-        width: 95% !important;
-        margin: auto;
+    
+    .table-responsive {
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
     }
 
-    .modal-body {
-        padding: 10px;
+    .table {
+        margin-bottom: 0;
+        width: 100%;
     }
-}
+    
+    .table thead th {
+        font-weight: 600;
+        color: #4b5563;
+        background-color: #f9fafb;
+        font-size: 0.85rem;
+        padding: 12px 10px;
+    }
+    
+    .table tbody td {
+        padding: 12px 10px;
+        font-size: 0.9rem;
+        color: #374151;
+    }
 
-/* Summary card responsif */
-@media (max-width: 576px) {
-    .summary-card {
-        padding: 15px;
-        text-align: center;
+    .table-hover tbody tr:hover {
+        background-color: #f3f4f6;
     }
-}
 
-/* Pagination responsif */
-@media (max-width: 480px) {
-    .pagination .page-link {
-        padding: 4px 8px;
-        font-size: 13px;
-        margin: 0 2px;
+    .status-btn {
+        border-radius: 9999px;
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: none;
+        display: inline-block;
     }
-}
+
+    .status-process {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    .status-new {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    .status-done {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .action-link {
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+    .action-link:hover {
+        text-decoration: underline;
+        color: #1d4ed8;
+    }
+    
+    #detailModal .modal-content {
+        border-radius: 12px;
+    }
+
+    .detail-info i {
+        font-size: 1.1rem;
+    }
+    
+    @media (min-width: 992px) {
+        .main-card {
+            padding: 30px; 
+        }
+    }
+
+    /* Spinner */
+    .loading-spinner {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner-rotate .75s linear infinite;
+    }
+
+    @keyframes spinner-rotate {
+        to { transform: rotate(360deg); }
+    }
+
+    .btn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+
+    /* Status style improved */
+    .status-new {
+        background-color: #ffedd5 !important;
+        color: #9a3412 !important;
+        border: 1px solid #fdba74;
+    }
+
+    .status-process {
+        background-color: #dbeafe !important;
+        color: #1e40af !important;
+        border: 1px solid #93c5fd;
+    }
+
+    .status-done {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+        border: 1px solid #6ee7b7;
+    }
+
+    .action-quick {
+        color: #198754 !important;
+        cursor: pointer;
+        margin-left: 5px;
+    }
+    .action-quick:hover {
+        text-decoration: underline;
+        color: #146c43 !important;
+    }
+
+
+    /* ===========================
+       RESPONSIVE FIX (HP ONLY)
+       =========================== */
+
+    /* HP: Card full width + margin fix */
+    @media (max-width: 576px) {
+        .container-fluid {
+            padding: 0 !important;
+        }
+
+        .main-card {
+            width: 100% !important;
+            margin: 0 !important;
+            border-radius: 0 !important; /* Opsional: biar seperti aplikasi */
+            padding: 20px !important;
+        }
+
+        h4 {
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        body {
+            padding: 0;
+            background-size: cover;
+            background-position: center;
+        }
+    }
+
+    /* Tabel responsif di HP */
+    @media (max-width: 576px) {
+        .table thead th {
+            font-size: 0.75rem !important;
+            padding: 8px 6px !important;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            font-size: 0.8rem !important;
+            padding: 8px 6px !important;
+            white-space: nowrap;
+        }
+
+        .status-btn {
+            font-size: 0.65rem !important;
+            padding: 3px 8px !important;
+        }
+    }
+
+    /* Modal HP */
+    @media (max-width: 576px) {
+        .modal-dialog {
+            width: 95% !important;
+            margin: auto;
+        }
+
+        .modal-body {
+            padding: 10px !important;
+        }
+
+        #detailModal h6 {
+            font-size: 1rem;
+        }
+
+        .detail-info i {
+            font-size: 1rem;
+        }
+    }
+
+</style>
 
     </style>
 </head>

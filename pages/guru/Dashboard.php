@@ -512,58 +512,127 @@ function getJadwalColor($status) {
             color: #4b5563;
         }
 
-        /* ===== RESPONSIVE FIX UNTUK MOBILE ===== */
+        /* ===== RESPONSIVE FIX UNIVERSAL (ANDROID, iOS, WINDOWS MOBILE, HARMONY OS) ===== */
 
-/* Kartu statistik biar full width & rapi */
+/* Safe area iOS (menghindari padding kepotong notch) */
+body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Universal fix – cegah card melebar berlebih */
+*, *:before, *:after {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* ===== CARD STAT ===== */
 @media (max-width: 576px) {
     .card-stat {
-        padding: 1rem;
+        padding: 1.2rem;
+        border-radius: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
     }
+
+    /* Card jadi lebih lebar di HP */
+    .card-stat-container {
+        width: 100%;
+        padding: 0 10px;
+    }
+
     .text-3xl-bold {
-        font-size: 1.6rem;
+        font-size: 1.55rem;
     }
+
     .card-stat-icon-box {
-        width: 36px;
-        height: 36px;
+        width: 38px;
+        height: 38px;
     }
 }
 
-/* Pengaduan & Jadwal biar tidak mepet dan tetap readable */
+/* ===== PENGADUAN + JADWAL ===== */
 @media (max-width: 576px) {
+
     .pengaduan-item,
     .jadwal-item {
-        padding: 0.9rem;
-        margin-bottom: 0.8rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        touch-action: manipulation; /* biar smooth di layar sentuh */
     }
 
     .pengaduan-item small,
     .jadwal-item small {
-        font-size: 0.78rem;
+        font-size: 0.8rem;
+    }
+
+    /* Elemen biar lebih lega */
+    .pengaduan-item div,
+    .jadwal-item div {
+        line-height: 1.3;
     }
 }
 
-/* Grid 2 kolom → 1 kolom otomatis */
+/* ===== GRID CHANGE: 2 KOLOM → 1 KOLOM ===== */
 @media (max-width: 768px) {
     .dashboard-container {
         padding: 15px;
     }
+
     .dashboard-title {
-        font-size: 1.8rem;
+        font-size: 1.7rem;
+        text-align: center;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr !important;
+        gap: 15px;
     }
 }
 
-/* Perbaikan overflow teks */
+/* ===== TEKS AUTO WRAP (ANTI MEPET) ===== */
 .pengaduan-item div,
 .jadwal-item div {
     word-wrap: break-word;
     word-break: break-word;
+    white-space: normal;
 }
 
-/* Perbaikan tinggi elemen agar tidak loncat saat hover */
+/* ===== ANTI LONCAT SAAT HOVER ===== */
 .card-stat:hover,
 .pengaduan-item:hover,
 .jadwal-item:hover {
     transform: translateY(-2px);
+}
+
+/* ===== TAMBAHAN RESPONSIVE UNTUK DEVICE SUPER KECIL (≤ 360px) ===== */
+@media (max-width: 360px) {
+    .card-stat {
+        padding: 0.9rem;
+    }
+
+    .text-3xl-bold {
+        font-size: 1.4rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* ===== FIX KHUSUS SAFARI & iOS ===== */
+@supports (-webkit-touch-callout: none) {
+    .card-stat,
+    .pengaduan-item,
+    .jadwal-item {
+        backdrop-filter: blur(2px); /* lebih halus di Safari */
+    }
 }
 
     </style>
