@@ -260,7 +260,7 @@ async function testControllerConnection() {
         
         // Absolute URL based on current location
         window.location.origin + '/includes/guru_control/LaporanKonselingController.php',
-        window.location.origin + '/BK_DIGITAL/includes/guru_control/LaporanKonselingController.php'
+        window.location.origin + '/../../includes/guru_control/LaporanKonselingController.php'
     ];
     
     console.log('🔄 Testing', possiblePaths.length, 'possible paths...');

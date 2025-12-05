@@ -12,9 +12,8 @@ if ($_SESSION['admin_role'] !== 'admin' && $_SESSION['admin_role'] !== 'superadm
     exit;
 }
 
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
-require_once $base_dir . 'includes/db_connection.php';
-require_once $base_dir . 'includes/logAktivitas.php';
+require_once '../db_connection.php';
+require_once '../logAktivitas.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_tes = intval($_POST['id_tes'] ?? 0);
