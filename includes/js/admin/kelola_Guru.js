@@ -1,8 +1,3 @@
-//
-// File: kelola_Guru.js - COMPLETE FIXED VERSION
-//
-
-// ==================== FUNGSI UTAMA ====================
 function initializeKelolaGuru() {
     console.log('🔄 Initializing Kelola Guru...');
     
@@ -86,7 +81,6 @@ function initializeKelolaGuru() {
                         })
                         .catch(error => {
                             console.error('❌ Search error:', error);
-                            // Tidak perlu hideTableLoading karena akan diganti oleh updateTableWithData
                             alert('Error saat pencarian: ' + error.message);
                         });
                 };
@@ -408,40 +402,50 @@ function initializeKelolaGuru() {
             
             console.log('📤 Sending AJAX request...');
             
-            // AJAX Request
-            fetch('../../includes/admin_control/KelolaGuru_Controller.php', {
+            // AJAX Request dengan error handling yang lebih baik
+            safeFetch('../../includes/admin_control/KelolaGuru_Controller.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => handleFetchResponse(response, 'menyimpan data'))
-            .then(data => {
-                console.log('✅ JSON response:', data);
+            .then(result => {
+                console.log('📥 Server response:', result);
                 
                 // Reset button state
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
                 
-                if (data.status === 'success') {
-                    console.log('🎉 Success from server');
-                    
-                    // Tutup modal
-                    modalTambah.hide();
-                    
-                    // PERBAIKAN: Reset form setelah simpan berhasil
-                    setTimeout(() => {
-                        resetForm();
-                    }, 300);
-                    
-                    // Show success message
-                    alert(data.message);
-                    
-                    // Refresh data tabel dan statistik tanpa reload halaman
-                    setTimeout(() => {
-                        refreshAllData();
-                    }, 500);
-                    
+                if (result.ok) {
+                    // Status 200-299: Success
+                    if (result.data.status === 'success') {
+                        console.log('🎉 Success from server');
+                        
+                        // Tutup modal
+                        modalTambah.hide();
+                        
+                        // Reset form setelah simpan berhasil
+                        setTimeout(() => {
+                            resetForm();
+                        }, 300);
+                        
+                        // Show success message
+                        alert(result.data.message);
+                        
+                        // Refresh data tabel dan statistik tanpa reload halaman
+                        setTimeout(() => {
+                            refreshAllData();
+                        }, 500);
+                        
+                    } else {
+                        // Server return success status tetapi dengan error dalam data
+                        throw new Error(result.data.message || 'Terjadi kesalahan pada server');
+                    }
                 } else {
-                    throw new Error(data.message || 'Terjadi kesalahan');
+                    // Status 400, 401, 404, etc.
+                    if (result.data && result.data.message) {
+                        throw new Error(result.data.message);
+                    } else {
+                        throw new Error(`Error ${result.status}: Gagal menyimpan data`);
+                    }
                 }
             })
             .catch(error => {
@@ -451,7 +455,20 @@ function initializeKelolaGuru() {
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
                 
-                alert('Error menyimpan data: ' + error.message);
+                // Tampilkan pesan error yang lebih spesifik
+                let errorMessage = 'Error menyimpan data';
+                
+                if (error.message.includes('Username atau Email sudah terdaftar')) {
+                    errorMessage = '❌ Username atau Email sudah terdaftar. Silakan gunakan yang lain.';
+                } else if (error.message.includes('400')) {
+                    errorMessage = '❌ Data tidak valid. Periksa kembali input Anda.';
+                } else if (error.message.includes('Respons server tidak valid')) {
+                    errorMessage = '❌ Terjadi kesalahan komunikasi dengan server.';
+                } else {
+                    errorMessage = '❌ ' + error.message;
+                }
+                
+                alert(errorMessage);
             });
         });
 
@@ -606,21 +623,82 @@ function updateTableWithData(data) {
     console.log(`✅ Table updated with ${data.length} rows`);
 }
 
-// ==================== FUNGSI BANTUAN FETCH ====================
+// ==================== FUNGSI FETCH YANG LEBIH BAIK ====================
 
-// Fungsi untuk menangani respons fetch
+// Fungsi wrapper untuk fetch yang lebih robust
+async function safeFetch(url, options = {}) {
+    try {
+        const response = await fetch(url, options);
+        const text = await response.text();
+        
+        console.log('🔵 Response status:', response.status);
+        console.log('🔵 Response text:', text);
+        
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            // Jika bukan JSON valid
+            if (response.ok) {
+                throw new Error('Respons server tidak dalam format JSON');
+            } else {
+                // Untuk error status, buat objek error manual
+                data = {
+                    status: 'error',
+                    message: text || `Error ${response.status}: ${response.statusText}`
+                };
+            }
+        }
+        
+        // Return object lengkap dengan status dan data
+        return {
+            status: response.status,
+            ok: response.ok,
+            data: data
+        };
+        
+    } catch (error) {
+        console.error('❌ safeFetch error:', error);
+        throw error;
+    }
+}
+
+// Fungsi untuk menangani respons fetch (versi lama - tetap ada untuk kompatibilitas)
 function handleFetchResponse(response, action = 'operation') {
     return response.text().then(text => {
+        console.log(`📥 Response for ${action}:`, text);
+        console.log(`📥 Response status: ${response.status}`);
+        
         try {
             const data = JSON.parse(text);
-            if (!response.ok) {
+            
+            // Hanya throw error untuk server errors (5xx)
+            if (response.status >= 500) {
                 throw new Error(data.message || `Server error: ${response.status}`);
             }
+            
+            // Untuk status 4xx (400, 401, 404, dll), kita tetap return data
+            // karena server mengembalikan pesan error dalam format JSON
             return data;
         } catch (jsonError) {
             console.error(`JSON Parse Error for ${action}:`, jsonError);
             console.error('Raw response:', text);
-            throw new Error(`Respons server tidak valid (bukan JSON) untuk ${action}. Status: ${response.status}`);
+            
+            // Untuk status 400 dengan JSON valid, coba parse lagi
+            if (response.status === 400) {
+                try {
+                    // Hapus karakter yang mungkin mengganggu
+                    const cleanedText = text.trim();
+                    if (cleanedText.startsWith('{') && cleanedText.endsWith('}')) {
+                        const data = JSON.parse(cleanedText);
+                        return data;
+                    }
+                } catch (e) {
+                    // Tetap lanjut ke throw error di bawah
+                }
+            }
+            
+            throw new Error(`Gagal memproses respons server untuk ${action}. Status: ${response.status}`);
         }
     });
 }
@@ -742,3 +820,4 @@ window.hideTableLoading = hideTableLoading;
 window.findTableBody = findTableBody;
 window.isValidEmail = isValidEmail;
 window.escapeHtml = escapeHtml;
+window.safeFetch = safeFetch; // Export fungsi baru
