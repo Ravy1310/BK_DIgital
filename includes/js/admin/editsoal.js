@@ -530,8 +530,8 @@ class EditSoalManager {
 
         this.showLoading('Menghapus soal...');
         
-        const basePath = window.location.pathname.includes('BK_DIGITAL') ? '/BK_DIGITAL/' : '/';
-        const deleteUrl = `${basePath}includes/admin_control/HapusSoal_Controller.php?id_soal=${idSoal}&id_tes=${idTes}`;
+        
+        const deleteUrl = `../../includes/admin_control/HapusSoal_Controller.php?id_soal=${idSoal}&id_tes=${idTes}`;
         
         fetch(deleteUrl)
             .then(response => response.text())
