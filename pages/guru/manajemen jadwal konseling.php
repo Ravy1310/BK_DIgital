@@ -393,6 +393,90 @@ function displayStatus($status) {
             font-weight: 600;
         }
 
+        /* ===========================
+   RESPONSIVE FIXES
+   =========================== */
+
+/* Layout utama agar tidak melebar di HP */
+@media (max-width: 768px) {
+    body {
+        margin-left: 0 !important;
+        padding: 10px !important;
+    }
+
+    .main-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 16px !important;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+        text-align: center;
+    }
+}
+
+/* Search box & badge responsif */
+@media (max-width: 576px) {
+    .search-box {
+        margin-bottom: 10px;
+    }
+    .badge-info {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+    }
+}
+
+/* Tabel responsif penuh */
+@media (max-width: 768px) {
+    .table-responsive {
+        border-radius: 6px;
+        overflow-x: auto;
+    }
+
+    .table-tight thead th {
+        font-size: 0.75rem;
+        padding: 8px;
+    }
+
+    .table-tight tbody td {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+
+    .btn-dot {
+        padding: 3px 6px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Dropdown action fix agar tidak keluar layar */
+@media (max-width: 480px) {
+    .dropdown-menu {
+        transform: translateX(-35px) !important;
+    }
+}
+
+/* Modal responsif */
+@media (max-width: 768px) {
+    .modal-dialog {
+        max-width: 90% !important;
+        margin: 20px auto;
+    }
+}
+
+/* No-data section responsif */
+@media (max-width: 576px) {
+    .no-data {
+        padding: 30px 10px;
+    }
+    .no-data i {
+        font-size: 2.5rem;
+    }
+}
+
     </style>
 </head>
 <body>

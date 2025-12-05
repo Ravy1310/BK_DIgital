@@ -330,6 +330,96 @@ $id_guru = $_SESSION['guru_id'] ?? null;
                 margin: 10px;
             }
         }
+
+        /* ==========================================
+   RESPONSIVE FIX — TANPA MENGUBAH KODE LAIN
+   ========================================== */
+
+/* Perbaiki main-card di layar besar */
+@media (min-width: 1200px) {
+    .main-card {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+}
+
+/* Tablet (width < 992px) */
+@media (max-width: 992px) {
+    .main-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        padding: 25px;
+    }
+}
+
+/* Mobile (width < 768px) */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .main-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 20px;
+    }
+
+    .header-section {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    .search-box {
+        padding: 10px 15px;
+    }
+
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+
+    .action-btn {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Mobile kecil (≤ 480px) */
+@media (max-width: 480px) {
+
+    .btn-green {
+        width: 100%;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .table thead th {
+        font-size: 0.75rem;
+        padding: 12px;
+    }
+
+    .table tbody td {
+        font-size: 0.75rem;
+        padding: 12px;
+    }
+
+    .modal-dialog {
+        width: 95% !important;
+        margin: auto;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+}
+
     </style>
 </head>
 <body>
