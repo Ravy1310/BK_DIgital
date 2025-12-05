@@ -361,6 +361,145 @@ $riwayatSlide = array_chunk($riwayat, 2);
         font-size: 1.2rem;
       }
     }
+
+    /* ===================================================
+   RESPONSIVE PERBAIKAN TAMBAHAN (FINAL)
+   =================================================== */
+
+/* ---------- HP KECIL (max 575px) ---------- */
+@media (max-width: 575.98px) {
+
+  /* Layout Wrapper */
+  .content-wrapper {
+    padding: 12px !important;
+  }
+
+  .container-main {
+    padding: 5px !important;
+  }
+
+  .main-container {
+    border-radius: 14px !important;
+  }
+
+  /* Judul halaman */
+  .judul-section {
+    font-size: 22px !important;
+    margin-bottom: 18px !important;
+  }
+
+  /* Info Siswa */
+  .user-info {
+    padding: 15px !important;
+    border-radius: 12px !important;
+  }
+
+  .user-info h5 {
+    font-size: 1.1rem !important;
+  }
+
+  .user-info span {
+    font-size: 0.85rem !important;
+  }
+
+  /* Kartu tes & riwayat jadi 1 kolom penuh */
+  .carousel-item .col-lg-5,
+  .carousel-item .col-md-6 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+  .test-card,
+  .riwayat-card {
+    padding: 18px !important;
+  }
+
+  /* Badge soal */
+  .soal-badge {
+    padding: 5px 10px !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Tombol */
+  .btn-tes,
+  .btn-hasil {
+    padding: 10px 18px !important;
+    font-size: 0.9rem !important;
+    border-radius: 8px !important;
+  }
+
+  /* Nilai box */
+  .nilai-box {
+    width: 45px !important;
+    height: 45px !important;
+    font-size: 1rem !important;
+  }
+
+  /* Hilangkan panah carousel */
+  .carousel-control-prev,
+  .carousel-control-next {
+    display: none !important;
+  }
+
+  .section-title {
+    font-size: 18px !important;
+    margin: 32px 0 20px !important;
+  }
+
+  /* Tombol kembali agar tidak terlalu panjang */
+@media (max-width: 430px) {
+    .btn-outline-danger {
+        max-width: 200px;      /* atur sesuai kebutuhan */
+        width: 100%;           
+        display: block;
+        margin: 0 auto 15px;   /* center + jarak bawah */
+    }
+}
+
+
+/* ---------- TABLET PORTRAIT (576px – 768px) ---------- */
+@media (min-width: 576px) and (max-width: 768px) {
+
+  .content-wrapper {
+    padding: 18px !important;
+  }
+
+  .test-card,
+  .riwayat-card {
+    padding: 20px !important;
+  }
+
+  /* 1 atau 2 kartu (lebih lega) */
+  .carousel-item .col-lg-5,
+  .carousel-item .col-md-6 {
+    flex: 0 0 80% !important;
+    max-width: 80% !important;
+    margin: 0 auto !important;
+  }
+
+  /* Panah tetap disembunyikan */
+  .carousel-control-prev,
+  .carousel-control-next {
+    display: none !important;
+  }
+}
+
+/* ---------- TABLET LANDSCAPE (769px – 992px) ---------- */
+@media (min-width: 769px) and (max-width: 992px) {
+
+  .carousel-item .col-lg-5,
+  .carousel-item .col-md-6 {
+    flex: 0 0 45% !important;
+    max-width: 45% !important;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    display: none !important;
+  }
+}
+
   </style>
 </head>
 

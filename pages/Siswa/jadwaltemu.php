@@ -347,6 +347,61 @@ $riwayat_jadwal = $stmt_riwayat->fetchAll(PDO::FETCH_ASSOC);
       margin-bottom: 8px;
       font-size: 1.4rem;
     }
+
+    /* ====================== RESPONSIVE CARD ====================== */
+
+/* HP kecil – 1 card per slide */
+@media (max-width: 576px) {
+    .konseling-card {
+        flex: 0 0 calc(100% - 10px) !important;
+    }
+
+    .carousel-control {
+        width: 35px;
+        height: 35px;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
+
+    .user-info h5 {
+        font-size: 1.1rem;
+    }
+}
+
+/* HP besar & Tablet potrait – 2 card per slide */
+@media (min-width: 577px) and (max-width: 768px) {
+    .konseling-card {
+        flex: 0 0 calc(50% - 14px) !important;
+    }
+
+    .section-title {
+        font-size: 22px;
+    }
+}
+
+/* Tablet landscape – 2 atau 3 card tergantung preferensi */
+@media (min-width: 769px) and (max-width: 992px) {
+    .konseling-card {
+        flex: 0 0 calc(50% - 14px) !important;
+    }
+}
+
+/* Laptop kecil – 3 card per slide */
+@media (min-width: 993px) and (max-width: 1200px) {
+    .konseling-card {
+        flex: 0 0 calc(33.333% - 14px) !important;
+    }
+}
+
+/* Laptop besar – tetap 3 card */
+@media (min-width: 1201px) {
+    .konseling-card {
+        flex: 0 0 calc(33.333% - 14px);
+    }
+}
+
 </style>
 </head>
 

@@ -420,6 +420,91 @@ body {
     color: #6c757d;
     margin-bottom: 10px;
 }
+
+/* ===========================
+   RESPONSIVE FIXES
+   =========================== */
+
+/* Wrapper agar tidak terlalu melebar */
+@media (max-width: 768px) {
+    .main-wrapper {
+        padding: 25px;
+        margin-top: 20px;
+    }
+
+    .judul-section {
+        font-size: 24px;
+    }
+
+    .user-info {
+        padding: 18px;
+    }
+
+    .pengaduan-card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Carousel supaya kartu full 1 kolom di mobile */
+@media (max-width: 576px) {
+    .carousel-item .col-lg-5,
+    .carousel-item .col-md-6 {
+        width: 100% !important;
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        display: none !important;
+    }
+
+    .card-header-custom {
+        font-size: 14px;
+        padding: 10px 14px;
+    }
+
+    .card-body-custom {
+        font-size: 14px;
+        padding: 14px;
+    }
+
+    .footer-info {
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+}
+
+/* Judul modal di HP */
+@media (max-width: 480px) {
+    .modal-dialog {
+        margin: 15px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .modal-title {
+        font-size: 18px;
+    }
+
+    textarea.form-control {
+        font-size: 14px;
+    }
+}
+
+/* Tombol kembali agar tidak terlalu panjang */
+@media (max-width: 430px) {
+    .btn-outline-danger {
+        max-width: 200px;      /* atur sesuai kebutuhan */
+        width: 100%;           
+        display: block;
+        margin: 0 auto 15px;   /* center + jarak bawah */
+    }
+}
+
+
 </style>
 </head>
 
@@ -446,7 +531,7 @@ body {
 <div class="container">
     <div class="main-wrapper">
  <!-- Tombol Kembali -->
-        <a href="verifikasi_pengaduan.php?logout=1" class="btn btn-outline-danger mb-4">
+        <a href="verifikasi_pengaduan.php?logout=1" class="btn btn-outline-danger mt-4">
             <i class="fas fa-arrow-left me-2"></i> Kembali
         </a>
         <h2 class="judul-section mb-4">Riwayat Pengaduan</h2>
