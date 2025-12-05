@@ -494,16 +494,16 @@ body {
     }
 }
 
-/* Tombol kembali agar tidak terlalu panjang */
+/* Tombol kembali biar tidak terlalu besar */
 @media (max-width: 430px) {
     .btn-outline-danger {
-        max-width: 200px;      /* atur sesuai kebutuhan */
-        width: 100%;           
-        display: block;
-        margin: 0 auto 15px;   /* center + jarak bawah */
+        max-width: 180px;   /* batas panjang tombol */
+        width: auto;        /* biar tidak full */
+        display: inline-block;
+        margin-bottom: 15px;
+        text-align: left;   /* tombol tetap di kiri */
     }
 }
-
 
 </style>
 </head>

@@ -511,6 +511,61 @@ function getJadwalColor($status) {
         .jadwal-time-info i {
             color: #4b5563;
         }
+
+        /* ===== RESPONSIVE FIX UNTUK MOBILE ===== */
+
+/* Kartu statistik biar full width & rapi */
+@media (max-width: 576px) {
+    .card-stat {
+        padding: 1rem;
+    }
+    .text-3xl-bold {
+        font-size: 1.6rem;
+    }
+    .card-stat-icon-box {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* Pengaduan & Jadwal biar tidak mepet dan tetap readable */
+@media (max-width: 576px) {
+    .pengaduan-item,
+    .jadwal-item {
+        padding: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .pengaduan-item small,
+    .jadwal-item small {
+        font-size: 0.78rem;
+    }
+}
+
+/* Grid 2 kolom → 1 kolom otomatis */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 15px;
+    }
+    .dashboard-title {
+        font-size: 1.8rem;
+    }
+}
+
+/* Perbaikan overflow teks */
+.pengaduan-item div,
+.jadwal-item div {
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Perbaikan tinggi elemen agar tidak loncat saat hover */
+.card-stat:hover,
+.pengaduan-item:hover,
+.jadwal-item:hover {
+    transform: translateY(-2px);
+}
+
     </style>
 </head>
 <body>

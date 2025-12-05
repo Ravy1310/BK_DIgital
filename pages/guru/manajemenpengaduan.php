@@ -181,6 +181,107 @@
     text-decoration: underline;
     color: #146c43 !important;
 }
+
+/* ===============================
+   RESPONSIVE FIXES - TANPA UBAH
+   KODE YANG SUDAH ADA
+   =============================== */
+
+/* Perbaikan tampilan mobile */
+@media (max-width: 768px) {
+    .main-card {
+        margin: 20px 0 0 0 !important;
+        padding: 18px !important;
+        width: 100% !important;
+        border-radius: 10px;
+    }
+
+    h4 {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+
+    body {
+        padding: 10px;
+        background-size: cover;
+        background-position: center;
+    }
+}
+
+/* Search bar responsif */
+@media (max-width: 576px) {
+    .search-bar {
+        padding: 6px 12px;
+    }
+    .search-bar input {
+        font-size: 0.9rem;
+    }
+}
+
+/* Tabel responsif */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: 6px;
+    }
+
+    .table thead th {
+        font-size: 0.75rem !important;
+        padding: 8px 6px !important;
+        white-space: nowrap;
+    }
+
+    .table tbody td {
+        font-size: 0.8rem !important;
+        padding: 8px 6px !important;
+        white-space: nowrap;
+    }
+
+    .status-btn {
+        font-size: 0.65rem !important;
+        padding: 3px 8px !important;
+    }
+}
+
+/* Kolom aksi agar tidak rusak */
+@media (max-width: 480px) {
+    td:last-child, th:last-child {
+        width: 60px !important;
+    }
+}
+
+/* Dropdown & modal */
+@media (max-width: 576px) {
+    .modal-dialog {
+        max-width: 92% !important;
+        margin: auto;
+    }
+
+    .modal-body {
+        padding: 12px !important;
+    }
+
+    #detailModal h6 {
+        font-size: 1rem;
+    }
+
+    .detail-info i {
+        font-size: 1rem;
+    }
+}
+
+/* Fix badge & text panjang agar tidak overflow */
+@media (max-width: 480px) {
+    .badge {
+        font-size: 0.65rem !important;
+        padding: 4px 6px !important;
+    }
+
+    #messageText {
+        font-size: 0.8rem;
+    }
+}
+
     </style>
 </head>
 <body>

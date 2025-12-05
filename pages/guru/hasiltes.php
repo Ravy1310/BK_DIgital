@@ -278,6 +278,98 @@ try {
         opacity: 0.9;
         margin-bottom: 0;
     }
+
+    /* ===========================
+   RESPONSIVE FIXES
+   =========================== */
+
+/* Container padding lebih kecil di layar kecil */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+        text-align: center;
+    }
+
+    .page-title::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+/* Stats Card agar full width di mobile */
+@media (max-width: 576px) {
+    .stats-card {
+        text-align: center;
+    }
+    .stats-card .icon {
+        margin: 0 auto 10px auto;
+    }
+}
+
+/* Filter section responsif */
+@media (max-width: 768px) {
+    .filter-section .row > div {
+        width: 100%;
+    }
+}
+
+/* Result card styling mobile */
+@media (max-width: 600px) {
+    .result-card {
+        padding: 12px;
+    }
+
+    .student-info {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .student-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .btn-detail {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* Modal responsif */
+@media (max-width: 576px) {
+    .modal-dialog {
+        width: 95% !important;
+        margin: auto;
+    }
+
+    .modal-body {
+        padding: 10px;
+    }
+}
+
+/* Summary card responsif */
+@media (max-width: 576px) {
+    .summary-card {
+        padding: 15px;
+        text-align: center;
+    }
+}
+
+/* Pagination responsif */
+@media (max-width: 480px) {
+    .pagination .page-link {
+        padding: 4px 8px;
+        font-size: 13px;
+        margin: 0 2px;
+    }
+}
+
     </style>
 </head>
 <body>
