@@ -447,11 +447,16 @@ $riwayatSlide = array_chunk($riwayat, 2);
     margin: 32px 0 20px !important;
   }
 
-  /* Tombol kembali melebar penuh */
-  .btn-outline-danger {
-    width: 100% !important;
-  }
+  /* Tombol kembali agar tidak terlalu panjang */
+@media (max-width: 430px) {
+    .btn-outline-danger {
+        max-width: 200px;      /* atur sesuai kebutuhan */
+        width: 100%;           
+        display: block;
+        margin: 0 auto 15px;   /* center + jarak bawah */
+    }
 }
+
 
 /* ---------- TABLET PORTRAIT (576px – 768px) ---------- */
 @media (min-width: 576px) and (max-width: 768px) {

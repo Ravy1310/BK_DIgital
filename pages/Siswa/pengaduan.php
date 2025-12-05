@@ -494,13 +494,16 @@ body {
     }
 }
 
-/* Tombol kembali biar tidak terlalu besar */
+/* Tombol kembali agar tidak terlalu panjang */
 @media (max-width: 430px) {
     .btn-outline-danger {
-        width: 100%;
-        margin-bottom: 15px;
+        max-width: 200px;      /* atur sesuai kebutuhan */
+        width: 100%;           
+        display: block;
+        margin: 0 auto 15px;   /* center + jarak bawah */
     }
 }
+
 
 </style>
 </head>
@@ -528,7 +531,7 @@ body {
 <div class="container">
     <div class="main-wrapper">
  <!-- Tombol Kembali -->
-        <a href="verifikasi_pengaduan.php?logout=1" class="btn btn-outline-danger mb-4">
+        <a href="verifikasi_pengaduan.php?logout=1" class="btn btn-outline-danger mt-4">
             <i class="fas fa-arrow-left me-2"></i> Kembali
         </a>
         <h2 class="judul-section mb-4">Riwayat Pengaduan</h2>
