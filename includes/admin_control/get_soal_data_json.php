@@ -16,8 +16,8 @@ if ($id_soal <= 0) {
 }
 
 // DB
-$base_dir = $_SERVER['DOCUMENT_ROOT'] . '/BK_DIGITAL/';
-require_once $base_dir . 'includes/db_connection.php';
+require_once '../db_connection.php';
+
 
 header('Content-Type: application/json');
 
