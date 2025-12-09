@@ -600,11 +600,11 @@ try {
             </div>
         </div>
 
-        <!-- Loading Spinner
+        
         <div class="loading-spinner" id="loadingSpinner">
             <div class="spinner"></div>
             <p>Memuat data...</p>
-        </div> -->
+        </div>
 
         <!-- Results List -->
         <div id="resultsList">

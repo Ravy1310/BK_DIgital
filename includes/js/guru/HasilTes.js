@@ -28,12 +28,18 @@ class HasilTes {
         console.log('Starting HasilTes app...');
         
         // Cek elemen yang diperlukan
-        const requiredElements = ['resultsList', 'loadingSpinner', 'emptyState', 'totalSiswa', 'totalTes'];
+        const requiredElements = ['resultsList', 'emptyState', 'totalSiswa', 'totalTes'];
         for (const id of requiredElements) {
             if (!document.getElementById(id)) {
                 console.error(`Required element #${id} not found`);
                 return;
             }
+        }
+        
+        // Sembunyikan loading spinner jika ada
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
         }
         
         this.bindEvents();
@@ -113,77 +119,59 @@ class HasilTes {
         console.log(`${this.eventListeners.length} event listeners bound`);
     }
 
-    showLoading(show = true) {
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const resultsList = document.getElementById('resultsList');
-        const emptyState = document.getElementById('emptyState');
-        const paginationContainer = document.getElementById('paginationContainer');
-
-        if (loadingSpinner) {
-            if (show) {
-                loadingSpinner.classList.add('active');
-                if (resultsList) resultsList.innerHTML = '';
-                if (emptyState) emptyState.style.display = 'none';
-                if (paginationContainer) paginationContainer.style.display = 'none';
-            } else {
-                loadingSpinner.classList.remove('active');
-            }
-        }
-    }
-
     async loadStatistics() {
-    try {
-        console.log('Loading statistics...');
-        
-        const formData = new FormData();
-        formData.append('action', 'get_statistik');
-        
-        // Path controller
-        const controllerPath = '../../includes/guru_control/HasilTesController.php';
-        console.log('Fetching statistics from:', controllerPath);
-        
-        const response = await fetch(controllerPath, {
-            method: 'POST',
-            body: formData
-        });
-        
-        console.log('Statistics response status:', response.status);
-        
-        // Cek content type
-        const contentType = response.headers.get('content-type');
-        console.log('Content-Type:', contentType);
-        
-        // Baca response sebagai text dulu
-        const responseText = await response.text();
-        console.log('Response text (first 500 chars):', responseText.substring(0, 500));
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        // Coba parse JSON
-        let result;
         try {
-            result = JSON.parse(responseText);
-        } catch (parseError) {
-            console.error('JSON Parse Error:', parseError);
-            console.error('Full response:', responseText);
-            throw new Error('Server returned non-JSON response (likely PHP error)');
+            console.log('Loading statistics...');
+            
+            const formData = new FormData();
+            formData.append('action', 'get_statistik');
+            
+            // Path controller
+            const controllerPath = '../../includes/guru_control/HasilTesController.php';
+            console.log('Fetching statistics from:', controllerPath);
+            
+            const response = await fetch(controllerPath, {
+                method: 'POST',
+                body: formData
+            });
+            
+            console.log('Statistics response status:', response.status);
+            
+            // Cek content type
+            const contentType = response.headers.get('content-type');
+            console.log('Content-Type:', contentType);
+            
+            // Baca response sebagai text dulu
+            const responseText = await response.text();
+            console.log('Response text (first 500 chars):', responseText.substring(0, 500));
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            // Coba parse JSON
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('JSON Parse Error:', parseError);
+                console.error('Full response:', responseText);
+                throw new Error('Server returned non-JSON response (likely PHP error)');
+            }
+            
+            console.log('Statistics data:', result);
+            
+            if (result.success) {
+                this.updateStatistics(result.data);
+            } else {
+                console.error('Error in statistics:', result.message);
+                this.showError('Gagal memuat statistik: ' + (result.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error loading statistics:', error);
+            this.showError('Gagal memuat statistik: ' + error.message);
         }
-        
-        console.log('Statistics data:', result);
-        
-        if (result.success) {
-            this.updateStatistics(result.data);
-        } else {
-            console.error('Error in statistics:', result.message);
-            this.showError('Gagal memuat statistik: ' + (result.message || 'Unknown error'));
-        }
-    } catch (error) {
-        console.error('Error loading statistics:', error);
-        this.showError('Gagal memuat statistik: ' + error.message);
     }
-}
 
     updateStatistics(data) {
         try {
@@ -210,8 +198,6 @@ class HasilTes {
     }
 
     async loadData() {
-        this.showLoading(true);
-        
         try {
             const formData = new FormData();
             formData.append('action', 'get_data');
@@ -237,8 +223,6 @@ class HasilTes {
             const result = await response.json();
             console.log('Data loaded:', result);
             
-            this.showLoading(false);
-            
             if (result.success) {
                 this.renderData(result.data);
                 this.renderPagination(result.totalPages);
@@ -249,7 +233,6 @@ class HasilTes {
             }
         } catch (error) {
             console.error('Error loading data:', error);
-            this.showLoading(false);
             this.showError('Gagal memuat data: ' + error.message);
             this.toggleEmptyState(true);
         }
@@ -521,11 +504,6 @@ class HasilTes {
             });
             
             jawabanHtml += '</div>';
-            
-            // Tambahkan ringkasan
-            if (data.jawaban_detail.length > 0) {
-                
-            }
         } else if (data.jawaban) {
             // Fallback: tampilkan jawaban mentah jika tidak ada detail
             try {
