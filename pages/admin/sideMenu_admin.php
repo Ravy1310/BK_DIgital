@@ -371,7 +371,7 @@ async function loadContent(file) {
             setTimeout(async () => {
                 try {
                     // Pastikan path konsisten
-                    await loadScript('../../includes/js/admin/kelola_Siswa.js');
+                    await loadScript('/../../includes/js/admin/kelola_Siswa.js');
                     
                     if (typeof window.initKelolaSiswa === 'function') {
                         console.log('🚀 Initializing Kelola Siswa...');
